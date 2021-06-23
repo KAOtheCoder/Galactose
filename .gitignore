@@ -1,3 +1,8 @@
+# Binary
+**/bin/
+**/bin-int/
+!vendor/premake/bin/
+
 # Visual Studio
 .vs/
 **.sln
