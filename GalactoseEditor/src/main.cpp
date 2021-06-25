@@ -1,7 +1,9 @@
 #include <iostream>
+#include <Galactose/Core/Application.h>
 
-int main() {
+int main(int argc, char** argv) {
 	std::cout << "Hello Galactose" << std::endl;
-	
-	return 0;
+	Galactose::Application app("Galactose", argc, argv);
+
+	return app.exec();
 }

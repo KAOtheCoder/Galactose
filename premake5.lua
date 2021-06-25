@@ -1,6 +1,3 @@
-IncludeDir = {}
-IncludeDir["GLFW"] = "%{wks.location}/Galactose/vendor/GLFW/include"
-
 workspace "Galactose"
 	architecture "x86_64"
 	startproject "GalactoseEditor"

@@ -20,7 +20,13 @@ project "Galactose"
 
 	links
 	{
-		"GLFW"
+		"GLFW",
+		"opengl32.lib"
+	}
+
+	includedirs
+	{
+		"vendor/GLFW/include"
 	}
 
 	filter "system:windows"
@@ -33,3 +39,7 @@ project "Galactose"
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
+
+	group "Dependencies"
+		include "Galactose/vendor/GLFW"
+	group ""
