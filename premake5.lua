@@ -1,3 +1,6 @@
+IncludeDir = {}
+IncludeDir["GLFW"] = "%{wks.location}/Galactose/vendor/GLFW/include"
+
 workspace "Galactose"
 	architecture "x86_64"
 	startproject "GalactoseEditor"
@@ -15,4 +18,5 @@ workspace "Galactose"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+include "Galactose/premake5.lua"
 include "GalactoseEditor/premake5.lua"

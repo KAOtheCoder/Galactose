@@ -1,0 +1,3 @@
+[submodule "Galactose/vendor/GLFW"]
+	path = Galactose/vendor/GLFW
+	url = https://github.com/KAOtheCoder/glfw
