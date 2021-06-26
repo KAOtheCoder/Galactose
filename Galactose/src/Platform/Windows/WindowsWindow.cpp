@@ -23,16 +23,12 @@ namespace Galactose {
 		close();
 	}
 
-	int32_t WindowsWindow::width() const {
-		int width, height;
-		glfwGetWindowSize(m_glfwWindow, &width, &height);
-		return width;
-	}
+	std::pair<int32_t, int32_t> WindowsWindow::size() const {
+		std::pair<int32_t, int32_t> pair(0, 0);
+		if (m_glfwWindow)
+			glfwGetWindowSize(m_glfwWindow, &pair.first, &pair.second);
 
-	int32_t WindowsWindow::height() const {
-		int width, height;
-		glfwGetWindowSize(m_glfwWindow, &width, &height);
-		return height;
+		return pair;
 	}
 
 	void WindowsWindow::update() {

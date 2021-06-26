@@ -11,8 +11,8 @@ namespace Galactose {
 		~WindowsWindow() override;
 
 		std::string title() const override { return m_title; }
-		int32_t width() const override;
-		int32_t height() const override;
+		int32_t width() const override { return size().first; }
+		int32_t height() const override { return size().second; }
 		
 		bool isClosed() const override { return !m_glfwWindow; }
 
@@ -20,6 +20,8 @@ namespace Galactose {
 		void close() override;
 
 	private:
+		std::pair<int32_t, int32_t> size() const;
+
 		GLFWwindow* m_glfwWindow = nullptr;
 		std::string m_title;
 	};
