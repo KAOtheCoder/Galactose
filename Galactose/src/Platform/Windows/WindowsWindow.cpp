@@ -13,6 +13,7 @@ namespace Galactose {
 		//ASSERT(!m_GLFWWindow.get())
 
 		glfwSetWindowUserPointer(m_glfwWindow, this);
+
 		glfwSetWindowCloseCallback(m_glfwWindow, [](GLFWwindow* window) {
 			static_cast<WindowsWindow*>(glfwGetWindowUserPointer(window))->close();
 		});

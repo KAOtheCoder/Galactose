@@ -1,7 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <algorithm>
+#include "GalactosePCH.h"
 
 namespace Galactose {
 	class Application
