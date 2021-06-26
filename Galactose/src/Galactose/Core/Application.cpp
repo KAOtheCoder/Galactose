@@ -1,6 +1,5 @@
-#include <iostream>
-
 #include "Application.h"
+#include "Window.h"
 
 namespace Galactose {
 	Application::Application(const std::string& a_name, int a_argc, char** a_argv)
@@ -14,13 +13,18 @@ namespace Galactose {
 
 	Application::Application(const std::string& a_name, const std::vector<std::string>& a_args)
 		: m_name(a_name),
-		m_args(a_args)
+		  m_args(a_args)
 	{
 		init();
 	}
 
 	int Application::exec() {
 		while (m_run) {
+			for (auto& window : Window::s_windows)
+				window.get()->update();
+
+			if (m_quitOnLastWindowClosed)
+				m_run = !Window::areAllWindowsClosed();
 		}
 
 		return m_exitCode;

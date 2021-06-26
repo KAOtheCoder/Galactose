@@ -26,6 +26,7 @@ project "Galactose"
 
 	includedirs
 	{
+		"src",
 		"vendor/GLFW/include"
 	}
 
