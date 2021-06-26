@@ -24,6 +24,11 @@ project "GalactoseEditor"
 	}
 
 	filter "system:windows"
+		defines "GT_WINDOWS"
+		systemversion "latest"
+
+	filter "system:linux"
+		defines "GT_LINUX"
 		systemversion "latest"
 
 	filter "configurations:Debug"

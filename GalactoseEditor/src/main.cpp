@@ -4,7 +4,6 @@
 int main(int argc, char** argv) {
 	Galactose::Application app("Galactose", argc, argv);
 
-	auto window2 = Galactose::Window::create("Galactose", 1600, 900);
 	auto window = Galactose::Window::create("Galactose", 1366, 768);
 
 	return app.exec();
