@@ -1,3 +1,4 @@
+#include "GalactosePCH.h"
 #include "Application.h"
 #include "Window.h"
 

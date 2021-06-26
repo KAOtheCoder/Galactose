@@ -1,3 +1,4 @@
+#include "GalactosePCH.h"
 #include "WindowsWindow.h"
 
 namespace Galactose {

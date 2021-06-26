@@ -27,9 +27,11 @@ project "GalactoseEditor"
 		systemversion "latest"
 
 	filter "configurations:Debug"
+		defines "GT_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
+		defines "GT_RELEASE"
 		runtime "Release"
 		optimize "on"
