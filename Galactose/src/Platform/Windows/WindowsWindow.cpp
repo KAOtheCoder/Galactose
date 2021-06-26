@@ -6,11 +6,11 @@ namespace Galactose {
 	{
 		if (s_windows.empty()) {
 			const int success = glfwInit();
-			//ASSERT(success == GLFW_FALSE)
+			GT_ASSERT(success == GLFW_TRUE, "GLFW initialization failed.");
 		}
 
 		m_glfwWindow = glfwCreateWindow(a_width, a_height, a_title.c_str(), nullptr, nullptr);
-		//ASSERT(!m_GLFWWindow.get())
+		GT_ASSERT(m_glfwWindow, "GLFW window creation failed.");
 
 		glfwSetWindowUserPointer(m_glfwWindow, this);
 

@@ -4,8 +4,6 @@
 
 namespace Galactose {
 	std::shared_ptr<Window> Window::create(const std::string& a_title, const int32_t a_width, const int32_t a_height) {
-		auto app = Application::instance();
-		//ASSERT(!app)
 		auto& window = std::make_shared<WindowsWindow>(a_title, a_width, a_height);
 		s_windows.emplace_back(window);
 

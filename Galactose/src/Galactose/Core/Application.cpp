@@ -36,7 +36,7 @@ namespace Galactose {
 	}
 
 	void Application::init() {
-		//ASSERT(s_instance);
+		GT_ASSERT(!s_instance, "Only one application can be exist at a time.");
 
 		s_instance = this;
 	}
