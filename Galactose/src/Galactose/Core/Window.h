@@ -19,6 +19,8 @@ namespace Galactose {
 		virtual void update() = 0;
 		virtual void close() = 0;
 
+		virtual void* nativeWindow() const = 0;
+
 	protected:
 		inline static std::vector<std::shared_ptr<Window>> s_windows;
 

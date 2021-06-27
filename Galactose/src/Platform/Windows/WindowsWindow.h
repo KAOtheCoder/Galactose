@@ -19,6 +19,8 @@ namespace Galactose {
 		void update() override;
 		void close() override;
 
+		void* nativeWindow() const override { return m_glfwWindow; }
+
 	private:
 		std::pair<int32_t, int32_t> size() const;
 

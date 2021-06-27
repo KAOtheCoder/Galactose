@@ -33,7 +33,12 @@ namespace Galactose {
 	}
 
 	void WindowsWindow::update() {
-		glfwPollEvents();
+		if (m_glfwWindow) {
+			glfwSwapBuffers(m_glfwWindow);
+
+			if (glfwGetWindowAttrib(m_glfwWindow, GLFW_FOCUSED))
+				glfwPollEvents();
+		}
 	}
 
 	void WindowsWindow::close() {
