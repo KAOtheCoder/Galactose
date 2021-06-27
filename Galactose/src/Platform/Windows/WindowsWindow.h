@@ -19,12 +19,18 @@ namespace Galactose {
 		void update() override;
 		void close() override;
 
+		bool isVSync() const override { return m_vsync; }
+		void setVSync(const bool a_vsync) override;
+
 		void* nativeWindow() const override { return m_glfwWindow; }
 
 	private:
 		std::pair<int32_t, int32_t> size() const;
 
+		inline static uint32_t s_glfwWindowCount = 0;
+
 		GLFWwindow* m_glfwWindow = nullptr;
 		std::string m_title;
+		bool m_vsync;
 	};
 }

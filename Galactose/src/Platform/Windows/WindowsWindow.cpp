@@ -3,21 +3,25 @@
 
 namespace Galactose {
 	WindowsWindow::WindowsWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
-		: m_title(a_title)
+		: m_title(a_title),
+		  m_vsync(true)
 	{
-		if (s_windows.empty()) {
+		if (s_glfwWindowCount == 0) {
 			const int success = glfwInit();
 			GT_ASSERT(success == GLFW_TRUE, "GLFW initialization failed.");
 		}
 
 		m_glfwWindow = glfwCreateWindow(a_width, a_height, a_title.c_str(), nullptr, nullptr);
 		GT_ASSERT(m_glfwWindow, "GLFW window creation failed.");
+		++s_glfwWindowCount;
 
 		glfwSetWindowUserPointer(m_glfwWindow, this);
 
 		glfwSetWindowCloseCallback(m_glfwWindow, [](GLFWwindow* window) {
 			static_cast<WindowsWindow*>(glfwGetWindowUserPointer(window))->close();
 		});
+
+		setVSync(true);
 	}
 
 	WindowsWindow::~WindowsWindow() {
@@ -36,8 +40,7 @@ namespace Galactose {
 		if (m_glfwWindow) {
 			glfwSwapBuffers(m_glfwWindow);
 
-			if (glfwGetWindowAttrib(m_glfwWindow, GLFW_FOCUSED))
-				glfwPollEvents();
+			glfwPollEvents();
 		}
 	}
 
@@ -46,8 +49,13 @@ namespace Galactose {
 			glfwDestroyWindow(m_glfwWindow);
 			m_glfwWindow = nullptr;
 
-			if (s_windows.size() == 1)
+			if (--s_glfwWindowCount == 0)
 				glfwTerminate();
 		}
+	}
+
+	void WindowsWindow::setVSync(const bool a_vsync) {
+		glfwSwapInterval(a_vsync ? 1 : 0);
+		m_vsync = a_vsync;
 	}
 }

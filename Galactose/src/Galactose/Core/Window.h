@@ -16,6 +16,9 @@ namespace Galactose {
 		virtual int32_t height() const = 0;
 		virtual bool isClosed() const = 0;
 
+		virtual bool isVSync() const = 0;
+		virtual void setVSync(const bool a_vsync) = 0;
+
 		virtual void update() = 0;
 		virtual void close() = 0;
 
