@@ -1,6 +1,8 @@
 #include "GalactosePCH.h"
 #include "WindowsWindow.h"
 
+#include <glad/glad.h>
+
 namespace Galactose {
 	WindowsWindow::WindowsWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
 		: m_title(a_title),
@@ -39,6 +41,13 @@ namespace Galactose {
 	void WindowsWindow::update() {
 		if (m_glfwWindow) {
 			glfwSwapBuffers(m_glfwWindow);
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glBegin(GL_TRIANGLES);
+			glVertex3f(-0.5f, -0.5f, 0.0f);
+			glVertex3f(0.5f, -0.5f, 0.0f);
+			glVertex3f(0.0f, 0.5f, 0.0f);
+			glEnd();
 
 			glfwPollEvents();
 		}

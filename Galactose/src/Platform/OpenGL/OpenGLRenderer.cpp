@@ -18,5 +18,7 @@ namespace Galactose {
 			<< "Version: " << glGetString(GL_VERSION) << std::endl
 			<< "Vendor: " << glGetString(GL_VENDOR) << std::endl
 			<< "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+
+		glClearColor(0.3f, 0.1f, 0.7f, 1.0f);
 	}
 }
