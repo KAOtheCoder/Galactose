@@ -24,7 +24,7 @@ namespace Galactose {
 			for (auto& window : Window::s_windows)
 				window.get()->update();
 
-			if (m_quitOnLastWindowClosed)
+			if (m_run && m_quitOnLastWindowClosed)
 				m_run = !Window::areAllWindowsClosed();
 		}
 
