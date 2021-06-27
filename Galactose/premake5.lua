@@ -24,13 +24,15 @@ project "Galactose"
 	links
 	{
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 
 	includedirs
 	{
 		"src",
-		"vendor/GLFW/include"
+		"vendor/GLFW/include",
+		"vendor/glad/include"
 	}
 
 	filter "system:windows"
@@ -53,4 +55,5 @@ project "Galactose"
 
 	group "Dependencies"
 		include "Galactose/vendor/GLFW"
+		include "Galactose/vendor/glad"
 	group ""
