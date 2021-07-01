@@ -3,6 +3,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Galactose/Renderer/VertexArray.h"
+
 namespace Galactose {
 	class WindowsWindow : public Window
 	{
@@ -25,6 +27,7 @@ namespace Galactose {
 		void* nativeWindow() const override { return m_glfwWindow; }
 
 	private:
+		inline static std::shared_ptr<VertexArray> vao;
 		std::pair<int32_t, int32_t> size() const;
 
 		inline static uint32_t s_glfwWindowCount = 0;

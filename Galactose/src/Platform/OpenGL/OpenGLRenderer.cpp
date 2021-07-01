@@ -19,6 +19,11 @@ namespace Galactose {
 			<< "Vendor: " << glGetString(GL_VENDOR) << std::endl
 			<< "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
-		glClearColor(0.3f, 0.1f, 0.7f, 1.0f);
+		glClearColor(0.1f, 0.05f, 0.2f, 1.0f);
+	}
+
+	void OpenGLRenderer::drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) {
+		a_vertexArray.get()->bind();
+		glDrawElements(GL_TRIANGLES, a_vertexArray.get()->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
 	}
 }

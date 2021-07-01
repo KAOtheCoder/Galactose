@@ -1,7 +1,7 @@
 #include "GalactosePCH.h"
 #include "WindowsWindow.h"
 
-#include <glad/glad.h>
+#include "Galactose/Renderer/Renderer.h"
 
 namespace Galactose {
 	WindowsWindow::WindowsWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
@@ -42,12 +42,25 @@ namespace Galactose {
 		if (m_glfwWindow) {
 			glfwSwapBuffers(m_glfwWindow);
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glBegin(GL_TRIANGLES);
-			glVertex3f(-0.5f, -0.5f, 0.0f);
-			glVertex3f(0.5f, -0.5f, 0.0f);
-			glVertex3f(0.0f, 0.5f, 0.0f);
-			glEnd();
+			if (!vao) {
+				vao = VertexArray::create();
+
+				float vertices[] = {
+				-0.5f, -0.5f, 0.0f,
+				0.5f, -0.5f, 0.0f,
+				0.0f, 0.5f, 0.0f
+				};
+
+				uint32_t indices[] = {
+					2, 1, 0
+				};
+
+				vao.get()->addVertexBuffer(VertexBuffer::create(vertices, 9 * sizeof(float)));
+				vao.get()->setIndexBuffer(IndexBuffer::create(indices, 3));
+			}
+
+			Renderer::renderer()->clear();
+			Renderer::renderer()->drawVertexArrayIndexed(vao);
 
 			glfwPollEvents();
 		}
