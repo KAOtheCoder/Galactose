@@ -44,6 +44,7 @@ namespace Galactose {
 
 			if (!vao) {
 				vao = VertexArray::create();
+				shader = Shader::create();
 
 				float vertices[] = {
 				-0.5f, -0.5f, 0.0f,
@@ -57,6 +58,7 @@ namespace Galactose {
 
 				vao.get()->addVertexBuffer(VertexBuffer::create(vertices, 9 * sizeof(float)));
 				vao.get()->setIndexBuffer(IndexBuffer::create(indices, 3));
+				shader->bind();
 			}
 
 			Renderer::renderer()->clear();

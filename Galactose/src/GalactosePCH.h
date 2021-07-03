@@ -8,5 +8,6 @@
 
 #include <array>
 #include <vector>
+#include <tuple>
 
 #include "Galactose/Core/Global.h"
