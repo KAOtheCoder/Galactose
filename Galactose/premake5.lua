@@ -13,7 +13,9 @@ project "Galactose"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"vendor/glm/glm/**.hpp",
+		"vendor/glm/glm/**.inl"
 	}
 
 	defines
@@ -32,7 +34,8 @@ project "Galactose"
 	{
 		"src",
 		"vendor/GLFW/include",
-		"vendor/glad/include"
+		"vendor/glad/include",
+		"vendor/glm"
 	}
 
 	filter "system:windows"
