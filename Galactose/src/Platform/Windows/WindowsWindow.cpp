@@ -42,27 +42,8 @@ namespace Galactose {
 		if (m_glfwWindow) {
 			glfwSwapBuffers(m_glfwWindow);
 
-			if (!vao) {
-				vao = VertexArray::create();
-				shader = Shader::create();
-
-				float vertices[] = {
-				-0.5f, -0.5f, 0.0f,
-				0.5f, -0.5f, 0.0f,
-				0.0f, 0.5f, 0.0f
-				};
-
-				uint32_t indices[] = {
-					2, 1, 0
-				};
-
-				vao.get()->addVertexBuffer(VertexBuffer::create(vertices, 9 * sizeof(float)));
-				vao.get()->setIndexBuffer(IndexBuffer::create(indices, 3));
-				shader->bind();
-			}
-
 			Renderer::renderer()->clear();
-			Renderer::renderer()->drawVertexArrayIndexed(vao);
+			Renderer::renderer()->drawSprite(Vector3(), { 1.0f, 1.0f });
 
 			glfwPollEvents();
 		}

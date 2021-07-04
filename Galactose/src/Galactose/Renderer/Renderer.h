@@ -2,6 +2,7 @@
 
 #include "Galactose/Core/Window.h"
 #include "VertexArray.h"
+#include "Galactose/Core/Math.h"
 
 namespace Galactose {
 	class Renderer {
@@ -14,6 +15,8 @@ namespace Galactose {
 		virtual void setClearColor(const float a_r, const float a_g, const float a_b, const float a_a) = 0;
 		virtual void clear() = 0;
 		virtual void drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) = 0;
+
+		virtual void drawSprite(const Vector3 a_center, const Vector2 a_size) = 0;
 
 	private:
 		inline static std::vector<std::shared_ptr<Renderer>> s_renderers;
