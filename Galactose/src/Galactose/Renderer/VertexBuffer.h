@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GalactosePCH.h"
+#include "Galactose/Core/DataType.h"
 
 namespace Galactose {
 	class VertexBuffer {
@@ -11,8 +12,11 @@ namespace Galactose {
 		virtual void bind() = 0;
 		virtual void unbind() = 0;
 
-		//uint32_t stride() const;
-
+		/*class Layout {
+		private:
+			std::vector<DataType> m_layout;
+		};
 	private:
+		Layout m_layout;*/
 	};
 }
