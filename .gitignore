@@ -1,7 +1,7 @@
 # Binary
 **/bin/
 **/bin-int/
-!vendor/premake/bin/
+**.exe
 
 # Visual Studio
 .vs/
