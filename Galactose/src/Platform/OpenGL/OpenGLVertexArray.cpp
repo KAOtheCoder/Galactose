@@ -12,7 +12,7 @@ namespace Galactose {
 		glEnableVertexArrayAttrib(m_rendererId, 0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 
-		m_vertexBuffers.emplace_back(a_buffer);
+		m_vertexBuffers.push_back(a_buffer);
 	}
 
 	void OpenGLVertexArray::setIndexBuffer(const std::shared_ptr<IndexBuffer>& a_buffer) {

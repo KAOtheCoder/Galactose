@@ -24,8 +24,8 @@ namespace Galactose {
 	}
 
 	void OpenGLRenderer::drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) {
-		a_vertexArray.get()->bind();
-		glDrawElements(GL_TRIANGLES, a_vertexArray.get()->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
+		a_vertexArray->bind();
+		glDrawElements(GL_TRIANGLES, a_vertexArray->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
 	}
 
 	void OpenGLRenderer::drawSprite(const Vector3 a_center, const Vector2 a_size) {
@@ -44,8 +44,8 @@ namespace Galactose {
 			2, 3, 0
 		};
 
-		vertexArray.get()->addVertexBuffer(VertexBuffer::create(vertices, 12 * sizeof(float)));
-		vertexArray.get()->setIndexBuffer(IndexBuffer::create(indices, 6));
+		vertexArray->addVertexBuffer(VertexBuffer::create(vertices, 12 * sizeof(float)));
+		vertexArray->setIndexBuffer(IndexBuffer::create(indices, 6));
 		OpenGLShader shader;
 		shader.bind();
 		drawVertexArrayIndexed(vertexArray);

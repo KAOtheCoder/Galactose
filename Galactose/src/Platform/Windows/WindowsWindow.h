@@ -19,7 +19,7 @@ namespace Galactose {
 		void update() override;
 		void close() override;
 
-		bool isVSync() const override { return m_vsync; }
+		bool vsync() const override { return m_vsync; }
 		void setVSync(const bool a_vsync) override;
 
 		void* nativeWindow() const override { return m_glfwWindow; }

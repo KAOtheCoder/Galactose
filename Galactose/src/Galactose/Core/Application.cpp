@@ -22,7 +22,7 @@ namespace Galactose {
 	int Application::exec() {
 		while (m_run) {
 			for (auto& window : Window::s_windows)
-				window.get()->update();
+				window->update();
 
 			if (m_run && m_quitOnLastWindowClosed)
 				m_run = !Window::areAllWindowsClosed();

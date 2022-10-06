@@ -5,7 +5,7 @@
 namespace Galactose {
 	class IndexBuffer {
 	public:
-		static std::shared_ptr<IndexBuffer> create(uint32_t* a_indices, const uint32_t a_count);
+		static std::shared_ptr<IndexBuffer> create(const uint32_t* a_indices, const uint32_t a_count);
 		
 		IndexBuffer(const uint32_t a_count) : m_count(a_count) {}
 		virtual ~IndexBuffer() = default;

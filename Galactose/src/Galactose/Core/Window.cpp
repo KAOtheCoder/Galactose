@@ -5,8 +5,8 @@
 
 namespace Galactose {
 	std::shared_ptr<Window> Window::create(const std::string& a_title, const int32_t a_width, const int32_t a_height) {
-		auto& window = std::make_shared<WindowsWindow>(a_title, a_width, a_height);
-		s_windows.emplace_back(window);
+		const auto& window = std::make_shared<WindowsWindow>(a_title, a_width, a_height);
+		s_windows.push_back(window);
 
 		return window;
 	}
@@ -19,7 +19,7 @@ namespace Galactose {
 
 	bool Window::areAllWindowsClosed() {
 		for (auto window : s_windows)
-			if (!window.get()->isClosed())
+			if (!window->isClosed())
 				return false;
 
 		return true;
