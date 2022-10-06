@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GalactosePCH.h"
-#include "Galactose/Renderer/Shader.h"
+#include "Renderer/Shader.h"
 
 #include <glad/glad.h>
 

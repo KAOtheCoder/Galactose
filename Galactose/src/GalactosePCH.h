@@ -10,4 +10,4 @@
 #include <vector>
 #include <tuple>
 
-#include "Galactose/Core/Global.h"
+#include "Core/Global.h"

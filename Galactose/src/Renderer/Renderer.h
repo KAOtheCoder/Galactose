@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Galactose/Core/Window.h"
+#include "Core//Window.h"
 #include "VertexArray.h"
-#include "Galactose/Core/Math.h"
+#include "Core//Math.h"
 
 namespace Galactose {
 	class Renderer {

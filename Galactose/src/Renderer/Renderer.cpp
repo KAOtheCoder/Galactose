@@ -1,6 +1,6 @@
 #include "GalactosePCH.h"
 
-#include "Platform/OpenGL/OpenGLRenderer.h"
+#include "Renderer/OpenGL/OpenGLRenderer.h"
 
 namespace Galactose {
 	std::shared_ptr<Renderer> Renderer::create(const std::shared_ptr<Window>& a_window) {

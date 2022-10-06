@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Galactose/Renderer/VertexArray.h"
+#include "Renderer/VertexArray.h"
 
 #include <glad/glad.h>
 

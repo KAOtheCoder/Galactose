@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Galactose/Renderer/VertexBuffer.h"
+#include "Renderer/VertexBuffer.h"
 
 #include <glad/glad.h>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Galactose/Renderer/Renderer.h"
+#include "Renderer/Renderer.h"
 
 #include <glad/glad.h>
 

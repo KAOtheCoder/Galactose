@@ -1,10 +1,10 @@
 #include "GalactosePCH.h"
-#include "WindowsWindow.h"
+#include "GLFWWindow.h"
 
-#include "Galactose/Renderer/Renderer.h"
+#include "Renderer/Renderer.h"
 
 namespace Galactose {
-	WindowsWindow::WindowsWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
+	GLFWWindow::GLFWWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
 		: m_title(a_title),
 		  m_vsync(true)
 	{
@@ -20,17 +20,17 @@ namespace Galactose {
 		glfwSetWindowUserPointer(m_glfwWindow, this);
 
 		glfwSetWindowCloseCallback(m_glfwWindow, [](GLFWwindow* window) {
-			static_cast<WindowsWindow*>(glfwGetWindowUserPointer(window))->close();
+			static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window))->close();
 		});
 
 		setVSync(true);
 	}
 
-	WindowsWindow::~WindowsWindow() {
+	GLFWWindow::~GLFWWindow() {
 		close();
 	}
 
-	std::pair<int32_t, int32_t> WindowsWindow::size() const {
+	std::pair<int32_t, int32_t> GLFWWindow::size() const {
 		std::pair<int32_t, int32_t> pair(0, 0);
 		if (m_glfwWindow)
 			glfwGetWindowSize(m_glfwWindow, &pair.first, &pair.second);
@@ -38,7 +38,7 @@ namespace Galactose {
 		return pair;
 	}
 
-	void WindowsWindow::update() {
+	void GLFWWindow::update() {
 		if (m_glfwWindow) {
 			glfwSwapBuffers(m_glfwWindow);
 
@@ -49,7 +49,7 @@ namespace Galactose {
 		}
 	}
 
-	void WindowsWindow::close() {
+	void GLFWWindow::close() {
 		if (m_glfwWindow) {
 			glfwDestroyWindow(m_glfwWindow);
 			m_glfwWindow = nullptr;
@@ -59,7 +59,7 @@ namespace Galactose {
 		}
 	}
 
-	void WindowsWindow::setVSync(const bool a_vsync) {
+	void GLFWWindow::setVSync(const bool a_vsync) {
 		glfwSwapInterval(a_vsync ? 1 : 0);
 		m_vsync = a_vsync;
 	}

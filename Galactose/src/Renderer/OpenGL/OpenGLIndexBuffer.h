@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Galactose/Renderer/IndexBuffer.h"
+#include "Renderer/IndexBuffer.h"
 
 #include <glad/glad.h>
 

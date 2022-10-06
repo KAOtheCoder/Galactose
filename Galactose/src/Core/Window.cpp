@@ -1,11 +1,11 @@
 #include "GalactosePCH.h"
 #include "Window.h"
-#include "Platform/Windows/WindowsWindow.h"
-#include "Galactose/Core/Application.h"
+#include "Core/GLFW/GLFWWindow.h"
+#include "Core/Application.h"
 
 namespace Galactose {
 	std::shared_ptr<Window> Window::create(const std::string& a_title, const int32_t a_width, const int32_t a_height) {
-		const auto& window = std::make_shared<WindowsWindow>(a_title, a_width, a_height);
+		const auto& window = std::make_shared<GLFWWindow>(a_title, a_width, a_height);
 		s_windows.push_back(window);
 
 		return window;

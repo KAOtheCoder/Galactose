@@ -1,6 +1,6 @@
 #include "GalactosePCH.h"
 
-#include "Platform/OpenGL/OpenGLVertexBuffer.h"
+#include "Renderer/OpenGL/OpenGLVertexBuffer.h"
 
 #include <glad/glad.h>
 
