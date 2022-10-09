@@ -134,13 +134,36 @@ namespace Galactose {
 
 		GT_EVENT_TYPE_IMP(Key)
 
-		static bool isPrintable(const Key key) { return key >= ' ' && key <= '`'; }
-		std::string toString() const override { return name() + ": " + (isPrintable(m_key) ? "'" + std::string(1, char(m_key)) + "'" : std::to_string(m_key)); }
+		std::string toString() const override { 
+			const auto keyName = glfwGetKeyName(m_key, 0);
+			return name() + ": " + (keyName ? std::string(keyName) : std::to_string(m_key)); 
+		}
 
 		protected:
-			KeyEvent(const Key key) : m_key(key) {}
+			KeyEvent(const Key a_key) : m_key(a_key) {}
 
 		private:
 			Key m_key;
+	};
+
+	class KeyPressEvent : public KeyEvent {
+	public:
+		GT_EVENT_TYPE_IMP(KeyPress)
+
+		KeyPressEvent(const KeyEvent::Key a_key) : KeyEvent(a_key) {}
+	};
+
+	class KeyRepeatEvent : public KeyEvent {
+	public:
+		GT_EVENT_TYPE_IMP(KeyRepeat)
+
+		KeyRepeatEvent(const KeyEvent::Key a_key) : KeyEvent(a_key) {}
+	};
+
+	class KeyReleaseEvent : public KeyEvent {
+	public:
+		GT_EVENT_TYPE_IMP(KeyRelease)
+
+		KeyReleaseEvent(const KeyEvent::Key a_key) : KeyEvent(a_key) {}
 	};
 }

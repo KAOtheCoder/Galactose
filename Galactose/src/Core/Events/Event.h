@@ -11,8 +11,10 @@ namespace Galactose {
 	public:
 		enum Type {
 			None = 0,
-			Key = 1,
-			KeyPress = 2
+			Key = 4,
+			KeyPress = 5,
+			KeyRepeat = 6,
+			KeyRelease = 7
 		};
 
 		virtual ~Event() = default;

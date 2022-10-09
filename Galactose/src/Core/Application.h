@@ -21,7 +21,7 @@ namespace Galactose {
 		int exec();
 		void exit(const int a_exitCode = 0);
 
-		void postEvent(const std::shared_ptr<Event>& event) { m_eventQueue.push_back(event); }
+		void postEvent(const std::shared_ptr<Event>& a_event) { m_eventQueue.push_back(a_event); }
 
 	private:
 		void init();

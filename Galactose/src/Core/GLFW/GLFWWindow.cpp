@@ -2,7 +2,7 @@
 #include "GLFWWindow.h"
 
 #include "Renderer/Renderer.h"
-#include "Core/Events/KeyPressEvent.h"
+#include "Core/Events/KeyEvent.h"
 
 namespace Galactose {
 	GLFWWindow::GLFWWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
@@ -24,9 +24,22 @@ namespace Galactose {
 			static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window))->close();
 		});
 
-		glfwSetKeyCallback(m_glfwWindow, [](GLFWwindow* window, int key, int scancode, int action, int modes) {
-			if (action == GLFW_PRESS)
-				Application::instance()->postEvent(std::make_shared<KeyPressEvent>(static_cast<KeyEvent::Key>(key)));
+		glfwSetKeyCallback(m_glfwWindow, [](GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_modes) {
+			std::shared_ptr<Event> event;
+			const auto key = static_cast<KeyEvent::Key>(a_key);
+
+			switch (a_action) {
+			case GLFW_PRESS: event = std::make_shared<KeyPressEvent>(key);
+				break;
+			case GLFW_REPEAT: event = std::make_shared<KeyRepeatEvent>(key);
+				break;
+			case GLFW_RELEASE: event = std::make_shared<KeyReleaseEvent>(key);
+				break;
+			default:
+				GT_ASSERT(false, "Unknown key event.");
+			}
+
+			Application::instance()->postEvent(event);
 		});
 
 		setVSync(true);
