@@ -1,7 +1,11 @@
 #pragma once
 #include "GalactosePCH.h"
 
+#include <queue>
+
 namespace Galactose {
+	class Event;
+
 	class Application
 	{
 	public:
@@ -17,6 +21,8 @@ namespace Galactose {
 		int exec();
 		void exit(const int a_exitCode = 0);
 
+		void postEvent(const std::shared_ptr<Event>& event) { m_eventQueue.push_back(event); }
+
 	private:
 		void init();
 
@@ -27,5 +33,6 @@ namespace Galactose {
 		int m_exitCode = 0;
 		bool m_run = true;
 		bool m_quitOnLastWindowClosed = true;
+		std::vector<std::shared_ptr<Event>> m_eventQueue;
 	};
 }

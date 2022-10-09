@@ -2,6 +2,7 @@
 #include "GLFWWindow.h"
 
 #include "Renderer/Renderer.h"
+#include "Core/Events/KeyPressEvent.h"
 
 namespace Galactose {
 	GLFWWindow::GLFWWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
@@ -21,6 +22,11 @@ namespace Galactose {
 
 		glfwSetWindowCloseCallback(m_glfwWindow, [](GLFWwindow* window) {
 			static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window))->close();
+		});
+
+		glfwSetKeyCallback(m_glfwWindow, [](GLFWwindow* window, int key, int scancode, int action, int modes) {
+			if (action == GLFW_PRESS)
+				Application::instance()->postEvent(std::make_shared<KeyPressEvent>(static_cast<KeyEvent::Key>(key)));
 		});
 
 		setVSync(true);

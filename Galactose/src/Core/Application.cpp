@@ -1,6 +1,7 @@
 #include "GalactosePCH.h"
 #include "Application.h"
 #include "Window.h"
+#include "Events/Event.h"
 
 namespace Galactose {
 	Application::Application(const std::string& a_name, int a_argc, char** a_argv)
@@ -21,6 +22,11 @@ namespace Galactose {
 
 	int Application::exec() {
 		while (m_run) {
+			for (const auto& event : m_eventQueue)
+				std::cout << event->toString() << std::endl;
+
+			m_eventQueue.clear();
+
 			for (auto& window : Window::s_windows)
 				window->update();
 
