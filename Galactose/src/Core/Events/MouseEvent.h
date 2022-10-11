@@ -20,7 +20,7 @@ namespace Galactose {
 		GT_EVENT_TYPE_IMP(Mouse)
 
 		std::string toString() const override {
-			return name() + ": (" + std::to_string(m_cursorPos.x) + ", " + std::to_string(m_cursorPos.y) + ")";
+			return name() + ": " + m_cursorPos.toString();
 		}
 
 	protected:
@@ -45,6 +45,7 @@ namespace Galactose {
 
 	protected:
 		MouseButtonEvent(const Vector2& a_pos, const Button a_button) : MouseEvent(a_pos), m_button(a_button) {}
+
 	private:
 		const Button m_button;
 	};
