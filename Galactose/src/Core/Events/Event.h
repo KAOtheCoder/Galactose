@@ -14,7 +14,11 @@ namespace Galactose {
 			Key = 4,
 			KeyPress = 5,
 			KeyRepeat = 6,
-			KeyRelease = 7
+			KeyRelease = 7,
+			Mouse = 8,
+			MouseMove = 9,
+			MousePress = 10,
+			MouseRelease = 11
 		};
 
 		virtual ~Event() = default;

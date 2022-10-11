@@ -3,6 +3,7 @@
 
 #include "Renderer/Renderer.h"
 #include "Core/Events/KeyEvent.h"
+#include "Core/Events/MouseEvent.h"
 
 namespace Galactose {
 	GLFWWindow::GLFWWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
@@ -37,6 +38,29 @@ namespace Galactose {
 				break;
 			default:
 				GT_ASSERT(false, "Unknown key event.");
+			}
+
+			Application::instance()->postEvent(event);
+		});
+
+		glfwSetCursorPosCallback(m_glfwWindow, [](GLFWwindow* a_window, double a_x, double a_y) {
+			Application::instance()->postEvent(std::make_shared<MouseMoveEvent>(Vector2(a_x, a_y)));
+		});
+
+		glfwSetMouseButtonCallback(m_glfwWindow, [](GLFWwindow* a_window, int a_button, int a_action, int a_mods) {
+			std::shared_ptr<Event> event;
+			const auto button = static_cast<MouseEvent::Button>(a_button);
+			double x, y;
+			glfwGetCursorPos(a_window, &x, &y);
+			const Vector2 pos(x, y);
+
+			switch (a_action) {
+			case GLFW_PRESS: event = std::make_shared<MousePressEvent>(pos, button);
+				break;
+			case GLFW_RELEASE: event = std::make_shared<MouseReleaseEvent>(pos, button);
+				break;
+			default:
+				GT_ASSERT(false, "Unknown mouse event.");
 			}
 
 			Application::instance()->postEvent(event);
