@@ -1,7 +1,8 @@
 #pragma once
+
 #include "GalactosePCH.h"
 
-#include <queue>
+#include <vector>
 
 namespace Galactose {
 	class Event;

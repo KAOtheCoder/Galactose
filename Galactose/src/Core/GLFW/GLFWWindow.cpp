@@ -1,7 +1,7 @@
 #include "GalactosePCH.h"
 #include "GLFWWindow.h"
 
-#include "Renderer/Renderer.h"
+#include "Core/Application.h"
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
 
@@ -85,8 +85,8 @@ namespace Galactose {
 		if (m_glfwWindow) {
 			glfwSwapBuffers(m_glfwWindow);
 
-			Renderer::renderer()->clear();
-			Renderer::renderer()->drawSprite(Vector3(), { 1.0f, 1.0f });
+			for (const auto& layer : layers)
+				layer->onUpdate();
 
 			glfwPollEvents();
 		}

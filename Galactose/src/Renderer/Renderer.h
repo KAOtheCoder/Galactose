@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Core//Window.h"
 #include "VertexArray.h"
-#include "Core//Math.h"
+#include "Core/Window.h"
+#include "Core/Math.h"
+#include "Renderer/Shader.h"
 
 namespace Galactose {
 	class Renderer {
@@ -18,9 +19,14 @@ namespace Galactose {
 
 		virtual void drawSprite(const Vector3 a_center, const Vector2 a_size) = 0;
 
+		std::shared_ptr<Shader> shader() const { return m_shader; }
+
+	protected:
+		std::shared_ptr<Shader> m_shader;
+
 	private:
 		inline static std::vector<std::shared_ptr<Renderer>> s_renderers;
-
+		
 		int32_t m_id = -1;
 	};
 }

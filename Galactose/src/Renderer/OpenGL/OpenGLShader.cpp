@@ -7,11 +7,14 @@ namespace Galactose {
 			#version 330 core
 
 			layout(location = 0) in vec3 i_position;
+
+			uniform mat4 u_mvp;
 			
 			out vec4 v_color;
 
 			void main() {
-				gl_Position = vec4(i_position, 1.0);
+				gl_Position = u_mvp * vec4(i_position, 1.0);
+				//gl_Position = vec4(i_position, 1.0);
 				v_color = vec4(i_position + 0.5, 1.0);
 			}
 		)";
@@ -92,5 +95,22 @@ namespace Galactose {
 
 		for (auto shaderData : shaderDatas)
 			glDetachShader(m_rendererId, shaderData.id);
+	}
+
+	int32_t OpenGLShader::findUniform(const std::string& a_name) {
+		const auto& iter = m_uniforms.find(a_name);
+
+		if (iter == m_uniforms.end()) {
+			const int32_t location = glGetUniformLocation(m_rendererId, a_name.c_str());
+			GT_ASSERT(location != -1, "Cannot find uniform in shader.");
+			m_uniforms.emplace(a_name, location);
+			return location;
+		}
+
+		return iter->second;
+	}
+
+	void OpenGLShader::setMatrix4x4(const std::string& a_name, const Matrix4x4& a_value) {
+		glUniformMatrix4fv(findUniform(a_name), 1, GL_FALSE, a_value.valuePtr());
 	}
 }

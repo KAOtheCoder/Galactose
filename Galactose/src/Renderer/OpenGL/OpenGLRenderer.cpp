@@ -21,6 +21,8 @@ namespace Galactose {
 			<< "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
 		glClearColor(0.1f, 0.05f, 0.2f, 1.0f);
+
+		m_shader = std::make_shared<OpenGLShader>();
 	}
 
 	void OpenGLRenderer::drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) {
@@ -46,8 +48,7 @@ namespace Galactose {
 
 		vertexArray->addVertexBuffer(VertexBuffer::create(vertices, 12 * sizeof(float)));
 		vertexArray->setIndexBuffer(IndexBuffer::create(indices, 6));
-		OpenGLShader shader;
-		shader.bind();
+		m_shader->bind();
 		drawVertexArrayIndexed(vertexArray);
 	}
 }

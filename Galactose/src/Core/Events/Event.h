@@ -4,7 +4,7 @@
 
 #define GT_EVENT_TYPE_IMP(_type) static Event::Type staticType() { return Event::_type; }\
 	Event::Type type() const override { return staticType(); }\
-	std::string name() const override { return #_type; }
+	std::string name() const override { return GT_STRINGIFY(_type); }
 
 namespace Galactose {
 	class Event {

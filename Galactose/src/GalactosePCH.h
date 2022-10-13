@@ -8,6 +8,5 @@
 
 #include <array>
 #include <vector>
-#include <tuple>
 
 #include "Core/Global.h"

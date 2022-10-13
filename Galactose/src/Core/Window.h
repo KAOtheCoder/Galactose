@@ -1,8 +1,11 @@
 #pragma once
+
 #include "GalactosePCH.h"
-#include "Application.h"
+#include "Layer.h"
 
 namespace Galactose {
+	class Application;
+
 	class Window
 	{
 	public:
@@ -23,6 +26,8 @@ namespace Galactose {
 		virtual void close() = 0;
 
 		virtual void* nativeWindow() const = 0;
+
+		std::vector<std::shared_ptr<Layer>> layers;
 
 	protected:
 		inline static std::vector<std::shared_ptr<Window>> s_windows;
