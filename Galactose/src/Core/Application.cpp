@@ -23,7 +23,7 @@ namespace Galactose {
 	int Application::exec() {
 		while (m_run) {
 			for (const auto& event : m_eventQueue)
-				std::cout << event->toString() << std::endl;
+				event->process();
 
 			m_eventQueue.clear();
 

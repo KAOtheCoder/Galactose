@@ -6,13 +6,13 @@
 namespace Galactose {
 	class Application;
 
-	class Window
+	class Window : public std::enable_shared_from_this<Window>
 	{
 	public:
 		static std::shared_ptr<Window> create(const std::string& a_title, const int32_t a_width, const int32_t a_height);
 		static bool areAllWindowsClosed();
 
-		virtual ~Window();
+		virtual ~Window() = default;
 
 		virtual std::string title() const = 0;
 		virtual int32_t width() const = 0;
@@ -27,11 +27,16 @@ namespace Galactose {
 
 		virtual void* nativeWindow() const = 0;
 
+		void onEvent(const std::shared_ptr<Event>& event);
+
 		std::vector<std::shared_ptr<Layer>> layers;
 
 	protected:
 		inline static std::vector<std::shared_ptr<Window>> s_windows;
 
+		Window() = default;
+
+	private:
 		friend class Application;
 	};
 }

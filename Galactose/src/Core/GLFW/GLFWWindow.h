@@ -1,13 +1,13 @@
 #pragma once
 #include "Core/Window.h"
 
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
 
 namespace Galactose {
 	class GLFWWindow : public Window
 	{
 	public:
-		GLFWWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height);
+		GLFWWindow(const std::string& title, const int32_t width, const int32_t height);
 		~GLFWWindow() override;
 
 		std::string title() const override { return m_title; }
@@ -25,6 +25,12 @@ namespace Galactose {
 		void* nativeWindow() const override { return m_glfwWindow; }
 
 	private:
+		static std::shared_ptr<Window> toWindow(GLFWwindow* window);
+		static void windowCloseCallback(GLFWwindow* a_window) { toWindow(a_window)->close(); }
+		static void keyCallback(GLFWwindow* window, const int key, const int scancode, const int action, const int modes);
+		static void cursorPosCallback(GLFWwindow* window, const double x, const double y);
+		static void mouseButtonCallback(GLFWwindow* window, const int button, const int action, const int mods);
+
 		std::pair<int32_t, int32_t> size() const;
 
 		inline static uint32_t s_glfwWindowCount = 0;

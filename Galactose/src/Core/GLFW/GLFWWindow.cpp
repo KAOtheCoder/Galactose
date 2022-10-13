@@ -5,6 +5,8 @@
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Galactose {
 	GLFWWindow::GLFWWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
 		: m_title(a_title),
@@ -21,50 +23,10 @@ namespace Galactose {
 
 		glfwSetWindowUserPointer(m_glfwWindow, this);
 
-		glfwSetWindowCloseCallback(m_glfwWindow, [](GLFWwindow* window) {
-			static_cast<GLFWWindow*>(glfwGetWindowUserPointer(window))->close();
-		});
-
-		glfwSetKeyCallback(m_glfwWindow, [](GLFWwindow* a_window, int a_key, int a_scancode, int a_action, int a_modes) {
-			std::shared_ptr<Event> event;
-			const auto key = static_cast<KeyEvent::Key>(a_key);
-
-			switch (a_action) {
-			case GLFW_PRESS: event = std::make_shared<KeyPressEvent>(key);
-				break;
-			case GLFW_REPEAT: event = std::make_shared<KeyRepeatEvent>(key);
-				break;
-			case GLFW_RELEASE: event = std::make_shared<KeyReleaseEvent>(key);
-				break;
-			default:
-				GT_ASSERT(false, "Unknown key event.");
-			}
-
-			Application::instance()->postEvent(event);
-		});
-
-		glfwSetCursorPosCallback(m_glfwWindow, [](GLFWwindow* a_window, double a_x, double a_y) {
-			Application::instance()->postEvent(std::make_shared<MouseMoveEvent>(Vector2(a_x, a_y)));
-		});
-
-		glfwSetMouseButtonCallback(m_glfwWindow, [](GLFWwindow* a_window, int a_button, int a_action, int a_mods) {
-			std::shared_ptr<Event> event;
-			const auto button = static_cast<MouseEvent::Button>(a_button);
-			double x, y;
-			glfwGetCursorPos(a_window, &x, &y);
-			const Vector2 pos(x, y);
-
-			switch (a_action) {
-			case GLFW_PRESS: event = std::make_shared<MousePressEvent>(pos, button);
-				break;
-			case GLFW_RELEASE: event = std::make_shared<MouseReleaseEvent>(pos, button);
-				break;
-			default:
-				GT_ASSERT(false, "Unknown mouse event.");
-			}
-
-			Application::instance()->postEvent(event);
-		});
+		glfwSetWindowCloseCallback(m_glfwWindow, windowCloseCallback);
+		glfwSetKeyCallback(m_glfwWindow, keyCallback);
+		glfwSetCursorPosCallback(m_glfwWindow, cursorPosCallback);
+		glfwSetMouseButtonCallback(m_glfwWindow, mouseButtonCallback);
 
 		setVSync(true);
 	}
@@ -105,5 +67,52 @@ namespace Galactose {
 	void GLFWWindow::setVSync(const bool a_vsync) {
 		glfwSwapInterval(a_vsync ? 1 : 0);
 		m_vsync = a_vsync;
+	}
+
+	std::shared_ptr<Window> GLFWWindow::toWindow(GLFWwindow* a_window) {
+		return static_cast<GLFWWindow*>(glfwGetWindowUserPointer(a_window))->shared_from_this();
+	}
+
+	void GLFWWindow::keyCallback(GLFWwindow* a_window, const int a_key, const int a_scancode, const int a_action, const int a_modes) {
+		std::shared_ptr<Event> event;
+		const auto& window = toWindow(a_window);
+		const auto key = static_cast<KeyEvent::Key>(a_key);
+
+		switch (a_action) {
+		case GLFW_PRESS: event = std::make_shared<KeyPressEvent>(window, key);
+			break;
+		case GLFW_REPEAT: event = std::make_shared<KeyRepeatEvent>(window, key);
+			break;
+		case GLFW_RELEASE: event = std::make_shared<KeyReleaseEvent>(window, key);
+			break;
+		default:
+			GT_ASSERT(false, "Unknown key event.");
+		}
+
+		Application::instance()->postEvent(event);
+	}
+
+	void GLFWWindow::cursorPosCallback(GLFWwindow* a_window, const double a_x, const double a_y) {
+		Application::instance()->postEvent(std::make_shared<MouseMoveEvent>(toWindow(a_window), Vector2(a_x, a_y)));
+	}
+
+	void GLFWWindow::mouseButtonCallback(GLFWwindow* a_window, const int a_button, const int a_action, const int a_mods) {
+		std::shared_ptr<Event> event;
+		const auto& window = toWindow(a_window);
+		const auto button = static_cast<MouseEvent::Button>(a_button);
+		double x, y;
+		glfwGetCursorPos(a_window, &x, &y);
+		const Vector2 pos(x, y);
+
+		switch (a_action) {
+		case GLFW_PRESS: event = std::make_shared<MousePressEvent>(window, pos, button);
+			break;
+		case GLFW_RELEASE: event = std::make_shared<MouseReleaseEvent>(window, pos, button);
+			break;
+		default:
+			GT_ASSERT(false, "Unknown mouse event.");
+		}
+
+		Application::instance()->postEvent(event);
 	}
 }

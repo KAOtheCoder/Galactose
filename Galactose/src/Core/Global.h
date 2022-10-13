@@ -18,3 +18,7 @@
 		#define GT_ASSERT(check, message)
 	#endif
 #endif
+
+namespace Galactose {
+	constexpr int bit(const int n) { return 1 << n; }
+}

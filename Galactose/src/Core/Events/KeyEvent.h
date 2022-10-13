@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Event.h"
-#include <GLFW/glfw3.h>
+#include "InputEvent.h"
+//#include <GLFW/glfw3.h> // Remove this include later
 
 namespace Galactose {
-	class KeyEvent : public Event {
+	class KeyEvent : public InputEvent {
 	public:
 		enum Key {
 			// Printable keys
@@ -56,114 +56,116 @@ namespace Galactose {
 			KeyBackslash = '\\',
 			KeyRightBracket = ']',
 			KeyGraveAccent = '`',
-			KeyWorld1 = GLFW_KEY_WORLD_1, // 161 non-US #1
-			KeyWorld2 = GLFW_KEY_WORLD_2, // 162 non-US #2
+			KeyWorld1 = 161, // GLFW_KEY_WORLD_1 // non-US #1
+			KeyWorld2 = 162, // GLFW_KEY_WORLD_2 // non-US #2
 
 			// Function keys
-			KeyEscape = GLFW_KEY_ESCAPE, // 256
-			KeyEnter = GLFW_KEY_ENTER, // 257
-			KeyTab = GLFW_KEY_TAB, // 258
-			KeyBackspace = GLFW_KEY_BACKSPACE, // 259
-			KeyInsert = GLFW_KEY_INSERT, // 260
-			KeyDelete = GLFW_KEY_DELETE, // 261
-			KeyRight = GLFW_KEY_RIGHT, // 262
-			KeyLeft = GLFW_KEY_LEFT, // 263
-			KeyDown = GLFW_KEY_DOWN, // 264
-			KeyUp = GLFW_KEY_UP, // 265
-			KeyPageUp = GLFW_KEY_PAGE_UP, // 266
-			KeyPageDown = GLFW_KEY_PAGE_DOWN, // 267
-			KeyHome = GLFW_KEY_HOME, // 268
-			KeyEnd = GLFW_KEY_END, // 269
-			KeyCapsLock = GLFW_KEY_CAPS_LOCK, // 280
-			KeyScrollLock = GLFW_KEY_SCROLL_LOCK, // 281
-			KeyNumLock = GLFW_KEY_NUM_LOCK, // 282
-			KeyPrintScreen = GLFW_KEY_PRINT_SCREEN, // 283
-			KeyPause = GLFW_KEY_PAUSE, // 284
-			KeyF1 = GLFW_KEY_F1, // 290
-			KeyF2 = GLFW_KEY_F2, // 291
-			KeyF3 = GLFW_KEY_F3, // 292
-			KeyF4 = GLFW_KEY_F4, // 293
-			KeyF5 = GLFW_KEY_F5, // 294
-			KeyF6 = GLFW_KEY_F6, // 295
-			KeyF7 = GLFW_KEY_F7, // 296
-			KeyF8 = GLFW_KEY_F8, // 297
-			KeyF9 = GLFW_KEY_F9, // 298
-			KeyF10 = GLFW_KEY_F10, // 299
-			KeyF11 = GLFW_KEY_F11, // 300
-			KeyF12 = GLFW_KEY_F12, // 301
-			KeyF13 = GLFW_KEY_F13, // 302
-			KeyF14 = GLFW_KEY_F14, // 303
-			KeyF15 = GLFW_KEY_F15, // 304
-			KeyF16 = GLFW_KEY_F16, // 305
-			KeyF17 = GLFW_KEY_F17, // 306
-			KeyF18 = GLFW_KEY_F18, // 307
-			KeyF19 = GLFW_KEY_F19, // 308
-			KeyF20 = GLFW_KEY_F20, // 309
-			KeyF21 = GLFW_KEY_F21, // 310
-			KeyF22 = GLFW_KEY_F22, // 311
-			KeyF23 = GLFW_KEY_F23, // 312
-			KeyF24 = GLFW_KEY_F24, // 313
-			KeyF25 = GLFW_KEY_F25, // 314
-			KeyPad0 = GLFW_KEY_KP_0, // 320
-			KeyPad1 = GLFW_KEY_KP_1, // 321
-			KeyPad2 = GLFW_KEY_KP_2, // 322
-			KeyPad3 = GLFW_KEY_KP_3, // 323
-			KeyPad4 = GLFW_KEY_KP_4, // 324
-			KeyPad5 = GLFW_KEY_KP_5, // 325
-			KeyPad6 = GLFW_KEY_KP_6, // 326
-			KeyPad7 = GLFW_KEY_KP_7, // 327
-			KeyPad8 = GLFW_KEY_KP_8, // 328
-			KeyPad9 = GLFW_KEY_KP_9, // 329
-			KeyPadDecimal = GLFW_KEY_KP_DECIMAL, // 330
-			KeyPadDivide = GLFW_KEY_KP_DIVIDE, // 331
-			KeyPadMultiply = GLFW_KEY_KP_MULTIPLY, // 332
-			KeyPadSubtract = GLFW_KEY_KP_SUBTRACT, // 333
-			KeyPadAdd = GLFW_KEY_KP_ADD, // 334
-			KeyPadEnter = GLFW_KEY_KP_ENTER, // 335
-			KeyPadEqual = GLFW_KEY_KP_EQUAL, // 336
-			KeyLeftShift = GLFW_KEY_LEFT_SHIFT, // 340
-			KeyLeftControl = GLFW_KEY_LEFT_CONTROL, // 341
-			KeyLeftAlt = GLFW_KEY_LEFT_ALT, // 342
-			KeyLeftSuper = GLFW_KEY_LEFT_SUPER, // 343
-			KeyRightShift = GLFW_KEY_RIGHT_SHIFT, // 344
-			KeyRightControl = GLFW_KEY_RIGHT_CONTROL, // 345
-			KeyRightAlt = GLFW_KEY_RIGHT_ALT, // 346
-			KeyRightSuper = GLFW_KEY_RIGHT_SUPER, // 347
-			KeyMenu = GLFW_KEY_MENU // 348
+			KeyEscape = 256, // GLFW_KEY_ESCAPE
+			KeyEnter = 257, // GLFW_KEY_ENTER
+			KeyTab = 258, // GLFW_KEY_TAB
+			KeyBackspace = 259, // GLFW_KEY_BACKSPACE
+			KeyInsert = 260, // GLFW_KEY_INSERT
+			KeyDelete = 261, // GLFW_KEY_DELETE
+			KeyRight = 262, // GLFW_KEY_RIGHT
+			KeyLeft = 263, // GLFW_KEY_LEFT
+			KeyDown = 264, // GLFW_KEY_DOWN
+			KeyUp = 265, // GLFW_KEY_UP
+			KeyPageUp = 266, // GLFW_KEY_PAGE_UP
+			KeyPageDown = 267, // GLFW_KEY_PAGE_DOWN
+			KeyHome = 268, // GLFW_KEY_HOME
+			KeyEnd = 269, // GLFW_KEY_END
+			KeyCapsLock = 280, // GLFW_KEY_CAPS_LOCK
+			KeyScrollLock = 281, // GLFW_KEY_SCROLL_LOCK
+			KeyNumLock = 282, // GLFW_KEY_NUM_LOCK
+			KeyPrintScreen = 283, // GLFW_KEY_PRINT_SCREEN
+			KeyPause = 284, // GLFW_KEY_PAUSE
+			KeyF1 = 290, // GLFW_KEY_F1
+			KeyF2 = 291, // GLFW_KEY_F2
+			KeyF3 = 292, // GLFW_KEY_F3
+			KeyF4 = 293, // GLFW_KEY_F4
+			KeyF5 = 294, // GLFW_KEY_F5
+			KeyF6 = 295, // GLFW_KEY_F6
+			KeyF7 = 296, // GLFW_KEY_F7
+			KeyF8 = 297, // GLFW_KEY_F8
+			KeyF9 = 298, // GLFW_KEY_F9
+			KeyF10 = 299, // GLFW_KEY_F10
+			KeyF11 = 300, // GLFW_KEY_F11
+			KeyF12 = 301, // GLFW_KEY_F12
+			KeyF13 = 302, // GLFW_KEY_F13
+			KeyF14 = 303, // GLFW_KEY_F14
+			KeyF15 = 304, // GLFW_KEY_F15
+			KeyF16 = 305, // GLFW_KEY_F16
+			KeyF17 = 306, // GLFW_KEY_F17
+			KeyF18 = 307, // GLFW_KEY_F18
+			KeyF19 = 308, // GLFW_KEY_F19
+			KeyF20 = 309, // GLFW_KEY_F20
+			KeyF21 = 310, // GLFW_KEY_F21
+			KeyF22 = 311, // GLFW_KEY_F22
+			KeyF23 = 312, // GLFW_KEY_F23
+			KeyF24 = 313, // GLFW_KEY_F24
+			KeyF25 = 314, // GLFW_KEY_F25
+			KeyPad0 = 320, // GLFW_KEY_KP_0
+			KeyPad1 = 321, // GLFW_KEY_KP_1
+			KeyPad2 = 322, // GLFW_KEY_KP_2
+			KeyPad3 = 323, // GLFW_KEY_KP_3
+			KeyPad4 = 324, // GLFW_KEY_KP_4
+			KeyPad5 = 325, // GLFW_KEY_KP_5
+			KeyPad6 = 326, // GLFW_KEY_KP_6
+			KeyPad7 = 327, // GLFW_KEY_KP_7
+			KeyPad8 = 328, // GLFW_KEY_KP_8
+			KeyPad9 = 329, // GLFW_KEY_KP_9
+			KeyPadDecimal = 330, // GLFW_KEY_KP_DECIMAL
+			KeyPadDivide = 331, // GLFW_KEY_KP_DIVIDE
+			KeyPadMultiply = 332, // GLFW_KEY_KP_MULTIPLY
+			KeyPadSubtract = 333, // GLFW_KEY_KP_SUBTRACT
+			KeyPadAdd = 334, // GLFW_KEY_KP_ADD
+			KeyPadEnter = 335, // GLFW_KEY_KP_ENTER
+			KeyPadEqual = 336, // GLFW_KEY_KP_EQUAL
+			KeyLeftShift = 340, // GLFW_KEY_LEFT_SHIFT
+			KeyLeftControl = 341, // GLFW_KEY_LEFT_CONTROL
+			KeyLeftAlt = 342, // GLFW_KEY_LEFT_ALT
+			KeyLeftSuper = 343, // GLFW_KEY_LEFT_SUPER
+			KeyRightShift = 344, // GLFW_KEY_RIGHT_SHIFT
+			KeyRightControl = 345, // GLFW_KEY_RIGHT_CONTROL
+			KeyRightAlt = 346, // GLFW_KEY_RIGHT_ALT
+			KeyRightSuper = 347, // GLFW_KEY_RIGHT_SUPER
+			KeyMenu = 348 // GLFW_KEY_MENU
 		};
 
 		GT_EVENT_TYPE_IMP(Key)
 
 		std::string toString() const override { 
-			const auto keyName = glfwGetKeyName(m_key, 0);
-			return name() + ": " + (keyName ? std::string(keyName) : std::to_string(m_key)); 
+			std::string keyName = m_key >= ' ' && m_key <= '`' ? std::string(1, char(m_key)) : std::to_string(m_key);
+			return name() + ": " + keyName;
 		}
 
+		Key key() const { return m_key; }
+
 		protected:
-			KeyEvent(const Key a_key) : m_key(a_key) {}
+			KeyEvent(const std::shared_ptr<Window>& a_window, const Key a_key) : InputEvent(a_window), m_key(a_key) {}
 
 		private:
-			Key m_key;
+			const Key m_key;
 	};
 
 	class KeyPressEvent : public KeyEvent {
 	public:
 		GT_EVENT_TYPE_IMP(KeyPress)
 
-		KeyPressEvent(const KeyEvent::Key a_key) : KeyEvent(a_key) {}
+		KeyPressEvent(const std::shared_ptr<Window>& a_window, const KeyEvent::Key a_key) : KeyEvent(a_window, a_key) {}
 	};
 
 	class KeyRepeatEvent : public KeyEvent {
 	public:
 		GT_EVENT_TYPE_IMP(KeyRepeat)
 
-		KeyRepeatEvent(const KeyEvent::Key a_key) : KeyEvent(a_key) {}
+		KeyRepeatEvent(const std::shared_ptr<Window>& a_window, const KeyEvent::Key a_key) : KeyEvent(a_window, a_key) {}
 	};
 
 	class KeyReleaseEvent : public KeyEvent {
 	public:
 		GT_EVENT_TYPE_IMP(KeyRelease)
 
-		KeyReleaseEvent(const KeyEvent::Key a_key) : KeyEvent(a_key) {}
+		KeyReleaseEvent(const std::shared_ptr<Window>& a_window, const KeyEvent::Key a_key) : KeyEvent(a_window, a_key) {}
 	};
 }

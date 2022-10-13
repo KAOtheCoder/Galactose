@@ -1,5 +1,7 @@
 #pragma once
 
+#define GLM_FORCE_CTOR_INIT
+
 #include <glm/glm.hpp>
 #include "glm/gtx/string_cast.hpp"
 #include <glm/gtc/type_ptr.hpp>

@@ -4,7 +4,7 @@
 #include "Core/Math.h"
 
 namespace Galactose {
-	class MouseEvent : public Event {
+	class MouseEvent : public InputEvent {
 	public:
 		enum Button {
 			Left,
@@ -24,7 +24,7 @@ namespace Galactose {
 		}
 
 	protected:
-		MouseEvent(const Vector2& a_pos) : m_cursorPos(a_pos) {}
+		MouseEvent(const std::shared_ptr<Window>& a_window, const Vector2& a_pos) : InputEvent(a_window), m_cursorPos(a_pos) {}
 
 	private:
 		const Vector2 m_cursorPos;
@@ -34,7 +34,7 @@ namespace Galactose {
 	public:
 		GT_EVENT_TYPE_IMP(MouseMove)
 
-		MouseMoveEvent(const Vector2& a_pos) : MouseEvent(a_pos) {}
+		MouseMoveEvent(const std::shared_ptr<Window>& a_window, const Vector2& a_pos) : MouseEvent(a_window, a_pos) {}
 	};
 
 	class MouseButtonEvent : public MouseEvent {
@@ -44,7 +44,7 @@ namespace Galactose {
 		}
 
 	protected:
-		MouseButtonEvent(const Vector2& a_pos, const Button a_button) : MouseEvent(a_pos), m_button(a_button) {}
+		MouseButtonEvent(const std::shared_ptr<Window>& a_window, const Vector2& a_pos, const Button a_button) : MouseEvent(a_window, a_pos), m_button(a_button) {}
 
 	private:
 		const Button m_button;
@@ -54,13 +54,13 @@ namespace Galactose {
 	public:
 		GT_EVENT_TYPE_IMP(MousePress)
 
-		MousePressEvent(const Vector2& a_pos, const Button a_button) : MouseButtonEvent(a_pos, a_button) {}
+		MousePressEvent(const std::shared_ptr<Window>& a_window, const Vector2& a_pos, const Button a_button) : MouseButtonEvent(a_window, a_pos, a_button) {}
 	};
 
 	class MouseReleaseEvent : public MouseButtonEvent {
 	public:
 		GT_EVENT_TYPE_IMP(MouseRelease)
 
-		MouseReleaseEvent(const Vector2& a_pos, const Button a_button) : MouseButtonEvent(a_pos, a_button) {}
+		MouseReleaseEvent(const std::shared_ptr<Window>& a_window, const Vector2& a_pos, const Button a_button) : MouseButtonEvent(a_window, a_pos, a_button) {}
 	};
 }

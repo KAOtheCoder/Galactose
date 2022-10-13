@@ -24,7 +24,7 @@ namespace Galactose {
 		Matrix4x4 projectionMatrix() const { return glm::perspective(m_fov, m_aspectRatio, m_nearClip, m_farClip); }
 
 	private:
-		float m_fov = Math::degreesToRadians(45);
+		float m_fov = Math::degreesToRadians(60);
 		float m_aspectRatio = 16.f / 9.f;
 		float m_nearClip = 0.1f;
 		float m_farClip = 1000.f;

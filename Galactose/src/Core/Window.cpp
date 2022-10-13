@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "Core/GLFW/GLFWWindow.h"
 #include "Core/Application.h"
+#include "Core/Events/Event.h"
 
 namespace Galactose {
 	std::shared_ptr<Window> Window::create(const std::string& a_title, const int32_t a_width, const int32_t a_height) {
@@ -11,17 +12,20 @@ namespace Galactose {
 		return window;
 	}
 
-	Window::~Window() {
-		for (int i = 0; i < s_windows.size(); ++i)
-			if (s_windows[i].get() == this)
-				s_windows.erase(s_windows.begin() + i);
-	}
-
 	bool Window::areAllWindowsClosed() {
-		for (auto window : s_windows)
+		for (const auto& window : s_windows)
 			if (!window->isClosed())
 				return false;
 
 		return true;
+	}
+
+	void Window::onEvent(const std::shared_ptr<Event>& a_event) {
+		for (auto& layer : layers) {
+			if (a_event->isHandled())
+				return;
+
+			layer->onEvent(a_event);
+		}
 	}
 }
