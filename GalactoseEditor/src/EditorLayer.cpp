@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include <Core/Events/KeyEvent.h>
+#include <Core/Events/MouseEvent.h>
 #include <Renderer/Renderer.h>
 #include <Renderer/Camera.h>
 
@@ -37,16 +38,39 @@ namespace GalactoseEditor {
 
 			switch (key)
 			{
-			case KeyEvent::KeyW: m_position += m_direction * speed;
-				break;
 			case KeyEvent::KeyS: m_position -= m_direction * speed;
 				break;
-			case KeyEvent::KeyA: m_position += right * speed;
+			case KeyEvent::KeyW: m_position += m_direction * speed;
 				break;
-			case KeyEvent::KeyD: m_position -= right * speed;
+			case KeyEvent::KeyA: m_position -= right * speed;
+				break;
+			case KeyEvent::KeyD: m_position += right * speed;
+				break;
+			case KeyEvent::KeyQ: m_position -= m_up * speed;
+				break;
+			case KeyEvent::KeyE: m_position += m_up * speed;
 				break;
 			}
+			break;
 		}
+		case Event::MousePress: m_rotate = true;
+			m_cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
+			break;
+		case Event::MouseRelease: m_rotate = false;
+			break;
+		case Event::MouseMove: 
+			if (m_rotate) {
+				 const auto& cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
+				 const auto& move = cursorPos - m_cursorPos;
+				 m_cursorPos = cursorPos;
+				 const float speed = 0.1;
+				 Matrix4x4 rotationMatrix(1);
+				 const auto& right = glm::cross(m_direction, m_up);
+				 rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.x * speed), m_up);
+				 rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.y * speed), right);
+				 m_direction = rotationMatrix * Vector4(m_direction, 1);
+			}
+			break;
 		}
 
 		a_event->setHandled();

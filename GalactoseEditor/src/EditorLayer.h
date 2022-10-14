@@ -22,5 +22,7 @@ namespace GalactoseEditor {
 		Galactose::Vector3 m_position;
 		Galactose::Vector3 m_direction;
 		const Galactose::Vector3 m_up;
+		bool m_rotate = false;
+		Galactose::Vector2 m_cursorPos;
 	};
 }

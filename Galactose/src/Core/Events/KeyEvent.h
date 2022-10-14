@@ -1,7 +1,6 @@
 #pragma once
 
 #include "InputEvent.h"
-//#include <GLFW/glfw3.h> // Remove this include later
 
 namespace Galactose {
 	class KeyEvent : public InputEvent {
