@@ -7,7 +7,9 @@
 namespace Galactose {
 	class OpenGLVertexBuffer : public VertexBuffer {
 	public:
-		OpenGLVertexBuffer(const void* a_data, const uint32_t a_byteSize);
+		OpenGLVertexBuffer(const void* data, const uint32_t byteSize);
+		OpenGLVertexBuffer(const void* data, const uint32_t count, const Layout& layout);
+
 		~OpenGLVertexBuffer() override { glDeleteBuffers(1, &m_rendererId); }
 
 		void bind() override { glBindBuffer(GL_ARRAY_BUFFER, m_rendererId); }

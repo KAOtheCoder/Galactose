@@ -6,7 +6,7 @@
 
 namespace Galactose {
 	std::shared_ptr<Window> Window::create(const std::string& a_title, const int32_t a_width, const int32_t a_height) {
-		const auto& window = std::make_shared<GLFWWindow>(a_title, a_width, a_height);
+		std::shared_ptr<GLFWWindow> window(new GLFWWindow(a_title, a_width, a_height));
 		s_windows.push_back(window);
 
 		return window;

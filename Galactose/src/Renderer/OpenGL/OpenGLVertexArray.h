@@ -18,5 +18,6 @@ namespace Galactose {
 
 	private:
 		uint32_t m_rendererId;
+		uint32_t m_attributeIndex = 0;
 	};
 }

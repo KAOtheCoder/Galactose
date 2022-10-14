@@ -7,7 +7,6 @@ namespace Galactose {
 	class GLFWWindow : public Window
 	{
 	public:
-		GLFWWindow(const std::string& title, const int32_t width, const int32_t height);
 		~GLFWWindow() override;
 
 		std::string title() const override { return m_title; }
@@ -31,6 +30,8 @@ namespace Galactose {
 		static void cursorPosCallback(GLFWwindow* window, const double x, const double y);
 		static void mouseButtonCallback(GLFWwindow* window, const int button, const int action, const int mods);
 
+		GLFWWindow(const std::string& title, const int32_t width, const int32_t height);
+
 		std::pair<int32_t, int32_t> size() const;
 
 		inline static uint32_t s_glfwWindowCount = 0;
@@ -38,5 +39,7 @@ namespace Galactose {
 		GLFWwindow* m_glfwWindow = nullptr;
 		std::string m_title;
 		bool m_vsync;
+
+		friend class Window; // Window calls constructor in create
 	};
 }

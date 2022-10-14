@@ -3,23 +3,39 @@
 #include "DataType.h"
 
 namespace Galactose {
-    DataType::DataType(const std::string_view& a_name, const size_t a_byteSize)
-        : m_ordinal(int32_t(s_types.size())),
-        m_name(a_name),
-        m_byteSize(a_byteSize),
-        m_componentType(*this),
-        m_componentCount(1)
+    const std::array<ShaderTypeInfo, ShaderTypeInfo::NumTypes> ShaderTypeInfo::s_types = {
+        ShaderTypeInfo(ShaderTypeInfo::Float, sizeof(float)),
+        { ShaderTypeInfo::Vector2, ShaderTypeInfo::Float, 2 },
+        { ShaderTypeInfo::Vector3, ShaderTypeInfo::Float, 3 },
+        { ShaderTypeInfo::Vector4, ShaderTypeInfo::Float, 4 }
+    };
+
+    ShaderTypeInfo::ShaderTypeInfo() :
+        type(NumTypes),
+        byteSize(0),
+        componentCount(0)
     {
-        s_types.emplace_back(*this);
+        for (int i = 0; i < ShaderTypeInfo::NumTypes; ++i)
+            if (&s_types[i] == this)
+                GT_ASSERT(false, GT_STRINGIFY(ShaderTypeInfo) "(" + std::to_string(i) + ") is not initialized.");
+
+        GT_ASSERT(false, GT_STRINGIFY(ShaderTypeInfo) " is not initialized.");
     }
 
-    DataType::DataType(const std::string_view& a_name, const DataType& a_componentType, const uint32_t a_componentCount)
-        : m_ordinal(int32_t(s_types.size())),
-        m_name(a_name),
-        m_byteSize(a_componentType.m_byteSize* a_componentCount),
-        m_componentType(a_componentType),
-        m_componentCount(a_componentCount)
-    {
-        s_types.emplace_back(*this);
+    ShaderTypeInfo::ShaderTypeInfo(const Type type, const int32_t a_byteSize) :
+        type(type),
+        byteSize(a_byteSize),
+        componentCount(1)
+    {}
+
+    ShaderTypeInfo::ShaderTypeInfo(const Type type, const Type a_componentType, const uint32_t a_componentCount) : 
+        type(type),
+        byteSize(info(a_componentType).byteSize * a_componentCount),
+        componentCount(a_componentCount)
+    {}
+
+    const ShaderTypeInfo& ShaderTypeInfo::info(const ShaderTypeInfo::Type a_type) {
+        GT_ASSERT(s_types[a_type].type == a_type, GT_STRINGIFY(ShaderTypeInfo) " and type mismatch.");
+        return s_types[a_type];
     }
 }

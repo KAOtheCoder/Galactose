@@ -25,3 +25,5 @@ namespace Galactose {
 		static float degreesToRadians(const float a_degrees) { return glm::radians(a_degrees); }
 	}
 }
+
+#undef GT_GLM_EXTEND_IMP

@@ -46,7 +46,8 @@ namespace Galactose {
 			2, 3, 0
 		};
 
-		vertexArray->addVertexBuffer(VertexBuffer::create(vertices, 12 * sizeof(float)));
+		auto vertex_buffer = VertexBuffer::create(vertices, 4, VertexBuffer::Layout({ { "position", ShaderTypeInfo::Vector3 }}));
+		vertexArray->addVertexBuffer(vertex_buffer);
 		vertexArray->setIndexBuffer(IndexBuffer::create(indices, 6));
 		m_shader->bind();
 		drawVertexArrayIndexed(vertexArray);

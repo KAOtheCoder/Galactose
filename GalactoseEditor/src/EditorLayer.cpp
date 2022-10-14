@@ -63,7 +63,7 @@ namespace GalactoseEditor {
 				 const auto& cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
 				 const auto& move = cursorPos - m_cursorPos;
 				 m_cursorPos = cursorPos;
-				 const float speed = 0.1;
+				 const float speed = 0.1f;
 				 Matrix4x4 rotationMatrix(1);
 				 const auto& right = glm::cross(m_direction, m_up);
 				 rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.x * speed), m_up);
