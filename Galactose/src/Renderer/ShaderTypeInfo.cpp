@@ -1,6 +1,6 @@
 #include "GalactosePCH.h"
 
-#include "DataType.h"
+#include "ShaderTypeInfo.h"
 
 namespace Galactose {
     const std::array<ShaderTypeInfo, ShaderTypeInfo::NumTypes> ShaderTypeInfo::s_types = {

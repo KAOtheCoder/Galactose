@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GalactosePCH.h"
-#include "Core/DataType.h"
+#include "ShaderTypeInfo.h"
 
 namespace Galactose {
 	class VertexBuffer {
