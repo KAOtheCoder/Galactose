@@ -3,16 +3,14 @@
 #include "GalactosePCH.h"
 #include "Renderer/Shader.h"
 
-#include <glad/glad.h>
-
 namespace Galactose {
 	class OpenGLShader : public Shader {
 	public:
-		OpenGLShader();
-		~OpenGLShader() override { glDeleteProgram(m_rendererId); }
+		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		~OpenGLShader() override;
 
-		void bind() override { glUseProgram(m_rendererId); }
-		void unbind() override { glUseProgram(0); }
+		void bind() override;
+		void unbind() override;
 
 		void setMatrix4x4(const std::string& name, const Matrix4x4& value) override;
 

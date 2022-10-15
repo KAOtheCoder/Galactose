@@ -9,7 +9,7 @@ namespace Galactose {
 	unsigned int OpenGLVertexArray::toGLType(const DataType type) {
 		switch (type) {
 		case DataType::Float: return GL_FLOAT;
-		default: GT_ASSERT(false, "Cannot convert " + std::to_string(int(type)) + " to GLenum type");
+		default: GT_ASSERT(false, "Cannot convert " GT_STRINGIFY(DataType) "(" + std::to_string(int(type)) + ") to GLenum type");
 		}
 
 		return 0;

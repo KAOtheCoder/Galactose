@@ -23,7 +23,35 @@ namespace Galactose {
 
 		glClearColor(0.1f, 0.05f, 0.2f, 1.0f);
 
-		m_shader = std::make_shared<OpenGLShader>();
+		const std::string& vertexSrc = R"(
+			#version 330 core
+
+			layout(location = 0) in vec3 i_position;
+
+			uniform mat4 u_mvp;
+			
+			out vec4 v_color;
+
+			void main() {
+				gl_Position = u_mvp * vec4(i_position, 1.0);
+				//gl_Position = vec4(i_position, 1.0);
+				v_color = vec4(i_position + 0.5, 1.0);
+			}
+		)";
+
+		const std::string& fragmentSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 o_color;
+
+			in vec4 v_color;
+
+			void main() {
+				o_color = v_color;
+			}
+		)";
+
+		m_shader = std::make_shared<OpenGLShader>("sprite", vertexSrc, fragmentSrc);
 	}
 
 	void OpenGLRenderer::drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) {

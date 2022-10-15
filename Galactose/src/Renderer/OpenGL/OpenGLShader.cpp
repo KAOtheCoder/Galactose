@@ -1,36 +1,13 @@
 #include "GalactosePCH.h"
 #include "OpenGLShader.h"
+#include "Core/Math.h"
+
+#include <glad/glad.h>
 
 namespace Galactose {
-	OpenGLShader::OpenGLShader() {
-		const std::string& vertexSource = R"(
-			#version 330 core
-
-			layout(location = 0) in vec3 i_position;
-
-			uniform mat4 u_mvp;
-			
-			out vec4 v_color;
-
-			void main() {
-				gl_Position = u_mvp * vec4(i_position, 1.0);
-				//gl_Position = vec4(i_position, 1.0);
-				v_color = vec4(i_position + 0.5, 1.0);
-			}
-		)";
-
-		const std::string& pixelSource = R"(
-			#version 330 core
-
-			layout(location = 0) out vec4 o_color;
-
-			in vec4 v_color;
-
-			void main() {
-				o_color = v_color;
-			}
-		)";
-
+	OpenGLShader::OpenGLShader(const std::string& a_name, const std::string& a_vertexSrc, const std::string& a_fragmentSrc) :
+		Shader(a_name) 
+	{
 		struct ShaderData {
 			GLuint id = 0;
 			GLenum type;
@@ -38,7 +15,7 @@ namespace Galactose {
 		};
 
 		std::array<ShaderData, 2> shaderDatas = { {
-			{0, GL_VERTEX_SHADER, vertexSource}, {0, GL_FRAGMENT_SHADER, pixelSource}
+			{0, GL_VERTEX_SHADER, a_vertexSrc}, {0, GL_FRAGMENT_SHADER, a_fragmentSrc}
 		} };
 
 		for (auto& shaderData : shaderDatas) {
@@ -68,7 +45,7 @@ namespace Galactose {
 
 		m_rendererId = glCreateProgram();
 
-		for (auto shaderData : shaderDatas)
+		for (const auto& shaderData : shaderDatas)
 			glAttachShader(m_rendererId, shaderData.id);
 
 		glLinkProgram(m_rendererId);
@@ -96,6 +73,11 @@ namespace Galactose {
 		for (auto shaderData : shaderDatas)
 			glDetachShader(m_rendererId, shaderData.id);
 	}
+
+	OpenGLShader::~OpenGLShader() { glDeleteProgram(m_rendererId); }
+
+	void OpenGLShader::bind() { glUseProgram(m_rendererId); }
+	void OpenGLShader::unbind() { glUseProgram(0); }
 
 	int32_t OpenGLShader::findUniform(const std::string& a_name) {
 		const auto& iter = m_uniforms.find(a_name);
