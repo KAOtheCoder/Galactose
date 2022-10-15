@@ -2,21 +2,23 @@
 
 #include "Renderer/VertexArray.h"
 
-#include <glad/glad.h>
-
 namespace Galactose {
+	enum class DataType;
+
 	class OpenGLVertexArray : public VertexArray {
 	public:
 		OpenGLVertexArray();
-		~OpenGLVertexArray() override { glDeleteVertexArrays(1, &m_rendererId); }
+		~OpenGLVertexArray() override;
 
-		void bind() override { glBindVertexArray(m_rendererId); }
-		void unbind() override { glBindVertexArray(0); }
+		void bind() override;
+		void unbind() override;
 
 		void addVertexBuffer(const std::shared_ptr<VertexBuffer>& a_buffer) override;
 		void setIndexBuffer(const std::shared_ptr<IndexBuffer>& a_buffer) override;
 
 	private:
+		static unsigned int toGLType(const DataType type);
+
 		uint32_t m_rendererId;
 		uint32_t m_attributeIndex = 0;
 	};

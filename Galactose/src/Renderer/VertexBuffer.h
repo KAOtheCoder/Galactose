@@ -1,22 +1,24 @@
 #pragma once
 
 #include "GalactosePCH.h"
-#include "ShaderTypeInfo.h"
 
 namespace Galactose {
+	enum class DataType;
+	class DataTypeInfo;
+
 	class VertexBuffer {
 	public:
 		class Layout {
 		public:
 			class Attribute {
 			public:
-				Attribute(const std::string& name, const ShaderTypeInfo::Type type);
+				Attribute(const std::string& name, const DataType type);
 
-				const ShaderTypeInfo& typeInfo() const { return ShaderTypeInfo::info(m_type); }
+				const DataTypeInfo& typeInfo() const;
 				size_t offset() const { return m_offset; }
 
 			private:
-				ShaderTypeInfo::Type m_type;
+				DataType m_type;
 				std::string m_name;
 				int32_t m_offset;
 
