@@ -10,7 +10,7 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer() :
-		m_texture(Texture::create("PandaLogo.png")),
+		m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0)
 	{}

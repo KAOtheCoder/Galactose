@@ -16,7 +16,7 @@ namespace Galactose {
 		void setMatrix4x4(const std::string& name, const Matrix4x4& value) override;
 
 	private:
-		int32_t findUniform(const std::string& name);
+		void mapUniforms();
 
 		uint32_t m_rendererId = 0;
 	};

@@ -72,31 +72,43 @@ namespace Galactose {
 
 		for (auto shaderData : shaderDatas)
 			glDetachShader(m_rendererId, shaderData.id);
+
+		mapUniforms();
 	}
 
 	OpenGLShader::~OpenGLShader() { glDeleteProgram(m_rendererId); }
 
+
+	void OpenGLShader::mapUniforms() {
+		int uniforms;
+		glGetProgramInterfaceiv(m_rendererId, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniforms);
+
+		if (uniforms > 0) {
+			m_uniforms.reserve(uniforms);
+
+			const GLsizei PROPS_SIZE = 2;
+			const std::array<GLenum, PROPS_SIZE> PROPS = { GL_NAME_LENGTH, GL_LOCATION };
+			std::array<int, PROPS_SIZE> results;
+			std::string name;
+
+			for (int i = 0; i < uniforms; ++i) {
+				glGetProgramResourceiv(m_rendererId, GL_UNIFORM, i, PROPS_SIZE, PROPS.data(), PROPS_SIZE, nullptr, results.data());
+				name.resize(results.front());
+				glGetProgramResourceName(m_rendererId, GL_UNIFORM, i, GLsizei(name.size()), nullptr, name.data());
+				name.pop_back();
+				m_uniforms.emplace(name, results.back());
+			}
+		}
+	}
+
 	void OpenGLShader::bind() { glUseProgram(m_rendererId); }
 	void OpenGLShader::unbind() { glUseProgram(0); }
 
-	int32_t OpenGLShader::findUniform(const std::string& a_name) {
-		const auto& iter = m_uniforms.find(a_name);
-
-		if (iter == m_uniforms.end()) {
-			const int32_t location = glGetUniformLocation(m_rendererId, a_name.c_str());
-			GT_ASSERT(location != -1, "Cannot find uniform in shader.");
-			m_uniforms.emplace(a_name, location);
-			return location;
-		}
-
-		return iter->second;
-	}
-
 	void OpenGLShader::setInt(const std::string& a_name, const int a_value) {
-		glUniform1i(findUniform(a_name), a_value);
+		glUniform1i(m_uniforms[a_name], a_value);
 	}
 
 	void OpenGLShader::setMatrix4x4(const std::string& a_name, const Matrix4x4& a_value) {
-		glUniformMatrix4fv(findUniform(a_name), 1, GL_FALSE, a_value.valuePtr());
+		glUniformMatrix4fv(m_uniforms[a_name], 1, GL_FALSE, a_value.valuePtr());
 	}
 }

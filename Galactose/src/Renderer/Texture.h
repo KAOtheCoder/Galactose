@@ -15,7 +15,7 @@ namespace Galactose {
 
 		virtual void setData(const void* data) = 0;
 
-		virtual void bind() = 0;
+		virtual void bind(const uint8_t slot) = 0;
 
 	protected:
 		Texture() = default;

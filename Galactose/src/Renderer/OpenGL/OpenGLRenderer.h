@@ -12,5 +12,8 @@ namespace Galactose {
 		void clear() override;
 		void drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
 		void drawSprite(const Vector3& center, const Vector2& size, const std::shared_ptr<Texture>& texture) override;
+
+	private:
+		int m_textureSlots = 0;
 	};
 }

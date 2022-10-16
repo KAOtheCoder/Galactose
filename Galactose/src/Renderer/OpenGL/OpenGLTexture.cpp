@@ -8,7 +8,9 @@ namespace Galactose {
 	OpenGLTexture::OpenGLTexture(const int32_t a_width, const int32_t a_height, const bool a_useAlpha) :
 		Texture(a_width, a_height, a_useAlpha),
 		m_format(a_useAlpha ? GL_RGBA : GL_RGB)
-	{}
+	{
+		createTexture();
+	}
 
 	OpenGLTexture::OpenGLTexture(const std::string& a_filePath) : 
 		Texture(),
@@ -43,7 +45,7 @@ namespace Galactose {
 
 	void OpenGLTexture::createTexture() {
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_rendererId);
-		glBindTexture(GL_TEXTURE_2D, m_rendererId);
+		glBindTexture(GL_TEXTURE_2D, m_rendererId); // Dont remove this line
 		glTextureStorage2D(m_rendererId, 1, m_format == GL_RGB ? GL_RGB8 : GL_RGBA8, m_width, m_height);
 		glTexParameteri(m_rendererId, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(m_rendererId, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -56,5 +58,5 @@ namespace Galactose {
 		m_loaded = true;
 	}
 
-	void OpenGLTexture::bind() { glBindTextureUnit(0, m_rendererId); }
+	void OpenGLTexture::bind(const uint8_t a_slot) { glBindTextureUnit(a_slot, m_rendererId); }
 }

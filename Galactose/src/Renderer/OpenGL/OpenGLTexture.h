@@ -12,7 +12,7 @@ namespace Galactose {
 
 		void setData(const void* data) override;
 
-		void bind() override;
+		void bind(const uint8_t slot) override;
 
 	private:
 		void createTexture();
