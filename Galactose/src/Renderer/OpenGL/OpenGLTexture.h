@@ -13,7 +13,6 @@ namespace Galactose {
 		void setData(const void* data) override;
 
 		void bind() override;
-		void unbind() override;
 
 	private:
 		void createTexture();

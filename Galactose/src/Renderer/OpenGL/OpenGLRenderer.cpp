@@ -22,6 +22,9 @@ namespace Galactose {
 			<< "Vendor: " << glGetString(GL_VENDOR) << std::endl
 			<< "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		glClearColor(0.1f, 0.05f, 0.2f, 1.0f);
 
 		const std::string& vertexSrc = R"(
@@ -92,7 +95,6 @@ namespace Galactose {
 		vertexArray->setIndexBuffer(IndexBuffer::create(indices, 6));
 		m_shader->bind();
 		a_texture->bind();
-		glUniform1i(0, 0);
 		drawVertexArrayIndexed(vertexArray);
 	}
 }

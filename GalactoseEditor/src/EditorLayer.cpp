@@ -5,21 +5,15 @@
 #include <Renderer/Renderer.h>
 #include <Renderer/Camera.h>
 #include <Renderer/Shader.h>
-#include <windows.h>
 
 using namespace Galactose;
 
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer() :
-		m_texture(Texture::create("wall.jpg")),
+		m_texture(Texture::create("PandaLogo.png")),
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0)
-	{
-		TCHAR buffer[MAX_PATH] = { 0 };
-		GetModuleFileName(NULL, buffer, MAX_PATH);
-		std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
-		std::wcout << std::wstring(buffer).substr(0, pos) << std::endl;
-	}
+	{}
 
 	void EditorLayer::onUpdate() {
 		const auto& projection = m_camera.projectionMatrix();

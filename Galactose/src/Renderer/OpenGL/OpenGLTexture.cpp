@@ -56,6 +56,5 @@ namespace Galactose {
 		m_loaded = true;
 	}
 
-	void OpenGLTexture::bind() { glBindTexture(GL_TEXTURE_2D, m_rendererId); }
-	void OpenGLTexture::unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+	void OpenGLTexture::bind() { glBindTextureUnit(0, m_rendererId); }
 }
