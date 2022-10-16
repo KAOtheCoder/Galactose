@@ -15,7 +15,7 @@ namespace Galactose {
 		};
 
 		std::array<ShaderData, 2> shaderDatas = { {
-			{0, GL_VERTEX_SHADER, a_vertexSrc}, {0, GL_FRAGMENT_SHADER, a_fragmentSrc}
+			{ 0, GL_VERTEX_SHADER, a_vertexSrc }, { 0, GL_FRAGMENT_SHADER, a_fragmentSrc }
 		} };
 
 		for (auto& shaderData : shaderDatas) {
@@ -90,6 +90,10 @@ namespace Galactose {
 		}
 
 		return iter->second;
+	}
+
+	void OpenGLShader::setInt(const std::string& a_name, const int a_value) {
+		glUniform1i(findUniform(a_name), a_value);
 	}
 
 	void OpenGLShader::setMatrix4x4(const std::string& a_name, const Matrix4x4& a_value) {

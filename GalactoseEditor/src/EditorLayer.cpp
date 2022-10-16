@@ -4,18 +4,25 @@
 #include <Core/Events/MouseEvent.h>
 #include <Renderer/Renderer.h>
 #include <Renderer/Camera.h>
+#include <Renderer/Shader.h>
+#include <windows.h>
 
 using namespace Galactose;
 
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer() :
-		m_camera(new Camera()),
+		m_texture(Texture::create("wall.jpg")),
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0)
-	{}
+	{
+		TCHAR buffer[MAX_PATH] = { 0 };
+		GetModuleFileName(NULL, buffer, MAX_PATH);
+		std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
+		std::wcout << std::wstring(buffer).substr(0, pos) << std::endl;
+	}
 
 	void EditorLayer::onUpdate() {
-		const auto& projection = m_camera->projectionMatrix();
+		const auto& projection = m_camera.projectionMatrix();
 		const Matrix4x4& view = glm::lookAt(m_position, m_position + m_direction, m_up);
 		const Matrix4x4 model(1.f);
 		const Matrix4x4 mvp = projection * view * model;
@@ -23,7 +30,7 @@ namespace GalactoseEditor {
 		const auto& renderer = Renderer::renderer();
 		renderer->clear();
 		renderer->shader()->setMatrix4x4("u_mvp", mvp);
-		renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f });
+		renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f }, m_texture);
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {

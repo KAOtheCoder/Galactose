@@ -12,6 +12,7 @@ namespace Galactose {
 		void bind() override;
 		void unbind() override;
 
+		void setInt(const std::string& name, const int value) override;
 		void setMatrix4x4(const std::string& name, const Matrix4x4& value) override;
 
 	private:

@@ -3,9 +3,11 @@
 #include "VertexArray.h"
 #include "Core/Window.h"
 #include "Core/Math.h"
-#include "Renderer/Shader.h"
 
 namespace Galactose {
+	class Texture;
+	class Shader;
+
 	class Renderer {
 	public:
 		static std::shared_ptr<Renderer> create(const std::shared_ptr<Window>& a_window);
@@ -17,7 +19,7 @@ namespace Galactose {
 		virtual void clear() = 0;
 		virtual void drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) = 0;
 
-		virtual void drawSprite(const Vector3 a_center, const Vector2 a_size) = 0;
+		virtual void drawSprite(const Vector3& center, const Vector2& size, const std::shared_ptr<Texture>& texture) = 0;
 
 		std::shared_ptr<Shader> shader() const { return m_shader; }
 
