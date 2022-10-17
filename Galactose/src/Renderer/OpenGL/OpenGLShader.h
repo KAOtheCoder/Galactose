@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GalactosePCH.h"
 #include "Renderer/Shader.h"
 
 namespace Galactose {
@@ -13,6 +12,9 @@ namespace Galactose {
 		void unbind() override;
 
 		void setInt(const std::string& name, const int value) override;
+		void setVector2(const std::string& name, const Vector2& value) override;
+		void setVector3(const std::string& name, const Vector3& value) override;
+		void setVector4(const std::string& name, const Vector4& value) override;
 		void setMatrix4x4(const std::string& name, const Matrix4x4& value) override;
 
 	private:

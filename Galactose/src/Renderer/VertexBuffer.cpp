@@ -6,10 +6,6 @@
 #include "Renderer/OpenGL/OpenGLVertexBuffer.h"
 
 namespace Galactose {
-	std::shared_ptr<VertexBuffer> VertexBuffer::create(const void* a_data, const uint32_t a_byteSize) {
-		return std::make_shared<OpenGLVertexBuffer>(a_data, a_byteSize);
-	}
-
 	std::shared_ptr<VertexBuffer> VertexBuffer::create(const void* a_data, const uint32_t a_count, const Layout& a_layout) {
 		return std::make_shared<OpenGLVertexBuffer>(a_data, a_count, a_layout);
 	}
@@ -36,8 +32,9 @@ namespace Galactose {
 		m_stride = offset;
 	}
 
-	void VertexBuffer::setLayout(const Layout& a_layout) {
-		GT_ASSERT(!a_layout.empty(), "Layout is empty");
-		m_layout = a_layout;
+	VertexBuffer::VertexBuffer(const Layout& a_layout) :
+		m_layout(a_layout)
+	{
+		GT_ASSERT(!a_layout.empty(), "Buffer layout is empty.");
 	}
 }

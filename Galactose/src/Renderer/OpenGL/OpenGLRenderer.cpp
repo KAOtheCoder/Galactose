@@ -27,42 +27,39 @@ namespace Galactose {
 
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &m_textureSlots);
 
-		for (int i = 0; i < m_textureSlots; ++i)
-			glActiveTexture(GL_TEXTURE0 + i);
-
 		glClearColor(0.1f, 0.05f, 0.2f, 1.0f);
 
-		const std::string& vertexSrc = R"(
-			#version 410 core
+		std::string vertexSrc = 
+#include "shaders/TextureVertex.glsl"
+			;
 
-			layout(location = 0) in vec3 i_position;
-			layout(location = 1) in vec2 i_uv;
+		std::string fragmentSrc = 
+#include "shaders/TextureFragment.glsl"
+			;
 
-			layout(location = 0) out vec2 o_uv;
+		m_textureShader = std::make_shared<OpenGLShader>("texture", vertexSrc, fragmentSrc);
 
-			uniform mat4 u_mvp;
+		vertexSrc =
+#include "shaders/ColorVertex.glsl"
+			;
 
-			void main() {
-				gl_Position = u_mvp * vec4(i_position, 1.0);
-				o_uv = i_uv;
-			}
-		)";
+		fragmentSrc =
+#include "shaders/ColorFragment.glsl"
+			;
 
-		const std::string& fragmentSrc = R"(
-			#version 410 core
+		m_colorShader = std::make_shared<OpenGLShader>("color", vertexSrc, fragmentSrc);
 
-			layout(location = 0) in vec2 i_uv;
+		m_quadVertexArray = VertexArray::create();
+		const auto& layout = VertexBuffer::Layout({ { "position", DataType::Vector3 }, { "uv", DataType::Vector2 } });
+		m_quadVertexBuffer = VertexBuffer::create(nullptr, 4, layout);
+		m_quadVertexArray->addVertexBuffer(m_quadVertexBuffer);
 
-			layout(location = 0) out vec4 o_color;
+		const std::array<uint32_t, 6> SPRITE_INDICES = {
+			0, 1, 2,
+			2, 3, 0
+		};
 
-			uniform sampler2D u_texture;
-
-			void main() {
-				o_color = texture(u_texture, i_uv).rgba;
-			}
-		)";
-
-		m_shader = std::make_shared<OpenGLShader>("sprite", vertexSrc, fragmentSrc);
+		m_quadVertexArray->setIndexBuffer(IndexBuffer::create(SPRITE_INDICES.data(), uint32_t(SPRITE_INDICES.size())));
 	}
 
 	void OpenGLRenderer::setClearColor(const float a_r, const float a_g, const float a_b, const float a_a) {
@@ -79,27 +76,28 @@ namespace Galactose {
 	}
 
 	void OpenGLRenderer::drawSprite(const Vector3& a_center, const Vector2& a_size, const std::shared_ptr<Texture>& a_texture) {
-		auto vertexArray = VertexArray::create();
+		a_texture->bind(0);
+		m_textureShader->bind();
+		drawQuad(a_center, a_size);
+	}
+
+	void OpenGLRenderer::drawQuad(const Vector3& a_center, const Vector2& a_size, const Vector4& a_color) {
+		m_colorShader->bind();
+		m_colorShader->setVector4("u_color", a_color);
+		drawQuad(a_center, a_size);
+	}
+
+	void OpenGLRenderer::drawQuad(const Vector3& a_center, const Vector2& a_size) {
 		const auto& halfSize = a_size / 2.0f;
 
-		float vertices[] = {
+		const float vertices[] = {
 			a_center.x - halfSize.x, a_center.y - halfSize.y, a_center.z, 0, 0,
 			a_center.x + halfSize.x, a_center.y - halfSize.y, a_center.z, 1, 0,
 			a_center.x + halfSize.x, a_center.y + halfSize.y, a_center.z, 1, 1,
 			a_center.x - halfSize.x, a_center.y + halfSize.y, a_center.z, 0, 1
 		};
 
-		uint32_t indices[] = {
-			0, 1, 2,
-			2, 3, 0
-		};
-
-		const auto& layout = VertexBuffer::Layout({ { "position", DataType::Vector3 }, { "uv", DataType::Vector2 } });
-		auto vertex_buffer = VertexBuffer::create(vertices, 4, VertexBuffer::Layout(layout));
-		vertexArray->addVertexBuffer(vertex_buffer);
-		vertexArray->setIndexBuffer(IndexBuffer::create(indices, 6));
-		m_shader->bind();
-		a_texture->bind(0);
-		drawVertexArrayIndexed(vertexArray);
+		m_quadVertexBuffer->setData(vertices, 4);
+		drawVertexArrayIndexed(m_quadVertexArray);
 	}
 }

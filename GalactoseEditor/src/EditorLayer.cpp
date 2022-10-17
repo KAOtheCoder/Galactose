@@ -11,6 +11,7 @@ using namespace Galactose;
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer() :
 		m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
+		m_position(0, 0, -1),
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0)
 	{}
@@ -23,8 +24,10 @@ namespace GalactoseEditor {
 
 		const auto& renderer = Renderer::renderer();
 		renderer->clear();
-		renderer->shader()->setMatrix4x4("u_mvp", mvp);
+		renderer->textureShader()->setMatrix4x4("u_mvp", mvp);
+		renderer->colorShader()->setMatrix4x4("u_mvp", mvp);
 		renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f }, m_texture);
+		//renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f }, { 0.8f, 0.1f, 0.1f, 0.7 });
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {

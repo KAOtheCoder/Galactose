@@ -78,7 +78,6 @@ namespace Galactose {
 
 	OpenGLShader::~OpenGLShader() { glDeleteProgram(m_rendererId); }
 
-
 	void OpenGLShader::mapUniforms() {
 		int uniforms;
 		glGetProgramInterfaceiv(m_rendererId, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniforms);
@@ -106,6 +105,18 @@ namespace Galactose {
 
 	void OpenGLShader::setInt(const std::string& a_name, const int a_value) {
 		glUniform1i(m_uniforms[a_name], a_value);
+	}
+
+	void OpenGLShader::setVector2(const std::string& a_name, const Vector2& a_value) {
+		glUniform2f(m_uniforms[a_name], a_value.x, a_value.y);
+	}
+
+	void OpenGLShader::setVector3(const std::string& a_name, const Vector3& a_value) {
+		glUniform3f(m_uniforms[a_name], a_value.x, a_value.y, a_value.z);
+	}
+
+	void OpenGLShader::setVector4(const std::string& a_name, const Vector4& a_value) {
+		glUniform4f(m_uniforms[a_name], a_value.x, a_value.y, a_value.z, a_value.w);
 	}
 
 	void OpenGLShader::setMatrix4x4(const std::string& a_name, const Matrix4x4& a_value) {

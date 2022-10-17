@@ -20,11 +20,14 @@ namespace Galactose {
 		virtual void drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) = 0;
 
 		virtual void drawSprite(const Vector3& center, const Vector2& size, const std::shared_ptr<Texture>& texture) = 0;
+		virtual void drawQuad(const Vector3& center, const Vector2& size, const Vector4& color) = 0;
 
-		std::shared_ptr<Shader> shader() const { return m_shader; }
+		std::shared_ptr<Shader> textureShader() const { return m_textureShader; }
+		std::shared_ptr<Shader> colorShader() const { return m_colorShader; }
 
 	protected:
-		std::shared_ptr<Shader> m_shader;
+		std::shared_ptr<Shader> m_textureShader;
+		std::shared_ptr<Shader> m_colorShader;
 
 	private:
 		inline static std::vector<std::shared_ptr<Renderer>> s_renderers;

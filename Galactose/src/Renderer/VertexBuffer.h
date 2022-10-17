@@ -40,7 +40,6 @@ namespace Galactose {
 			int32_t m_stride = 0;
 		};
 
-		static std::shared_ptr<VertexBuffer> create(const void* data, const uint32_t byteSize);
 		static std::shared_ptr<VertexBuffer> create(const void* data, const uint32_t count, const Layout& layout);
 
 		virtual ~VertexBuffer() = default;
@@ -49,10 +48,11 @@ namespace Galactose {
 		virtual void unbind() = 0;
 
 		Layout layout() const { return m_layout; }
-		void setLayout(const Layout& a_layout);
+
+		virtual void setData(const void* data, const uint32_t count, const uint32_t offset = 0) = 0;
 
 	protected:
-		VertexBuffer() = default;
+		VertexBuffer(const Layout& a_layout);
 
 	private:
 		Layout m_layout;
