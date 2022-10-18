@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-#include "Core/Math.h"
+#include "Math/Math.h"
 
 namespace Galactose {
 	class MouseEvent : public InputEvent {

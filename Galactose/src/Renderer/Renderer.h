@@ -2,7 +2,7 @@
 
 #include "VertexArray.h"
 #include "Core/Window.h"
-#include "Core/Math.h"
+#include "Math/Math.h"
 
 namespace Galactose {
 	class Texture;
