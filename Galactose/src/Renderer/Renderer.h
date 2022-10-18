@@ -7,6 +7,7 @@
 namespace Galactose {
 	class Texture;
 	class Shader;
+	class Camera;
 
 	class Renderer {
 	public:
@@ -24,6 +25,8 @@ namespace Galactose {
 
 		std::shared_ptr<Shader> textureShader() const { return m_textureShader; }
 		std::shared_ptr<Shader> colorShader() const { return m_colorShader; }
+
+		void setViewProjection(const Camera& camera);
 
 	protected:
 		std::shared_ptr<Shader> m_textureShader;

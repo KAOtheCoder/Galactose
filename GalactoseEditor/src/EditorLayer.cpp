@@ -17,15 +17,10 @@ namespace GalactoseEditor {
 	{}
 
 	void EditorLayer::onUpdate() {
-		const auto& projection = m_camera.projectionMatrix();
-		const Matrix4x4& view = glm::lookAt(m_position, m_position + m_direction, m_up);
-		const Matrix4x4 model(1.f);
-		const Matrix4x4 mvp = projection * view * model;
-
+		m_camera.setView(m_position, m_direction, m_up);
 		const auto& renderer = Renderer::renderer();
 		renderer->clear();
-		renderer->textureShader()->setMatrix4x4("u_mvp", mvp);
-		renderer->colorShader()->setMatrix4x4("u_mvp", mvp);
+		renderer->setViewProjection(m_camera);
 		renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f }, m_texture);
 		//renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f }, { 0.8f, 0.1f, 0.1f, 0.7 });
 	}

@@ -23,6 +23,8 @@ namespace Galactose {
 		virtual void setVector4(const std::string& name, const Vector4& value) = 0;
 		virtual void setMatrix4x4(const std::string& name, const Matrix4x4& value) = 0;
 
+		int32_t getUniform(const std::string& name) const;
+
 	protected:
 		Shader(const std::string& a_name) : m_name(a_name) {}
 
