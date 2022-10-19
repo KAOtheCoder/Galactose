@@ -38,7 +38,8 @@ project "Galactose"
 		"vendor/GLFW/include",
 		"vendor/glad/include",
 		"vendor/glm",
-		"vendor/stb"
+		"vendor/stb",
+		"vendor/entt/src/entt"
 	}
 
 	filter "system:windows"

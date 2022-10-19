@@ -4,3 +4,6 @@
 [submodule "Galactose/vendor/glm"]
 	path = Galactose/vendor/glm
 	url = https://github.com/g-truc/glm
+[submodule "Galactose/vendor/entt"]
+	path = Galactose/vendor/entt
+	url = https://github.com/skypjack/entt.git

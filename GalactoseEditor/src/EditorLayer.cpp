@@ -5,6 +5,7 @@
 #include <Renderer/Renderer.h>
 #include <Renderer/Camera.h>
 #include <Renderer/Shader.h>
+#include <Scene/Scene.h>
 
 using namespace Galactose;
 

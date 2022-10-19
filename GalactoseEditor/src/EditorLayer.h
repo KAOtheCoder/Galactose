@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Core/Layer.h>
-#include <Core/Math.h>
+#include <Math/Math.h>
 #include <Renderer/Camera.h>
 #include <Renderer/Texture.h>
 

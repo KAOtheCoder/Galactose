@@ -16,7 +16,8 @@ project "GalactoseEditor"
 	includedirs
 	{
 		"%{wks.location}/Galactose/src",
-		"%{wks.location}/Galactose/vendor/glm"
+		"%{wks.location}/Galactose/vendor/glm",
+		"%{wks.location}/Galactose/vendor/entt/src/entt"
 	}
 
 	links
