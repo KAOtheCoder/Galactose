@@ -6,6 +6,8 @@
 #include <Renderer/Camera.h>
 #include <Renderer/Shader.h>
 #include <Scene/Scene.h>
+#include <Scene/Entity.h>
+#include <Scene/Components/Component.h>
 
 using namespace Galactose;
 
@@ -15,7 +17,13 @@ namespace GalactoseEditor {
 		m_position(0, 0, -1),
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0)
-	{}
+	{
+		Scene scene("a");
+		const auto entity = Entity::create(&scene);
+		Object::Ptr<Entity> entityPtr(entity);
+		auto component = entityPtr->addComponent<Component>();
+		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
+	}
 
 	void EditorLayer::onUpdate() {
 		m_camera.setView(m_position, m_direction, m_up);

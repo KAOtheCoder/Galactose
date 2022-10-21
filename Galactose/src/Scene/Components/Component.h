@@ -1,16 +1,10 @@
 #pragma once
 
+#include "Scene/Entity.h"
+
 namespace Galactose {
-	class Entity;
-
-	class Component {
+	class Component : public Object {
 	public:
-		Entity* entity() const { return m_entity; }
-
-	protected:
-		Component(Entity* entity) : m_entity(entity) {}
-
-	private:
-		Entity* m_entity;
+		Entity* entity() const;
 	};
 }

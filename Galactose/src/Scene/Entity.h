@@ -1,28 +1,28 @@
 #pragma once
 
-#include <entity/registry.hpp>
+#include "Object.h"
 
 namespace Galactose {
 	class Scene;
 
-	class Entity {
+	class Entity : public Object {
 	public:
-		Entity(Scene* scene);
+		static Entity* create(Scene* scene);
+
+		Entity() = default;
 
 		template <class C>
-		bool hasComponent() const { return m_scene->m_registry.has<C>(m_id); }
+		bool hasComponent() const { return m_data.scene->m_registry.any_of<C>(m_data.entityId); }
 
-		template <class C>
-		std::shared_ptr<C> addComponent() {
+		template <class C, typename... Args>
+		C* addComponent(Args&&... args) {
 			if (hasComponent<C>())
 				return nullptr;
 
-			auto component = std::make_shared<C>();
-			return m_scene->m_registry.emplace<std::shared_ptr<C>>(m_id, component);
+			auto& component = m_data.scene->m_registry.emplace<C>(m_data.entityId, std::forward<Args>(args)...);
+			auto ptr = &component;
+			static_cast<Object*>(ptr)->m_data = m_data;
+			return ptr;
 		}
-
-	private:
-		entt::entity m_id;
-		Scene* m_scene;
 	};
 }
