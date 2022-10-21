@@ -35,6 +35,7 @@ namespace Galactose {
 		};
 
 		Object() = default;
+		virtual ~Object() = default;
 
 	protected:
 		Object(const Data& a_data) : m_data(a_data) {}
