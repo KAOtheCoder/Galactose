@@ -3,7 +3,7 @@
 #include "Scene.h"
 
 namespace Galactose {
-	Entity* Entity::create(Scene* a_scene, const std::string& a_name) {
+	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name) {
 		GT_ASSERT(a_scene, "Scene is null.");
 		const auto id = a_scene->m_registry.create();
 		auto& entity = a_scene->m_registry.emplace<Entity>(id, a_name);
@@ -12,22 +12,18 @@ namespace Galactose {
 		return &entity;
 	}
 
+	Entity* Entity::create(Scene* a_scene, const std::string& a_name) {
+		const auto entity = createOrphan(a_scene, a_name);
+		a_scene->m_rootEntities.push_back(entity->m_data.entityId);
+
+		return entity;
+	}
+
 	Entity* Entity::create(Entity* a_parent, const std::string& a_name) {
-		GT_ASSERT(a_parent, std::string("Parent can't be null, use '") + GT_STRINGIFY(Entity::create(Scene*)) + "' instead.");
-		auto entity = create(a_parent->m_data.scene, a_name);
+		GT_ASSERT(a_parent, std::string("Parent can't be null, use '") + GT_STRINGIFY(Entity::create(Scene*)) + "' to create root entity.");
+		auto entity = createOrphan(a_parent->m_data.scene, a_name);
 		entity->m_parent = a_parent->m_data.entityId;
-		
-		if (a_parent->m_firstChild == entt::null) {
-			a_parent->m_firstChild = entity->m_data.entityId;
-		}
-		else {
-			Entity* child = a_parent->getEntity(a_parent->m_firstChild);
-
-			while (child->m_nextSibling != entt::null)
-				child = a_parent->getEntity(child->m_nextSibling);
-
-			child->m_nextSibling = entity->m_data.entityId;
-		}
+		a_parent->m_children.push_back(entity->m_data.entityId);
 
 		return entity;
 	}
@@ -36,19 +32,29 @@ namespace Galactose {
 		m_name(a_name) 
 	{}
 
-	std::vector<Entity*> Entity::getChildren() const {
-		std::vector<Entity*> children;
+	void Entity::setParent(Entity* a_parent) {
+		if (a_parent == parent())
+			return;
 
-		if (m_firstChild != entt::null) {
-			Entity* child = getEntity(m_firstChild);
-			children.push_back(child);
+		GT_ASSERT(!a_parent || a_parent->m_data.entityId != m_data.entityId, "Entity can't be parent of itself.");
+		GT_ASSERT(!a_parent || a_parent->m_data.scene == m_data.scene, "Moving entities across scenes is not allowed.");
 
-			while (child->m_nextSibling != entt::null) {
-				child = getEntity(child->m_nextSibling);
-				children.push_back(child);
-			}
+		auto& siblings = m_parent == entt::null ? m_data.scene->m_rootEntities : m_data.scene->getEntity(m_parent)->m_children;
+		const auto& iter = std::find(siblings.begin(), siblings.end(), m_data.entityId);
+		GT_ASSERT(iter != siblings.end(), "Cannot find entity id in parent.");
+		siblings.erase(iter);
+
+		if (a_parent) {
+			a_parent->m_children.push_back(m_data.entityId);
+			m_parent = a_parent->m_data.entityId;
 		}
+		else {
+			m_data.scene->m_rootEntities.push_back(m_data.entityId);
+			m_parent = entt::null;
+		}
+	}
 
-		return children;
+	std::vector<Entity*> Entity::getChildren() const {
+		return m_data.scene->getEntities(m_children);
 	}
 }

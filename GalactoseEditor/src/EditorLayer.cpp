@@ -25,6 +25,8 @@ namespace GalactoseEditor {
 		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
 		auto child = Entity::create(entity);
 		GT_ASSERT(child->parent() == entityPtr.get(), "");
+		child->setParent(nullptr);
+		GT_ASSERT(entity->getChildren().empty(), "");
 	}
 
 	void EditorLayer::onUpdate() {

@@ -32,15 +32,16 @@ namespace Galactose {
 			return ptr;
 		}
 
-		Entity* parent() const { return m_parent == entt::null ? nullptr : getEntity(m_parent); }
+		Entity* parent() const { return m_parent == entt::null ? nullptr : m_data.scene->getEntity(m_parent); }
+		void setParent(Entity* parent);
+
 		std::vector<Entity*> getChildren() const;
 
 	private:
-		Entity* getEntity(const entt::entity id) const { return &(m_data.scene->m_registry.get<Entity>(id)); }
+		static Entity* createOrphan(Scene* scene, const std::string& name = "");
 
 		std::string m_name;
 		entt::entity m_parent = entt::null;
-		entt::entity m_firstChild = entt::null;
-		entt::entity m_nextSibling = entt::null;
+		std::vector<entt::entity> m_children;
 	};
 }
