@@ -8,10 +8,10 @@ namespace Galactose {
 
 	class Entity : public Object {
 	public:
-		static Entity* create(Scene* scene);
-		static Entity* create(Entity* parent);
+		static Entity* create(Scene* scene, const std::string& name = "");
+		static Entity* create(Entity* parent, const std::string& name = "");
 
-		Entity() = default;
+		Entity(const std::string& name = "");
 
 		template <class C>
 		bool hasComponent() const { 
@@ -38,6 +38,7 @@ namespace Galactose {
 	private:
 		Entity* getEntity(const entt::entity id) const { return &(m_data.scene->m_registry.get<Entity>(id)); }
 
+		std::string m_name;
 		entt::entity m_parent = entt::null;
 		entt::entity m_firstChild = entt::null;
 		entt::entity m_nextSibling = entt::null;

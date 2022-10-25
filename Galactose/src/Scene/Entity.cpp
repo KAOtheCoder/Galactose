@@ -3,18 +3,18 @@
 #include "Scene.h"
 
 namespace Galactose {
-	Entity* Entity::create(Scene* a_scene) {
+	Entity* Entity::create(Scene* a_scene, const std::string& a_name) {
 		GT_ASSERT(a_scene, "Scene is null.");
 		const auto id = a_scene->m_registry.create();
-		auto& entity = a_scene->m_registry.emplace<Entity>(id);
+		auto& entity = a_scene->m_registry.emplace<Entity>(id, a_name);
 		entity.m_data = { a_scene, id };
 
 		return &entity;
 	}
 
-	Entity* Entity::create(Entity* a_parent) {
+	Entity* Entity::create(Entity* a_parent, const std::string& a_name) {
 		GT_ASSERT(a_parent, std::string("Parent can't be null, use '") + GT_STRINGIFY(Entity::create(Scene*)) + "' instead.");
-		auto entity = create(a_parent->m_data.scene);
+		auto entity = create(a_parent->m_data.scene, a_name);
 		entity->m_parent = a_parent->m_data.entityId;
 		
 		if (a_parent->m_firstChild == entt::null) {
@@ -31,6 +31,10 @@ namespace Galactose {
 
 		return entity;
 	}
+
+	Entity::Entity(const std::string& a_name) :
+		m_name(a_name) 
+	{}
 
 	std::vector<Entity*> Entity::getChildren() const {
 		std::vector<Entity*> children;
