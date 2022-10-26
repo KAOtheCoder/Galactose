@@ -5,6 +5,7 @@
 namespace Galactose {
 	class Scene;
 	class Component;
+	class Transform;
 
 	class Entity : public Object {
 	public:
@@ -31,6 +32,15 @@ namespace Galactose {
 			static_cast<Object*>(ptr)->m_data = m_data;
 			return ptr;
 		}
+
+		template <class C>
+		C* getComponent() const {
+			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
+
+			return m_data.scene->m_registry.try_get<C>(m_data.entityId);
+		}
+
+		Transform* getTransform() const;
 
 		Entity* parent() const { return m_parent == entt::null ? nullptr : m_data.scene->getEntity(m_parent); }
 		void setParent(Entity* parent);

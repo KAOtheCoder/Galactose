@@ -1,10 +1,10 @@
 #pragma once
 
-#include "GalactosePCH.h"
-#include "Math.h"
+#include "Component.h"
+#include "Math/Math.h"
 
 namespace Galactose {
-	class Transform {
+	class Transform : public Component {
 	public:
 		Transform() = default;
 
@@ -18,6 +18,7 @@ namespace Galactose {
 		void setScale(const Vector3& a_scale) { m_scale = a_scale; }
 
 		Matrix4x4 matrix() const;
+		Matrix4x4 worldMatrix() const;
 
 	private:
 		Vector3 m_position = { 0, 0, 0 };

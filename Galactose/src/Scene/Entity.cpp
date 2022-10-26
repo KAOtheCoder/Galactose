@@ -1,13 +1,18 @@
 #include "GalactosePCH.h"
 #include "Entity.h"
 #include "Scene.h"
+#include "Components/Transform.h"
 
 namespace Galactose {
 	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name) {
 		GT_ASSERT(a_scene, "Scene is null.");
 		const auto id = a_scene->m_registry.create();
+
 		auto& entity = a_scene->m_registry.emplace<Entity>(id, a_name);
 		entity.m_data = { a_scene, id };
+
+		auto& transform = a_scene->m_registry.emplace<Transform>(id);
+		transform.m_data = { a_scene, id };
 
 		return &entity;
 	}
@@ -31,6 +36,10 @@ namespace Galactose {
 	Entity::Entity(const std::string& a_name) :
 		m_name(a_name) 
 	{}
+
+	Transform* Entity::getTransform() const {
+		return &(m_data.scene->m_registry.get<Transform>(m_data.entityId));
+	}
 
 	void Entity::setParent(Entity* a_parent) {
 		if (a_parent == parent())
