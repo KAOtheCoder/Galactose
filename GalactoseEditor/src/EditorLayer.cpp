@@ -47,8 +47,7 @@ namespace GalactoseEditor {
 		std::cout << a_event->toString() << std::endl;
 
 		switch (a_event->type()) {
-		case Event::KeyPress:
-		case Event::KeyRepeat: {
+		case Event::KeyPress: {
 			const auto key = static_cast<KeyEvent*>(a_event.get())->key();
 			const float speed = 0.05f;
 			const auto& right = glm::cross(m_direction, m_up);

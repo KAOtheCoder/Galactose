@@ -4,6 +4,7 @@
 #include "Core/Application.h"
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
+#include "Core/Events/CloseEvent.h"
 
 #include <GLFW/glfw3.h>
 
@@ -73,6 +74,10 @@ namespace Galactose {
 		return static_cast<GLFWWindow*>(glfwGetWindowUserPointer(a_window))->shared_from_this();
 	}
 
+	void GLFWWindow::windowCloseCallback(GLFWwindow* a_window) {
+		Application::instance()->postEvent(std::make_shared<CloseEvent>(toWindow(a_window)));
+	}
+
 	void GLFWWindow::keyCallback(GLFWwindow* a_window, const int a_key, const int a_scancode, const int a_action, const int a_modes) {
 		std::shared_ptr<Event> event;
 		const auto& window = toWindow(a_window);
@@ -81,7 +86,7 @@ namespace Galactose {
 		switch (a_action) {
 		case GLFW_PRESS: event = std::make_shared<KeyPressEvent>(window, key);
 			break;
-		case GLFW_REPEAT: event = std::make_shared<KeyRepeatEvent>(window, key);
+		case GLFW_REPEAT: event = std::make_shared<KeyPressEvent>(window, key, true);
 			break;
 		case GLFW_RELEASE: event = std::make_shared<KeyReleaseEvent>(window, key);
 			break;

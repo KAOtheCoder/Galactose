@@ -14,12 +14,12 @@ namespace Galactose {
 			Input = bit(3),
 			Key = Input | bit(4),
 			KeyPress,
-			KeyRepeat,
 			KeyRelease,
 			Mouse = Input | bit(5),
 			MouseMove,
 			MousePress,
-			MouseRelease
+			MouseRelease,
+			Close = bit(6)
 		};
 
 		virtual ~Event() = default;

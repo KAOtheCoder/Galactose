@@ -12,7 +12,7 @@ namespace Galactose {
 
 		std::shared_ptr<Window> window() const { return m_window; }
 
-		void process() { m_window->onEvent(shared_from_this()); }
+		void process() override { m_window->onEvent(shared_from_this()); }
 
 	protected:
 		InputEvent(const std::shared_ptr<Window>& a_window) : m_window(a_window) {}

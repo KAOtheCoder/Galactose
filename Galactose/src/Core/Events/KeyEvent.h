@@ -151,14 +151,15 @@ namespace Galactose {
 	public:
 		GT_EVENT_TYPE_IMP(KeyPress)
 
-		KeyPressEvent(const std::shared_ptr<Window>& a_window, const KeyEvent::Key a_key) : KeyEvent(a_window, a_key) {}
-	};
+		KeyPressEvent(const std::shared_ptr<Window>& a_window, const KeyEvent::Key a_key, const bool repeat = false) : 
+			KeyEvent(a_window, a_key),
+			m_repeat(repeat)
+		{}
 
-	class KeyRepeatEvent : public KeyEvent {
-	public:
-		GT_EVENT_TYPE_IMP(KeyRepeat)
+		bool isRepeat() const { return m_repeat; }
 
-		KeyRepeatEvent(const std::shared_ptr<Window>& a_window, const KeyEvent::Key a_key) : KeyEvent(a_window, a_key) {}
+	private:
+		const bool m_repeat;
 	};
 
 	class KeyReleaseEvent : public KeyEvent {
