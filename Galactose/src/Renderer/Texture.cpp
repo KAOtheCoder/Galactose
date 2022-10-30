@@ -6,13 +6,13 @@ namespace Galactose {
 		return std::make_shared<OpenGLTexture>(a_filePath);
 	}
 
-	static std::shared_ptr<Texture> create(const int32_t a_width, const int32_t a_height, const bool a_useAlpha = true) {
-		return std::make_shared<OpenGLTexture>(a_width, a_height, a_useAlpha);
+	static std::shared_ptr<Texture> create(const int32_t a_width, const int32_t a_height, const Texture::Format a_format) {
+		return std::make_shared<OpenGLTexture>(a_width, a_height, a_format);
 	}
 
-	Texture::Texture(const int32_t a_width, const int32_t a_height, const bool a_useAlpha) :
+	Texture::Texture(const int32_t a_width, const int32_t a_height, const Texture::Format a_format) :
 		m_width(a_width),
 		m_height(a_height),
-		m_alphaChannel(a_useAlpha)
+		m_format(a_format)
 	{}
 }

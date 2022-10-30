@@ -5,15 +5,23 @@
 #include <Renderer/Camera.h>
 #include <Renderer/Texture.h>
 
+namespace Galactose {
+	class Window;
+	class Scene;
+	class Framebuffer;
+}
+
 namespace GalactoseEditor {
 	class EditorLayer : public Galactose::Layer {
 	public:
-		EditorLayer();
+		EditorLayer(Galactose::Window* window);
 
 		void onUpdate() override;
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
 
 	private:
+		std::shared_ptr<Galactose::Framebuffer> m_framebuffer;
+		std::shared_ptr<Galactose::Scene> m_scene;
 		Galactose::Camera m_camera;
 		std::shared_ptr<Galactose::Texture> m_texture;
 		Galactose::Vector3 m_position;

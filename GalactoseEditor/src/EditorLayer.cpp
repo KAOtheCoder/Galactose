@@ -5,6 +5,7 @@
 #include <Renderer/Renderer.h>
 #include <Renderer/Camera.h>
 #include <Renderer/Shader.h>
+#include <Renderer/FrameBuffer.h>
 #include <Scene/Scene.h>
 #include <Scene/Entity.h>
 #include <Scene/Components/Component.h>
@@ -12,14 +13,15 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	EditorLayer::EditorLayer() :
+	EditorLayer::EditorLayer(Window* a_window) :
+		m_framebuffer(Framebuffer::create(a_window->width(), a_window->height(), { Texture::RGBA8, Texture::Depth24Stencil8 })),
+		m_scene(std::make_shared<Scene>("scene")),
 		m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
 		m_position(0, 0, -1),
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0)
 	{
-		Scene scene("a");
-		const auto entity = Entity::create(&scene);
+		const auto entity = Entity::create(m_scene.get());
 		Object::Ptr<Entity> entityPtr(entity);
 		auto component = entityPtr->addComponent<Component>();
 		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
@@ -32,10 +34,13 @@ namespace GalactoseEditor {
 	void EditorLayer::onUpdate() {
 		m_camera.setView(m_position, m_direction, m_up);
 		const auto& renderer = Renderer::renderer();
+		m_framebuffer->bind();
 		renderer->clear();
 		renderer->setViewProjection(m_camera);
-		renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f }, m_texture);
-		//renderer->drawSprite(Vector3(0, 0, 1), { 1.0f, 1.0f }, { 0.8f, 0.1f, 0.1f, 0.7 });
+		renderer->drawQuad({ -1, 0, 1 }, { 1.0f, 1.0f }, m_texture);
+		renderer->drawQuad({ 1, 0, 1 }, { 1.0f, 1.0f }, { 0.8f, 0.1f, 0.1f, 0.8 });
+		m_framebuffer->unbind();
+		renderer->drawQuad2D({ 0, 0 }, { 1, 1 }, m_framebuffer->texture(0), { 1, 1 });
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {

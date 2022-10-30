@@ -14,9 +14,15 @@ namespace Galactose {
 		return renderer;
 	}
 
+	Renderer::Renderer(const std::shared_ptr<Window>& a_window) :
+		m_window(a_window)
+	{}
+
 	void Renderer::setViewProjection(const Camera& a_camera) {
-		const auto& vp = a_camera.projectionMatrix() * a_camera.viewMatrix();
-		m_textureShader->setMatrix4x4("u_viewProjection", vp);
-		m_colorShader->setMatrix4x4("u_viewProjection", vp);
+		const auto& viewProjection = a_camera.projectionMatrix() * a_camera.viewMatrix();
+		m_textureShader->bind();
+		m_textureShader->setMatrix4x4("u_viewProjection", viewProjection);
+		m_colorShader->bind();
+		m_colorShader->setMatrix4x4("u_viewProjection", viewProjection);
 	}
 }

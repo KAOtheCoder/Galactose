@@ -38,7 +38,7 @@ namespace Galactose {
 				glDeleteShader(shaderData.id);
 
 				std::cerr << infoLog.data();
-				GT_ASSERT(false, "Shader compilation failed.");
+				GT_ASSERT(false, "Shader '" + a_name + "' compilation failed.");
 				return;
 			}
 		}
@@ -104,27 +104,32 @@ namespace Galactose {
 	void OpenGLShader::unbind() { glUseProgram(0); }
 
 	void OpenGLShader::setInt(const std::string& a_name, const int a_value) {
-		if (auto location = getUniform(a_name) != -1)
+		const auto location = getUniform(a_name);
+		if (location != -1)
 			glUniform1i(location, a_value);
 	}
 
 	void OpenGLShader::setVector2(const std::string& a_name, const Vector2& a_value) {
-		if (auto location = getUniform(a_name) != -1)
+		const auto location = getUniform(a_name);
+		if (location != -1)
 			glUniform2f(location, a_value.x, a_value.y);
 	}
 
 	void OpenGLShader::setVector3(const std::string& a_name, const Vector3& a_value) {
-		if (auto location = getUniform(a_name) != -1)
+		const auto location = getUniform(a_name);
+		if (location != -1)
 			glUniform3f(location, a_value.x, a_value.y, a_value.z);
 	}
 
 	void OpenGLShader::setVector4(const std::string& a_name, const Vector4& a_value) {
-		if (auto location = getUniform(a_name) != -1)
+		const auto location = getUniform(a_name);
+		if (location != -1)
 			glUniform4f(location, a_value.x, a_value.y, a_value.z, a_value.w);
 	}
 
 	void OpenGLShader::setMatrix4x4(const std::string& a_name, const Matrix4x4& a_value) {
-		if (auto location = getUniform(a_name) != -1)
+		const auto location = getUniform(a_name);
+		if (location != -1)
 			glUniformMatrix4fv(location, 1, GL_FALSE, a_value.valuePtr());
 	}
 }

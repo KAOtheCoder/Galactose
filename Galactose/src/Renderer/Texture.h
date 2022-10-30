@@ -5,12 +5,18 @@
 namespace Galactose {
 	class Texture {
 	public:
+		enum Format {
+			RGB8,
+			RGBA8,
+			Depth24,
+			Depth24Stencil8
+		};
+
 		static std::shared_ptr<Texture> create(const std::string& filePath);
-		static std::shared_ptr<Texture> create(const int32_t width, const int32_t height, const bool useAlpha = true);
+		static std::shared_ptr<Texture> create(const int32_t width, const int32_t height, const Format format = RGBA8);
 
 		virtual ~Texture() = default;
 
-		bool hasAlphaChannel() const { return m_alphaChannel; }
 		bool isLoaded() const { return m_loaded; }
 
 		virtual void setData(const void* data) = 0;
@@ -19,11 +25,11 @@ namespace Galactose {
 
 	protected:
 		Texture() = default;
-		Texture(const int32_t width, const int32_t height, const bool useAlpha = true);
+		Texture(const int32_t width, const int32_t height, const Format format = RGBA8);
 
 		int32_t m_width = 0;
 		int32_t m_height = 0;
-		bool m_alphaChannel = true;
+		Format m_format = RGBA8;
 		bool m_loaded = false;
 	};
 }
