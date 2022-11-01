@@ -1,9 +1,9 @@
-[submodule "Galactose/vendor/GLFW"]
-	path = Galactose/vendor/GLFW
-	url = https://github.com/KAOtheCoder/glfw
 [submodule "Galactose/vendor/glm"]
 	path = Galactose/vendor/glm
 	url = https://github.com/g-truc/glm
 [submodule "Galactose/vendor/entt"]
 	path = Galactose/vendor/entt
 	url = https://github.com/skypjack/entt.git
+[submodule "Galactose/vendor/GLFW/GLFW"]
+	path = Galactose/vendor/GLFW/GLFW
+	url = https://github.com/glfw/glfw.git

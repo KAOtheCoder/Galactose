@@ -14,6 +14,7 @@ project "Galactose"
 	{
 		"src/**.h",
 		"src/**.cpp",
+		"src/**.glsl",
 		"vendor/glm/glm/**.hpp",
 		"vendor/glm/glm/**.inl",
 		"vendor/stb/**.h",
@@ -35,7 +36,7 @@ project "Galactose"
 	includedirs
 	{
 		"src",
-		"vendor/GLFW/include",
+		"vendor/GLFW/GLFW/include",
 		"vendor/glad/include",
 		"vendor/glm",
 		"vendor/stb",

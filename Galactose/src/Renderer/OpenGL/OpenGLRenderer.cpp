@@ -36,7 +36,7 @@ namespace Galactose {
 
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &m_textureSlots);
 
-		glClearColor(0.5f, 0.05f, 0.5f, 1.0f);
+		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		std::string vertexSrc = 
