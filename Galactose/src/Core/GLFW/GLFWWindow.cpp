@@ -16,6 +16,7 @@ namespace Galactose {
 		if (s_glfwWindowCount == 0) {
 			const int success = glfwInit();
 			GT_ASSERT(success == GLFW_TRUE, "GLFW initialization failed.");
+			glfwSetErrorCallback(errorCallBack);
 		}
 
 		m_glfwWindow = glfwCreateWindow(a_width, a_height, a_title.c_str(), nullptr, nullptr);
@@ -46,16 +47,18 @@ namespace Galactose {
 
 	void GLFWWindow::update() {
 		if (m_glfwWindow) {
-			glfwSwapBuffers(m_glfwWindow);
-
 			for (const auto& layer : layers)
 				layer->onUpdate();
 
+			glfwMakeContextCurrent(m_glfwWindow); // current context might be changed by ImGui
+			glfwSwapBuffers(m_glfwWindow);
 			glfwPollEvents();
 		}
 	}
 
 	void GLFWWindow::close() {
+		layers.clear();
+
 		if (m_glfwWindow) {
 			glfwDestroyWindow(m_glfwWindow);
 			m_glfwWindow = nullptr;
@@ -72,6 +75,10 @@ namespace Galactose {
 
 	std::shared_ptr<Window> GLFWWindow::toWindow(GLFWwindow* a_window) {
 		return static_cast<GLFWWindow*>(glfwGetWindowUserPointer(a_window))->shared_from_this();
+	}
+
+	void GLFWWindow::errorCallBack(const int a_error, const char* a_description) {
+		std::cerr << "GLFW Error " << a_error << ": " << a_description << std::endl;
 	}
 
 	void GLFWWindow::windowCloseCallback(GLFWwindow* a_window) {

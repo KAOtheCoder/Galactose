@@ -15,6 +15,7 @@ namespace GalactoseEditor {
 	class EditorLayer : public Galactose::Layer {
 	public:
 		EditorLayer(Galactose::Window* window);
+		~EditorLayer() override;
 
 		void onUpdate() override;
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;

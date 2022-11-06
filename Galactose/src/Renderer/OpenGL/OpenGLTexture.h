@@ -20,7 +20,5 @@ namespace Galactose {
 		static unsigned int toGLInternalFormat(const Texture::Format format);
 
 		void createTexture();
-
-		uint32_t m_rendererId = 0;
 	};
 }

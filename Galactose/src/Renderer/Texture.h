@@ -17,6 +17,8 @@ namespace Galactose {
 
 		virtual ~Texture() = default;
 
+		uint32_t rendererId() const { return m_rendererId; }
+
 		bool isLoaded() const { return m_loaded; }
 
 		virtual void setData(const void* data) = 0;
@@ -27,6 +29,7 @@ namespace Galactose {
 		Texture() = default;
 		Texture(const int32_t width, const int32_t height, const Format format = RGBA8);
 
+		uint32_t m_rendererId = 0;
 		int32_t m_width = 0;
 		int32_t m_height = 0;
 		Format m_format = RGBA8;
