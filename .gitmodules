@@ -7,3 +7,7 @@
 [submodule "Galactose/vendor/GLFW/GLFW"]
 	path = Galactose/vendor/GLFW/GLFW
 	url = https://github.com/glfw/glfw.git
+[submodule "GalactoseEditor/vendor/ImGui/ImGui"]
+	path = GalactoseEditor/vendor/ImGui/ImGui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking

@@ -10,6 +10,10 @@
 #include <Scene/Entity.h>
 #include <Scene/Components/Component.h>
 
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -21,6 +25,11 @@ namespace GalactoseEditor {
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0)
 	{
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
+		ImGui_ImplOpenGL3_Init("#version 410");
+
 		const auto entity = Entity::create(m_scene.get());
 		Object::Ptr<Entity> entityPtr(entity);
 		auto component = entityPtr->addComponent<Component>();
@@ -32,6 +41,11 @@ namespace GalactoseEditor {
 	}
 
 	void EditorLayer::onUpdate() {
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow();
+
 		m_camera.setView(m_position, m_direction, m_up);
 		const auto& renderer = Renderer::renderer();
 		m_framebuffer->bind();
@@ -41,6 +55,9 @@ namespace GalactoseEditor {
 		renderer->drawQuad({ 1, 0, 1 }, { 1.0f, 1.0f }, { 0.8f, 0.1f, 0.1f, 0.8 });
 		m_framebuffer->unbind();
 		renderer->drawQuad2D({ 0, 0 }, { 1, 1 }, m_framebuffer->texture(0), { 1, 1 });
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {

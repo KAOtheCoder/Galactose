@@ -4,25 +4,32 @@ project "GalactoseEditor"
 	cppdialect "C++17"
 	staticruntime "Off"
 
-	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
+		"vendor/ImGui/ImGui/backends/imgui_impl_glfw.h",
+		"vendor/ImGui/ImGui/backends/imgui_impl_glfw.cpp",
+		"vendor/ImGui/ImGui/backends/imgui_impl_opengl3.h",
+		"vendor/ImGui/ImGui/backends/imgui_impl_opengl3.cpp"
 	}
 
 	includedirs
 	{
 		"%{wks.location}/Galactose/src",
 		"%{wks.location}/Galactose/vendor/glm",
-		"%{wks.location}/Galactose/vendor/entt/src/entt"
+		"%{wks.location}/Galactose/vendor/entt/src/entt",
+		"%{wks.location}/Galactose/vendor/GLFW/GLFW/include",
+		"vendor/ImGui/ImGui"
 	}
 
 	links
 	{
-		"Galactose"
+		"Galactose",
+		"ImGui"
 	}
 
 	filter "system:windows"
@@ -36,9 +43,14 @@ project "GalactoseEditor"
 	filter "configurations:Debug"
 		defines "GT_DEBUG"
 		runtime "Debug"
-		symbols "on"
+		symbols "On"
 
 	filter "configurations:Release"
 		defines "GT_RELEASE"
 		runtime "Release"
-		optimize "on"
+		optimize "On"
+
+	group "Dependencies"
+		include "GalactoseEditor/vendor/ImGui"
+	group ""
+	

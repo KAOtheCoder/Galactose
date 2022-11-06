@@ -14,6 +14,8 @@ namespace Galactose {
 		default:
 			GT_ASSERT(false, "Unknown texture format: " + std::to_string(a_format));
 		}
+
+		return 0;
 	}
 
 	unsigned int OpenGLTexture::toGLInternalFormat(const Texture::Format a_format) {
@@ -25,6 +27,8 @@ namespace Galactose {
 		default:
 			GT_ASSERT(false, "Unknown texture format: " + std::to_string(a_format));
 		}
+
+		return 0;
 	}
 
 	OpenGLTexture::OpenGLTexture(const int32_t a_width, const int32_t a_height, const Format a_format) :

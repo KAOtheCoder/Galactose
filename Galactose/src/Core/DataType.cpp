@@ -17,8 +17,7 @@ namespace Galactose {
         componentType(type)
     {
         for (int i = 0; i < int(DataType::NumTypes); ++i)
-            if (&s_types[i] == this)
-                GT_ASSERT(false, GT_STRINGIFY(DataTypeInfo) "(" + std::to_string(i) + ") is not initialized.");
+            GT_ASSERT(&s_types[i] != this, GT_STRINGIFY(DataTypeInfo) "(" + std::to_string(i) + ") is not initialized.");
 
         GT_ASSERT(false, GT_STRINGIFY(DataTypeInfo) " is not initialized.");
     }

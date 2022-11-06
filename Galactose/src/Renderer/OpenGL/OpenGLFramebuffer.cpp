@@ -17,7 +17,7 @@ namespace Galactose {
 		const auto formatsSize = a_formats.size();
 		std::vector<GLenum> buffers(formatsSize, GL_NONE);
 
-		for (size_t i = 0; i < formatsSize; ++i) {
+		for (unsigned int i = 0; i < formatsSize; ++i) {
 			const auto& texture = std::make_shared<OpenGLTexture>(m_width, m_height, a_formats[i]);
 			m_textures.push_back(texture);
 			glBindTexture(GL_TEXTURE_2D, texture->rendererId());
@@ -40,7 +40,7 @@ namespace Galactose {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->rendererId(), 0);
 		}
 
-		glDrawBuffers(formatsSize, buffers.data());
+		glDrawBuffers(GLsizei(formatsSize), buffers.data());
 
 		GT_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete.");
 
