@@ -19,6 +19,7 @@ namespace Galactose {
 
 		uint32_t rendererId() const { return m_rendererId; }
 
+		Format format() const { return m_format; }
 		bool isLoaded() const { return m_loaded; }
 
 		virtual void setData(const void* data) = 0;

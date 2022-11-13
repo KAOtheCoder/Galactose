@@ -14,5 +14,9 @@ namespace Galactose {
 		m_width(a_width),
 		m_height(a_height),
 		m_format(a_format)
-	{}
+	{
+		GT_ASSERT(a_width > 0 && a_height > 0, 
+			"Invalid texture size: " + std::to_string(a_width) + ", " + std::to_string(a_height) + "."
+		);
+	}
 }

@@ -101,8 +101,12 @@ namespace GalactoseEditor {
 		}
 
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
 		ImGui::Begin("Viewport");
-		ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), ImGui::GetContentRegionAvail(), { 0, 1 }, { 1, 0 });
+		const auto& viewportSize = ImGui::GetContentRegionAvail();
+		m_framebuffer->resize(viewportSize.x, viewportSize.y);
+		m_camera.setAspectRatio(viewportSize.x / viewportSize.y);
+		ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), viewportSize, { 0, 1 }, { 1, 0 });
 		ImGui::End();
 
 		ImGui::ShowDemoWindow();

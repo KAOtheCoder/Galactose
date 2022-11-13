@@ -10,9 +10,12 @@ namespace Galactose {
 
 		void bind() override;
 		void unbind() override;
-		void clear() override {}
+		void resize(const int32_t width, const int32_t height) override;
 
 	private:
-		uint32_t m_rendererId;
+		void createFramebuffer(const std::vector<Texture::Format>& formats);
+		void deleteFramebuffer();
+
+		uint32_t m_rendererId = 0;
 	};
 }

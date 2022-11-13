@@ -11,6 +11,14 @@ namespace Galactose {
 		const std::vector<Texture::Format>& a_formats) :
 		Framebuffer(a_width, a_height)
 	{
+		createFramebuffer(a_formats);
+	}
+
+	OpenGLFramebuffer::~OpenGLFramebuffer() { deleteFramebuffer(); }
+
+	void OpenGLFramebuffer::createFramebuffer(const std::vector<Texture::Format>& a_formats) {
+		GT_ASSERT(m_width > 0 && m_height > 0, "Framebuffer size must be positive.");
+
 		glCreateFramebuffers(1, &m_rendererId);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_rendererId);
 
@@ -47,9 +55,27 @@ namespace Galactose {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	OpenGLFramebuffer::~OpenGLFramebuffer() { 
+	void OpenGLFramebuffer::deleteFramebuffer() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDeleteFramebuffers(1, &m_rendererId);
+	}
+
+	void OpenGLFramebuffer::resize(const int32_t a_width, const int32_t a_height) {
+		if (a_width != m_width || a_height != m_height) {
+			m_width = a_width;
+			m_height = a_height;
+
+			deleteFramebuffer();
+
+			std::vector<Texture::Format> formats;
+			formats.reserve(m_textures.size());
+			for (const auto& texture : m_textures)
+				formats.push_back(texture->format());
+
+			m_textures.clear();
+
+			createFramebuffer(formats);
+		}
 	}
 
 	void OpenGLFramebuffer::bind() { 
