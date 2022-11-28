@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Widgets/SceneHierarchy.h"
+
 #include <Core/Layer.h>
 #include <Math/Math.h>
 #include <Renderer/Camera.h>
@@ -30,5 +32,6 @@ namespace GalactoseEditor {
 		const Galactose::Vector3 m_up;
 		bool m_rotate = false;
 		Galactose::Vector2 m_cursorPos;
+		SceneHierarchy m_sceneHierarchy;
 	};
 }

@@ -24,7 +24,8 @@ namespace GalactoseEditor {
 		m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
 		m_position(0, 0, -1),
 		m_direction(0, 0, 1),
-		m_up(0, 1, 0)
+		m_up(0, 1, 0),
+		m_sceneHierarchy(m_scene)
 	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -50,11 +51,11 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 
-		const auto entity = Entity::create(m_scene.get());
+		const auto entity = Entity::create(m_scene.get(), "parent");
 		Object::Ptr<Entity> entityPtr(entity);
 		auto component = entityPtr->addComponent<Component>();
 		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
-		auto child = Entity::create(entity);
+		auto child = Entity::create(entity, "child");
 		GT_ASSERT(child->parent() == entityPtr.get(), "");
 		child->setParent(nullptr);
 		GT_ASSERT(entity->getChildren().empty(), "");
@@ -96,18 +97,32 @@ namespace GalactoseEditor {
 
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("View"))
+			{
+				if (ImGui::MenuItem("Scene Hierarchy"))
+				{
+					m_sceneHierarchy.setVisible(true);
+				}
+
+				ImGui::EndMenu();
+			}
 			
 			ImGui::EndMainMenuBar();
 		}
 
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-		ImGui::Begin("Viewport");
+		ImGui::Begin("Scene");
 		const auto& viewportSize = ImGui::GetContentRegionAvail();
-		m_framebuffer->resize(viewportSize.x, viewportSize.y);
-		m_camera.setAspectRatio(viewportSize.x / viewportSize.y);
-		ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), viewportSize, { 0, 1 }, { 1, 0 });
+		if (viewportSize.x >= 1 && viewportSize.y >= 1) {
+			m_framebuffer->resize(int32_t(viewportSize.x), int32_t(viewportSize.y));
+			m_camera.setAspectRatio(viewportSize.x / viewportSize.y);
+			ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), viewportSize, { 0, 1 }, { 1, 0 });
+		}
 		ImGui::End();
+
+		m_sceneHierarchy.onUpdate();
 
 		ImGui::ShowDemoWindow();
 

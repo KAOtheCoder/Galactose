@@ -17,8 +17,6 @@ namespace Galactose {
 	OpenGLFramebuffer::~OpenGLFramebuffer() { deleteFramebuffer(); }
 
 	void OpenGLFramebuffer::createFramebuffer(const std::vector<Texture::Format>& a_formats) {
-		GT_ASSERT(m_width > 0 && m_height > 0, "Framebuffer size must be positive.");
-
 		glCreateFramebuffers(1, &m_rendererId);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_rendererId);
 

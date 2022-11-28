@@ -14,6 +14,13 @@ namespace Galactose {
 
 		Entity(const std::string& name = "");
 
+		std::string name() const { return m_name; }
+
+		Entity* parent() const { return m_parent == entt::null ? nullptr : m_data.scene->getEntity(m_parent); }
+		void setParent(Entity* parent);
+
+		std::vector<Entity*> getChildren() const;
+
 		template <class C>
 		bool hasComponent() const { 
 			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
@@ -41,11 +48,6 @@ namespace Galactose {
 		}
 
 		Transform* getTransform() const;
-
-		Entity* parent() const { return m_parent == entt::null ? nullptr : m_data.scene->getEntity(m_parent); }
-		void setParent(Entity* parent);
-
-		std::vector<Entity*> getChildren() const;
 
 	private:
 		static Entity* createOrphan(Scene* scene, const std::string& name = "");
