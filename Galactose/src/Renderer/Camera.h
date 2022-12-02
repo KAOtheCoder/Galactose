@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GalactosePCH.h"
 #include "Math/Math.h"
 
 namespace Galactose {

@@ -2,6 +2,8 @@
 
 #include "Widget.h"
 
+#include <memory>
+
 namespace Galactose {
 	class Entity;
 }

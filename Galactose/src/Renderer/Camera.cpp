@@ -1,5 +1,3 @@
-#include "GalactosePCH.h"
-
 #include "Camera.h"
 
 namespace Galactose {

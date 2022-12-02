@@ -1,7 +1,7 @@
-#include "GalactosePCH.h"
 #include "Entity.h"
 #include "Scene.h"
 #include "Components/Transform.h"
+#include "Core/Global.h"
 
 namespace Galactose {
 	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name) {

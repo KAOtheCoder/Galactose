@@ -1,4 +1,3 @@
-#include "GalactosePCH.h"
 #include "OpenGL/OpenGLFrameBuffer.h"
 
 namespace Galactose {

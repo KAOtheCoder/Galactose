@@ -1,6 +1,8 @@
 #pragma once
 
-#include "GalactosePCH.h"
+#include <string>
+#include <vector>
+#include <memory>
 
 namespace Galactose {
 	enum class DataType;

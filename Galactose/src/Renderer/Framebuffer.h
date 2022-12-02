@@ -2,6 +2,8 @@
 
 #include "Texture.h"
 
+#include <vector>
+
 namespace Galactose {
 	class Framebuffer {
 	public:

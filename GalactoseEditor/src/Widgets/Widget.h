@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GalactosePCH.h"
+#include <string>
 
 namespace GalactoseEditor {
 	class Widget {

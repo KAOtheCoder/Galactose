@@ -1,4 +1,3 @@
-#include "GalactosePCH.h"
 #include "Transform.h"
 
 #include <glm/gtx/transform.hpp>

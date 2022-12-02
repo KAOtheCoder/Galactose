@@ -1,4 +1,3 @@
-#include "GalactosePCH.h"
 #include "Component.h"
 #include "Scene/Scene.h"
 

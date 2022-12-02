@@ -1,6 +1,6 @@
-#include "GalactosePCH.h"
-
 #include "Renderer/OpenGL/OpenGLShader.h"
+
+#include <iostream>
 
 namespace Galactose {
 	std::shared_ptr<Shader> Shader::create(const std::string& a_name, const std::string& a_vertexSrc, const std::string& a_fragmentSrc) {

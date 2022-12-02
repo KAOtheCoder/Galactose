@@ -1,4 +1,3 @@
-#include "GalactosePCH.h"
 #include "Window.h"
 #include "Core/GLFW/GLFWWindow.h"
 #include "Core/Application.h"

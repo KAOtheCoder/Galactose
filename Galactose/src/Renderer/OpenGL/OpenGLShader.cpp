@@ -1,6 +1,8 @@
-#include "GalactosePCH.h"
 #include "OpenGLShader.h"
 #include "Math/Math.h"
+#include "Core/Global.h"
+
+#include <array>
 
 #include <glad/glad.h>
 

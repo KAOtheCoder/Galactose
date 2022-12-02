@@ -1,5 +1,5 @@
-#include "GalactosePCH.h"
 #include "OpenGLTexture.h"
+#include "Core/Global.h"
 
 #include <glad/glad.h>
 #include <stb_image.h>

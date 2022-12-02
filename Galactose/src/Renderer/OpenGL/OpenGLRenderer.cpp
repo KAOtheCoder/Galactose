@@ -1,9 +1,8 @@
-#include "GalactosePCH.h"
-
 #include "OpenGLRenderer.h"
 #include "OpenGLShader.h"
 #include "Core/DataType.h"
 #include "Renderer/Texture.h"
+#include "Core/Global.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>

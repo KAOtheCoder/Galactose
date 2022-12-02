@@ -1,5 +1,5 @@
-#include "GalactosePCH.h"
 #include "OpenGL/OpenGLTexture.h"
+#include "Core/Global.h"
 
 namespace Galactose {
 	std::shared_ptr<Texture> Texture::create(const std::string& a_filePath) {

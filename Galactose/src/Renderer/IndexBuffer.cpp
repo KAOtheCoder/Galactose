@@ -1,5 +1,3 @@
-#include "GalactosePCH.h"
-
 #include "Renderer/OpenGL/OpenGLIndexBuffer.h"
 
 namespace Galactose {

@@ -2,6 +2,8 @@
 
 #include "Widget.h"
 
+#include <memory>
+
 namespace GalactoseEditor {
 	class EditorSceneData;
 

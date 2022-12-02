@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory>
+#include <unordered_map>
+#include <string>
+
 namespace Galactose {
 	class Matrix4x4;
 	class Vector2;

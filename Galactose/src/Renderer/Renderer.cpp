@@ -1,5 +1,3 @@
-#include "GalactosePCH.h"
-
 #include "Renderer/OpenGL/OpenGLRenderer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Camera.h"

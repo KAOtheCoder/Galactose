@@ -7,9 +7,6 @@ project "Galactose"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "GalactosePCH.h"
-	pchsource "src/GalactosePCH.cpp"
-
 	files
 	{
 		"src/**.h",

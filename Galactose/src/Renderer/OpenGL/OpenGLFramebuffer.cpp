@@ -1,6 +1,6 @@
-#include "GalactosePCH.h"
 #include "OpenGLFrameBuffer.h"
 #include "OpenGLTexture.h"
+#include "Core/Global.h"
 
 #include <glad/glad.h>
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GalactosePCH.h"
-
 #include <Scene/Scene.h>
 #include <Scene/Entity.h>
 

@@ -1,7 +1,5 @@
-#include "GalactosePCH.h"
-
 #include "VertexBuffer.h"
-
+#include "Core/Global.h"
 #include "Core/DataType.h"
 #include "Renderer/OpenGL/OpenGLVertexBuffer.h"
 

@@ -1,7 +1,6 @@
-#include "GalactosePCH.h"
-
 #include "OpenGLVertexArray.h"
 #include "Core/DataType.h"
+#include "Core/Global.h"
 
 #include <glad/glad.h>
 

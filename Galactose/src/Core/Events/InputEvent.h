@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GalactosePCH.h"
-
 #include "Event.h"
 #include "Core/Window.h"
 

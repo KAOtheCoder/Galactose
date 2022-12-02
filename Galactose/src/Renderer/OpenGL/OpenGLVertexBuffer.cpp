@@ -1,4 +1,3 @@
-#include "GalactosePCH.h"
 #include "Renderer/OpenGL/OpenGLVertexBuffer.h"
 
 #include <glad/glad.h>

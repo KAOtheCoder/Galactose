@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GalactosePCH.h"
+#include <memory>
+#include <string>
 
 namespace Galactose {
 	class Texture {

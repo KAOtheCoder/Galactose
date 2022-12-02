@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GalactosePCH.h"
+#include <memory>
 
 namespace Galactose {
 	class IndexBuffer {

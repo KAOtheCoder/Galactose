@@ -1,6 +1,7 @@
-#include "GalactosePCH.h"
-
 #include "DataType.h"
+#include "Core/Global.h"
+
+#include <string>
 
 namespace Galactose {
     const std::array<DataTypeInfo, size_t(DataType::NumTypes)> DataTypeInfo::s_types = {
