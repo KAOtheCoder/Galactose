@@ -20,12 +20,13 @@ using namespace Galactose;
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer(Window* a_window) :
 		m_framebuffer(Framebuffer::create(a_window->width(), a_window->height(), { Texture::RGBA8, Texture::Depth24Stencil8 })),
-		m_scene(std::make_shared<Scene>("scene")),
 		m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
 		m_position(0, 0, -1),
 		m_direction(0, 0, 1),
 		m_up(0, 1, 0),
-		m_sceneHierarchy(m_scene)
+		m_sceneData(std::make_shared<EditorSceneData>()),
+		m_sceneHierarchy(m_sceneData),
+		m_inspector(m_sceneData)
 	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -51,7 +52,7 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 
-		const auto entity = Entity::create(m_scene.get(), "parent");
+		const auto entity = Entity::create(m_sceneData->scene().get(), "parent");
 		Object::Ptr<Entity> entityPtr(entity);
 		auto component = entityPtr->addComponent<Component>();
 		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
@@ -113,6 +114,9 @@ namespace GalactoseEditor {
 
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
+		m_sceneHierarchy.update();
+		m_inspector.update();
+
 		ImGui::Begin("Scene");
 		const auto& viewportSize = ImGui::GetContentRegionAvail();
 		if (viewportSize.x >= 1 && viewportSize.y >= 1) {
@@ -121,8 +125,6 @@ namespace GalactoseEditor {
 			ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), viewportSize, { 0, 1 }, { 1, 0 });
 		}
 		ImGui::End();
-
-		m_sceneHierarchy.onUpdate();
 
 		ImGui::ShowDemoWindow();
 

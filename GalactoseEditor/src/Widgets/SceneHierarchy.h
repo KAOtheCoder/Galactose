@@ -1,22 +1,23 @@
-#include "GalactosePCH.h"
+#pragma once
+
+#include "Widget.h"
 
 namespace Galactose {
-	class Scene;
 	class Entity;
 }
 
 namespace GalactoseEditor {
-	class SceneHierarchy {
-	public:
-		SceneHierarchy(const std::shared_ptr<Galactose::Scene>& scene);
+	class EditorSceneData;
 
-		void onUpdate();
-		void setVisible(const bool a_visible) { m_visible = a_visible; }
+	class SceneHierarchy : public Widget {
+	public:
+		SceneHierarchy(const std::shared_ptr<EditorSceneData>& sceneData);
+
+		void onUpdate() override;
 
 	private:
-		void drawEntityNode(const Galactose::Entity* entity);
+		void drawEntityNode(Galactose::Entity* entity);
 
-		bool m_visible = true;
-		std::weak_ptr<Galactose::Scene> m_scene;
+		std::shared_ptr<EditorSceneData> m_sceneData;
 	};
 }

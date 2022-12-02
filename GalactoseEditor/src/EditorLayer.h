@@ -1,6 +1,8 @@
 #pragma once
 
+#include "EditorSceneData.h"
 #include "Widgets/SceneHierarchy.h"
+#include "Widgets/Inspector.h"
 
 #include <Core/Layer.h>
 #include <Math/Math.h>
@@ -9,7 +11,6 @@
 
 namespace Galactose {
 	class Window;
-	class Scene;
 	class Framebuffer;
 }
 
@@ -24,7 +25,6 @@ namespace GalactoseEditor {
 
 	private:
 		std::shared_ptr<Galactose::Framebuffer> m_framebuffer;
-		std::shared_ptr<Galactose::Scene> m_scene;
 		Galactose::Camera m_camera;
 		std::shared_ptr<Galactose::Texture> m_texture;
 		Galactose::Vector3 m_position;
@@ -32,6 +32,8 @@ namespace GalactoseEditor {
 		const Galactose::Vector3 m_up;
 		bool m_rotate = false;
 		Galactose::Vector2 m_cursorPos;
+		std::shared_ptr<EditorSceneData> m_sceneData;
 		SceneHierarchy m_sceneHierarchy;
+		Inspector m_inspector;
 	};
 }

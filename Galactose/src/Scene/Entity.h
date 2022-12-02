@@ -15,6 +15,7 @@ namespace Galactose {
 		Entity(const std::string& name = "");
 
 		std::string name() const { return m_name; }
+		void setName(const std::string& a_name) { m_name = a_name; }
 
 		Entity* parent() const { return m_parent == entt::null ? nullptr : m_data.scene->getEntity(m_parent); }
 		void setParent(Entity* parent);

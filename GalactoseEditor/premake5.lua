@@ -23,6 +23,7 @@ project "GalactoseEditor"
 		"%{wks.location}/Galactose/vendor/glm",
 		"%{wks.location}/Galactose/vendor/entt/src/entt",
 		"%{wks.location}/Galactose/vendor/GLFW/GLFW/include",
+		"src",
 		"vendor/ImGui/ImGui"
 	}
 
