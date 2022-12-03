@@ -3,7 +3,7 @@
 #include "Scene/Entity.h"
 
 namespace Galactose {
-	class Component : public Object {
+	class Component : public SceneObject {
 	public:
 		Entity* entity() const;
 	};

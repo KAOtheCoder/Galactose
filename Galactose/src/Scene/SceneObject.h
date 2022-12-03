@@ -2,7 +2,7 @@
 #include "Scene.h"
 
 namespace Galactose {
-	class Object {
+	class SceneObject {
 	protected:
 		struct Data {
 			Scene* scene = nullptr;
@@ -15,8 +15,8 @@ namespace Galactose {
 		public:
 			Ptr() = default;
 
-			Ptr(const O* a_object) : m_data(static_cast<const Object*>(a_object)->m_data) {
-				static_assert(std::is_base_of<Object, O>::value, "Pointer must inherit from Object.");
+			Ptr(const O* a_object) : m_data(static_cast<const SceneObject*>(a_object)->m_data) {
+				static_assert(std::is_base_of<SceneObject, O>::value, "Pointer must inherit from Object.");
 			}
 
 			bool isValid() const { 
@@ -34,11 +34,11 @@ namespace Galactose {
 			Data m_data;
 		};
 
-		Object() = default;
-		virtual ~Object() = default;
+		SceneObject() = default;
+		virtual ~SceneObject() = default;
 
 	protected:
-		Object(const Data& a_data) : m_data(a_data) {}
+		SceneObject(const Data& a_data) : m_data(a_data) {}
 
 		Data m_data;
 

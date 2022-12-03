@@ -21,6 +21,6 @@ namespace Galactose {
 
 		friend class Entity;
 		friend class Component;
-		friend class Object;
+		friend class SceneObject;
 	};
 }

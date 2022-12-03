@@ -53,7 +53,7 @@ namespace GalactoseEditor {
 		ImGui_ImplOpenGL3_Init("#version 410");
 
 		const auto entity = Entity::create(m_sceneData->scene().get(), "parent");
-		Object::Ptr<Entity> entityPtr(entity);
+		SceneObject::Ptr<Entity> entityPtr(entity);
 		auto component = entityPtr->addComponent<Component>();
 		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
 		auto child = Entity::create(entity, "child");

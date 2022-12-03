@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Object.h"
+#include "SceneObject.h"
 
 namespace Galactose {
 	class Scene;
 	class Component;
 	class Transform;
 
-	class Entity : public Object {
+	class Entity : public SceneObject {
 	public:
 		static Entity* create(Scene* scene, const std::string& name = "");
 		static Entity* create(Entity* parent, const std::string& name = "");
@@ -37,7 +37,7 @@ namespace Galactose {
 
 			auto& component = m_data.scene->m_registry.emplace<C>(m_data.entityId, std::forward<Args>(args)...);
 			auto ptr = &component;
-			static_cast<Object*>(ptr)->m_data = m_data;
+			static_cast<SceneObject*>(ptr)->m_data = m_data;
 			return ptr;
 		}
 
