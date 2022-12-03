@@ -4,6 +4,8 @@
 
 #include <memory>
 
+struct ImGuiInputTextCallbackData;
+
 namespace GalactoseEditor {
 	class EditorSceneData;
 

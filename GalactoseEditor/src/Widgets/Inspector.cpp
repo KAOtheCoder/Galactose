@@ -1,5 +1,6 @@
 #include "Inspector.h"
 #include "EditorSceneData.h"
+#include "InputString.h"
 
 #include <imgui.h>
 
@@ -15,7 +16,9 @@ namespace GalactoseEditor {
 		if (!entity)
 			return;
 		
-		ImGui::Text(entity->name().c_str());
+		if (InputString::inputText("##Name", entity->name()))
+			entity->setName(InputString::text());
+
 		ImGui::Separator();
 	}
 }
