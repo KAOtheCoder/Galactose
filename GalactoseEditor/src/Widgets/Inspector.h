@@ -6,6 +6,10 @@
 
 struct ImGuiInputTextCallbackData;
 
+namespace Galactose {
+	class Vector3;
+}
+
 namespace GalactoseEditor {
 	class EditorSceneData;
 
@@ -16,6 +20,9 @@ namespace GalactoseEditor {
 		void onUpdate() override;
 
 	private:
+		bool dragVector3(const char* label, Galactose::Vector3& value);
+		void drawTransform();
+
 		std::shared_ptr<EditorSceneData> m_sceneData;
 	};
 }

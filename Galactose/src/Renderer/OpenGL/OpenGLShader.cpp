@@ -132,6 +132,6 @@ namespace Galactose {
 	void OpenGLShader::setMatrix4x4(const std::string& a_name, const Matrix4x4& a_value) {
 		const auto location = getUniform(a_name);
 		if (location != -1)
-			glUniformMatrix4fv(location, 1, GL_FALSE, a_value.valuePtr());
+			glUniformMatrix4fv(location, 1, GL_FALSE, a_value.data());
 	}
 }
