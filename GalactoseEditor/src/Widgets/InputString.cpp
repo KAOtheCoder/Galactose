@@ -16,10 +16,20 @@ namespace GalactoseEditor {
 		return 0;
 	}
 
-	bool InputString::inputText(const char* a_label, const std::string& a_text, int a_size, ImGuiInputTextFlags a_flags) {
+	bool InputString::inputText(const std::string& a_label, const std::string& a_text, int a_size, ImGuiInputTextFlags a_flags) {
 		s_text = a_text;
 		a_flags |= ImGuiInputTextFlags_CallbackResize;
 
-		return ImGui::InputText(a_label, s_text.data(), a_size < 0 ? s_text.capacity() + 1 : a_size, ImGuiInputTextFlags_CallbackResize, &InputString::resizeCallback, &s_text);
+		const bool empty_label = a_label.empty() || a_label.find_first_not_of("#") >= 2;
+
+		if (empty_label)
+			ImGui::PushItemWidth(-1);
+
+		const bool changed = ImGui::InputText(a_label.c_str(), s_text.data(), a_size < 0 ? s_text.capacity() + 1 : a_size, ImGuiInputTextFlags_CallbackResize, & InputString::resizeCallback, & s_text);
+
+		if (empty_label)
+			ImGui::PopItemWidth();
+
+		return changed;
 	}
 }

@@ -20,6 +20,7 @@ namespace GalactoseEditor {
 		void onUpdate() override;
 
 	private:
+		bool dragVector3Axis(const int axis, Galactose::Vector3& value);
 		bool dragVector3(const char* label, Galactose::Vector3& value);
 		void drawTransform();
 
