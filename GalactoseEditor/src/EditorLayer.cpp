@@ -1,12 +1,8 @@
 #include "EditorLayer.h"
+#include "EditorSceneData.h"
 
 #include <Core/Events/KeyEvent.h>
 #include <Core/Events/MouseEvent.h>
-#include <Renderer/Renderer.h>
-#include <Renderer/Camera.h>
-#include <Renderer/Shader.h>
-#include <Renderer/FrameBuffer.h>
-#include <Scene/Scene.h>
 #include <Scene/Entity.h>
 #include <Scene/Components/Component.h>
 #include <Core/Application.h>
@@ -19,12 +15,9 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer(Window* a_window) :
-		m_framebuffer(Framebuffer::create(a_window->width(), a_window->height(), { Texture::RGBA8, Texture::Depth24Stencil8 })),
-		m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
-		m_position(0, 0, -1),
-		m_direction(0, 0, 1),
-		m_up(0, 1, 0),
+		//m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
 		m_sceneData(std::make_shared<EditorSceneData>()),
+		m_sceneViewport(m_sceneData),
 		m_sceneHierarchy(m_sceneData),
 		m_inspector(m_sceneData)
 	{
@@ -73,16 +66,6 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		m_camera.setView(m_position, m_direction, m_up);
-		const auto& renderer = Renderer::renderer();
-		m_framebuffer->bind();
-		renderer->clear();
-		renderer->setViewProjection(m_camera);
-		renderer->drawQuad({ -1, 0, 1 }, { 1.0f, 1.0f }, m_texture);
-		renderer->drawQuad({ 1, 0, 1 }, { 1.0f, 1.0f }, { 0.8f, 0.1f, 0.1f, 0.8 });
-		m_framebuffer->unbind();
-		renderer->drawQuad2D({ 0, 0 }, { 1, 1 }, m_framebuffer->texture(0), { 1, 1 });
-
 		auto& io = ImGui::GetIO();
 
 		if (ImGui::BeginMainMenuBar())
@@ -92,9 +75,7 @@ namespace GalactoseEditor {
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Exit", "ALT+F4")) 
-				{
 					Application::instance()->exit();
-				}
 
 				ImGui::EndMenu();
 			}
@@ -102,9 +83,10 @@ namespace GalactoseEditor {
 			if (ImGui::BeginMenu("View"))
 			{
 				if (ImGui::MenuItem("Scene Hierarchy"))
-				{
 					m_sceneHierarchy.setVisible(true);
-				}
+
+				if (ImGui::MenuItem("Inspector"))
+					m_inspector.setVisible(true);
 
 				ImGui::EndMenu();
 			}
@@ -116,15 +98,7 @@ namespace GalactoseEditor {
 
 		m_sceneHierarchy.update();
 		m_inspector.update();
-
-		ImGui::Begin("Scene");
-		const auto& viewportSize = ImGui::GetContentRegionAvail();
-		if (viewportSize.x >= 1 && viewportSize.y >= 1) {
-			m_framebuffer->resize(int32_t(viewportSize.x), int32_t(viewportSize.y));
-			m_camera.setAspectRatio(viewportSize.x / viewportSize.y);
-			ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), viewportSize, { 0, 1 }, { 1, 0 });
-		}
-		ImGui::End();
+		m_sceneViewport.update();
 
 		ImGui::ShowDemoWindow();
 
@@ -145,49 +119,6 @@ namespace GalactoseEditor {
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {
 		std::cout << a_event->toString() << std::endl;
 
-		switch (a_event->type()) {
-		case Event::KeyPress: {
-			const auto key = static_cast<KeyEvent*>(a_event.get())->key();
-			const float speed = 0.05f;
-			const auto& right = glm::cross(m_direction, m_up);
-
-			switch (key)
-			{
-			case KeyEvent::KeyS: m_position -= m_direction * speed;
-				break;
-			case KeyEvent::KeyW: m_position += m_direction * speed;
-				break;
-			case KeyEvent::KeyA: m_position -= right * speed;
-				break;
-			case KeyEvent::KeyD: m_position += right * speed;
-				break;
-			case KeyEvent::KeyQ: m_position -= m_up * speed;
-				break;
-			case KeyEvent::KeyE: m_position += m_up * speed;
-				break;
-			}
-			break;
-		}
-		case Event::MousePress: m_rotate = true;
-			m_cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
-			break;
-		case Event::MouseRelease: m_rotate = false;
-			break;
-		case Event::MouseMove: 
-			if (m_rotate) {
-				 const auto& cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
-				 const auto& move = cursorPos - m_cursorPos;
-				 m_cursorPos = cursorPos;
-				 const float speed = 0.1f;
-				 Matrix4x4 rotationMatrix(1);
-				 const auto& right = glm::cross(m_direction, m_up);
-				 rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.x * speed), m_up);
-				 rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.y * speed), right);
-				 m_direction = rotationMatrix * Vector4(m_direction, 1);
-			}
-			break;
-		}
-
-		a_event->setHandled();
+		m_sceneViewport.onEvent(a_event);
 	}
 }

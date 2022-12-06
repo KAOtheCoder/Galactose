@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EditorSceneData.h"
+#include "Widgets/SceneViewport.h"
 #include "Widgets/SceneHierarchy.h"
 #include "Widgets/Inspector.h"
 
@@ -15,6 +15,8 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
+	class EditorSceneData;
+
 	class EditorLayer : public Galactose::Layer {
 	public:
 		EditorLayer(Galactose::Window* window);
@@ -24,15 +26,9 @@ namespace GalactoseEditor {
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
 
 	private:
-		std::shared_ptr<Galactose::Framebuffer> m_framebuffer;
-		Galactose::Camera m_camera;
-		std::shared_ptr<Galactose::Texture> m_texture;
-		Galactose::Vector3 m_position;
-		Galactose::Vector3 m_direction;
-		const Galactose::Vector3 m_up;
-		bool m_rotate = false;
-		Galactose::Vector2 m_cursorPos;
+		//std::shared_ptr<Galactose::Texture> m_texture;
 		std::shared_ptr<EditorSceneData> m_sceneData;
+		SceneViewport m_sceneViewport;
 		SceneHierarchy m_sceneHierarchy;
 		Inspector m_inspector;
 	};
