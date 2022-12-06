@@ -82,7 +82,7 @@ namespace GalactoseEditor {
 				m_cursorPos = cursorPos;
 				const float speed = 0.1f;
 				Matrix4x4 rotationMatrix(1);
-				const auto& right = m_cameraDirection.cross(m_up);
+				const auto& right = Vector3::cross(m_cameraDirection, m_up);
 				rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.x * speed), m_up);
 				rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.y * speed), right);
 				m_cameraDirection = rotationMatrix * Vector4(m_cameraDirection, 1);

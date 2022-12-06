@@ -34,7 +34,7 @@ namespace Galactose {
 		GT_GLM_EXTEND_IMP(Vector3, vec3)
 
 	public:
-		Vector3 cross(const Vector3& a_rhs) const { return glm::cross(base(), a_rhs.base()); }
+		static Vector3 cross(const Vector3& a_lhs, const Vector3& a_rhs) { return glm::cross(a_lhs.base(), a_rhs.base()); }
 	};
 
 	class Quaternion : public glm::quat {
