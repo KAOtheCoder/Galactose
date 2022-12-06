@@ -27,10 +27,16 @@ namespace Galactose {
 	}
 
 	GT_GLM_EXTEND(Vector2, vec2);
-	GT_GLM_EXTEND(Vector3, vec3);
 	GT_GLM_EXTEND(Vector4, vec4);
 	GT_GLM_EXTEND(Matrix4x4, mat4);
 	
+	class Vector3 : public glm::vec3 {
+		GT_GLM_EXTEND_IMP(Vector3, vec3)
+
+	public:
+		Vector3 cross(const Vector3& a_rhs) const { return glm::cross(base(), a_rhs.base()); }
+	};
+
 	class Quaternion : public glm::quat {
 		GT_GLM_EXTEND_IMP(Quaternion, quat)
 

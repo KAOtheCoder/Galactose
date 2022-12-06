@@ -33,7 +33,6 @@ namespace GalactoseEditor {
 				m_camera.setView(m_cameraPosition, m_cameraDirection, m_up);
 				const auto& renderer = Renderer::renderer();
 				m_framebuffer->bind();
-				renderer->setClearColor({ 0.4f, 0.2f, 0.4f, 0.1f });
 				renderer->clear();
 				renderer->setViewProjection(m_camera);
 				//renderer->drawQuad({ -1, 0, 1 }, { 1.0f, 1.0f }, m_texture);
@@ -83,7 +82,7 @@ namespace GalactoseEditor {
 				m_cursorPos = cursorPos;
 				const float speed = 0.1f;
 				Matrix4x4 rotationMatrix(1);
-				const auto& right = glm::cross(m_cameraDirection, m_up);
+				const auto& right = m_cameraDirection.cross(m_up);
 				rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.x * speed), m_up);
 				rotationMatrix = glm::rotate(rotationMatrix, Math::degreesToRadians(move.y * speed), right);
 				m_cameraDirection = rotationMatrix * Vector4(m_cameraDirection, 1);
