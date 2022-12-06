@@ -7,7 +7,10 @@
 namespace GalactoseEditor {
 	class Widget {
 	public:
+		static Widget* focusedWidget() { return s_focusedWidget; }
+
 		Widget(const std::string& a_name);
+		virtual ~Widget();
 
 		void setVisible(const bool a_visible) { m_visible = a_visible; }
 
@@ -16,8 +19,11 @@ namespace GalactoseEditor {
 
 		void update();
 		virtual void onUpdate() {}
+		virtual void onFocusOut() {}
 
 	private:
+		static Widget* s_focusedWidget;
+
 		bool m_visible = true;
 		std::string m_name;
 		Galactose::Vector2 m_padding;

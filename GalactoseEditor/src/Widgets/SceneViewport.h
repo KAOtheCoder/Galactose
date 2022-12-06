@@ -20,6 +20,8 @@ namespace GalactoseEditor {
 		SceneViewport(const std::shared_ptr<EditorSceneData>& sceneData);
 
 		void onUpdate() override;
+		void onFocusOut() override { m_rotate = false; }
+
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event);
 
 	private:

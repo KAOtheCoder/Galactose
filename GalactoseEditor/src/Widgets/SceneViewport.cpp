@@ -45,7 +45,7 @@ namespace GalactoseEditor {
 	}
 
 	void SceneViewport::onEvent(const std::shared_ptr<Event>& a_event) {
-		//std::cout << a_event->toString() << std::endl;
+		std::cout << a_event->toString() << std::endl;
 
 		switch (a_event->type()) {
 		case Event::KeyPress: {

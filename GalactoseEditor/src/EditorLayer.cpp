@@ -66,15 +66,38 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		auto& io = ImGui::GetIO();
+		drawMenuBar();
 
+		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
+		m_sceneHierarchy.update();
+		m_inspector.update();
+		m_sceneViewport.update();
+
+		ImGui::ShowDemoWindow();
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		// Update and Render additional Platform Windows
+		// (Platform functions may change the current OpenGL context
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			//GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			//glfwMakeContextCurrent(backup_current_context);
+		}
+	}
+
+	void EditorLayer::drawMenuBar() {
 		if (ImGui::BeginMainMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
 			{
 				ImGui::Separator();
 
-				if (ImGui::MenuItem("Exit", "ALT+F4")) 
+				if (ImGui::MenuItem("Exit", "ALT+F4"))
 					Application::instance()->exit();
 
 				ImGui::EndMenu();
@@ -90,35 +113,15 @@ namespace GalactoseEditor {
 
 				ImGui::EndMenu();
 			}
-			
+
 			ImGui::EndMainMenuBar();
-		}
-
-		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-
-		m_sceneHierarchy.update();
-		m_inspector.update();
-		m_sceneViewport.update();
-
-		ImGui::ShowDemoWindow();
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		// Update and Render additional Platform Windows
-		// (Platform functions may change the current OpenGL context
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			//GLFWwindow* backup_current_context = glfwGetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			//glfwMakeContextCurrent(backup_current_context);
 		}
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {
-		std::cout << a_event->toString() << std::endl;
+		//std::cout << a_event->toString() << std::endl;
 
-		m_sceneViewport.onEvent(a_event);
+		if (Widget::focusedWidget() == &m_sceneViewport)
+			m_sceneViewport.onEvent(a_event);
 	}
 }
