@@ -18,7 +18,9 @@ namespace GalactoseEditor {
 		m_cameraPosition(0, 0, -1),
 		m_cameraDirection(0, 0, 1),
 		m_up(0, 1, 0)
-	{}
+	{
+		setPadding({ 0, 0 });
+	}
 
 	void SceneViewport::onUpdate() {
 		const auto& scene = m_sceneData->scene();
