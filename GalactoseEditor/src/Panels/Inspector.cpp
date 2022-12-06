@@ -11,7 +11,7 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	Inspector::Inspector(const std::shared_ptr<EditorSceneData>& a_sceneData) :
-		Widget("Inspector"),
+		Panel("Inspector"),
 		m_sceneData(a_sceneData)
 	{}
 

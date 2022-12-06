@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Widget.h"
+#include "Panel.h"
 
 #include <Renderer/Camera.h>
 
@@ -15,7 +15,7 @@ namespace Galactose {
 namespace GalactoseEditor {
 	class EditorSceneData;
 
-	class SceneViewport : public Widget {
+	class SceneViewport : public Panel {
 	public:
 		SceneViewport(const std::shared_ptr<EditorSceneData>& sceneData);
 

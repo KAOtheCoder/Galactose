@@ -7,7 +7,7 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	SceneHierarchy::SceneHierarchy(const std::shared_ptr<EditorSceneData>& a_sceneData) :
-		Widget("Scene Hierarchy"),
+		Panel("Scene Hierarchy"),
 		m_sceneData(a_sceneData)
 	{}
 

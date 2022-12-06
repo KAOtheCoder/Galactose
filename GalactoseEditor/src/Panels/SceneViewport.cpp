@@ -12,7 +12,7 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	SceneViewport::SceneViewport(const std::shared_ptr<EditorSceneData>& a_sceneData) :
-		Widget("Scene"),
+		Panel("Scene"),
 		m_sceneData(a_sceneData),
 		m_framebuffer(Framebuffer::create(1, 1, { Texture::RGBA8, Texture::Depth24Stencil8 })),
 		m_cameraPosition(0, 0, -1),

@@ -103,7 +103,7 @@ namespace GalactoseEditor {
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("View"))
+			if (ImGui::BeginMenu("Panels"))
 			{
 				if (ImGui::MenuItem("Scene Hierarchy"))
 					m_sceneHierarchy.setVisible(true);
@@ -121,7 +121,7 @@ namespace GalactoseEditor {
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {
 		//std::cout << a_event->toString() << std::endl;
 
-		if (Widget::focusedWidget() == &m_sceneViewport)
+		if (Panel::focusedPanel() == &m_sceneViewport)
 			m_sceneViewport.onEvent(a_event);
 	}
 }

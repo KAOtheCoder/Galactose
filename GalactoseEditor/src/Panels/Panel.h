@@ -5,12 +5,12 @@
 #include <string>
 
 namespace GalactoseEditor {
-	class Widget {
+	class Panel {
 	public:
-		static Widget* focusedWidget() { return s_focusedWidget; }
+		static Panel* focusedPanel() { return s_focusedPanel; }
 
-		Widget(const std::string& a_name);
-		virtual ~Widget();
+		Panel(const std::string& a_name);
+		virtual ~Panel();
 
 		void setVisible(const bool a_visible) { m_visible = a_visible; }
 
@@ -22,7 +22,7 @@ namespace GalactoseEditor {
 		virtual void onFocusOut() {}
 
 	private:
-		static Widget* s_focusedWidget;
+		static Panel* s_focusedPanel;
 
 		bool m_visible = true;
 		std::string m_name;

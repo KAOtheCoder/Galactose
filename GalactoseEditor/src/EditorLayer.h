@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Widgets/SceneViewport.h"
-#include "Widgets/SceneHierarchy.h"
-#include "Widgets/Inspector.h"
+#include "Panels/SceneViewport.h"
+#include "Panels/SceneHierarchy.h"
+#include "Panels/Inspector.h"
 
 #include <Core/Layer.h>
 #include <Math/Math.h>

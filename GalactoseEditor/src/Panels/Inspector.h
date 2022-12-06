@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Widget.h"
+#include "Panel.h"
 
 #include <memory>
 
@@ -13,7 +13,7 @@ namespace Galactose {
 namespace GalactoseEditor {
 	class EditorSceneData;
 
-	class Inspector : public Widget {
+	class Inspector : public Panel {
 	public:
 		Inspector(const std::shared_ptr<EditorSceneData>& sceneData);
 
