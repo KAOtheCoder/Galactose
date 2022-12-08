@@ -4,7 +4,6 @@
 #include <Renderer/Framebuffer.h>
 #include <Core/Events/KeyEvent.h>
 #include <Core/Events/MouseEvent.h>
-#include <Renderer/Renderer.h>
 
 #include <imgui.h>
 
@@ -15,8 +14,8 @@ namespace GalactoseEditor {
 		Panel("Scene"),
 		m_sceneData(a_sceneData),
 		m_framebuffer(Framebuffer::create(1, 1, { Texture::RGBA8, Texture::Depth24Stencil8 })),
-		m_cameraPosition(0, 0, -1),
-		m_cameraDirection(0, 0, 1),
+		m_cameraPosition(0, 0, 9),
+		m_cameraDirection(0, 0, -1),
 		m_up(0, 1, 0)
 	{
 		setPadding({ 0, 0 });
@@ -27,17 +26,16 @@ namespace GalactoseEditor {
 		if (scene) {
 			const auto& viewportSize = ImGui::GetContentRegionAvail();
 			if (viewportSize.x >= 1 && viewportSize.y >= 1) {
-				m_framebuffer->resize(int32_t(viewportSize.x), int32_t(viewportSize.y));
-				m_camera.setAspectRatio(viewportSize.x / viewportSize.y);
+				auto scene = m_sceneData->scene();
+				if (scene) {
+					m_framebuffer->resize(int32_t(viewportSize.x), int32_t(viewportSize.y));
+					m_camera.setAspectRatio(viewportSize.x / viewportSize.y);
+					m_camera.setView(m_cameraPosition, m_cameraDirection, m_up);
 
-				m_camera.setView(m_cameraPosition, m_cameraDirection, m_up);
-				const auto& renderer = Renderer::renderer();
-				m_framebuffer->bind();
-				renderer->clear();
-				renderer->setViewProjection(m_camera);
-				//renderer->drawQuad({ -1, 0, 1 }, { 1.0f, 1.0f }, m_texture);
-				renderer->drawQuad({ 0, 0, 1 }, { 1.0f, 1.0f }, { 0.8f, 0.1f, 0.1f, 0.8 });
-				m_framebuffer->unbind();
+					m_framebuffer->bind();
+					scene->render(m_camera);
+					m_framebuffer->unbind();
+				}
 
 				ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), viewportSize, { 0, 1 }, { 1, 0 });
 			}
@@ -51,7 +49,7 @@ namespace GalactoseEditor {
 		case Event::KeyPress: {
 			const auto key = static_cast<KeyEvent*>(a_event.get())->key();
 			const float speed = 0.05f;
-			const auto& right = glm::cross(m_cameraDirection, m_up);
+			const auto& right = Vector3::cross(m_cameraDirection, m_up);
 
 			switch (key)
 			{

@@ -95,17 +95,17 @@ namespace GalactoseEditor {
 			ImGui::TableSetupColumn("#Z", ImGuiTableColumnFlags_WidthFixed);
 			ImGui::TableSetupColumn("#ZInput", ImGuiTableColumnFlags_WidthStretch);
 
-			auto position = transform->position();
+			auto position = transform->localPosition();
 			if (dragVector3("Position", position))
-				transform->setPosition(position);
+				transform->setLocalPosition(position);
 
-			auto rotation = transform->rotation().eulerDegrees();
+			auto rotation = transform->localRotation().eulerDegrees();
 			if (dragVector3("Rotation", rotation))
-				transform->setRotation(Quaternion::fromEulerDegrees(rotation));
+				transform->setLocalRotation(Quaternion::fromEulerDegrees(rotation));
 
-			auto scale = transform->scale();
+			auto scale = transform->localScale();
 			if (dragVector3("Scale", scale))
-				transform->setScale(scale);
+				transform->setLocalScale(scale);
 
 			ImGui::EndTable();
 		}

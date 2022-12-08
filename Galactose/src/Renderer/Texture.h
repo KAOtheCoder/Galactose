@@ -20,6 +20,9 @@ namespace Galactose {
 
 		uint32_t rendererId() const { return m_rendererId; }
 
+		int32_t width() const { return m_width; }
+		int32_t height() const { return m_height; }
+
 		Format format() const { return m_format; }
 		bool isLoaded() const { return m_loaded; }
 

@@ -26,10 +26,10 @@ namespace Galactose {
 		void setView(const Vector3& position, const Vector3& direction, const Vector3& up);
 
 	private:
-		float m_fov = Math::degreesToRadians(60);
+		float m_fov = Math::degreesToRadians(40);
 		float m_aspectRatio = 16.f / 9.f;
 		float m_nearClip = 0.1f;
-		float m_farClip = 1000.f;
+		float m_farClip = 5000.f;
 		Matrix4x4 m_view;
 	};
 }

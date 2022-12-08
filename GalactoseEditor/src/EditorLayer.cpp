@@ -4,7 +4,7 @@
 #include <Core/Events/KeyEvent.h>
 #include <Core/Events/MouseEvent.h>
 #include <Scene/Entity.h>
-#include <Scene/Components/Component.h>
+#include <Scene/Components/SpriteRenderer.h>
 #include <Core/Application.h>
 
 #include <imgui.h>
@@ -50,9 +50,10 @@ namespace GalactoseEditor {
 		auto component = entityPtr->addComponent<Component>();
 		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
 		auto child = Entity::create(entity, "child");
+		child->addComponent<SpriteRenderer>()->sprite = Sprite(Texture::create("assets/textures/SSwithPistol.gif"), { 0.2f, 0.3f, 0.7f, 1.0f });
 		GT_ASSERT(child->parent() == entityPtr.get(), "");
-		child->setParent(nullptr);
-		GT_ASSERT(entity->getChildren().empty(), "");
+		//child->setParent(nullptr);
+		//GT_ASSERT(entity->getChildren().empty(), "");
 	}
 
 	EditorLayer::~EditorLayer() {

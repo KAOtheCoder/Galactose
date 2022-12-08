@@ -4,12 +4,15 @@
 
 namespace Galactose {
 	class Entity;
+	class Camera;
 
 	class Scene {
 	public:
 		Scene(const std::string& name);
 
 		std::vector<Entity*> getRootEntites() const { return getEntities(m_rootEntities); }
+
+		void render(const Camera& camera);
 
 	private:
 		Entity* getEntity(const entt::entity id) const;

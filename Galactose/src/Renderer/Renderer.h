@@ -1,8 +1,8 @@
 #pragma once
 
 #include "VertexArray.h"
+#include "Sprite.h"
 #include "Core/Window.h"
-#include "Math/Math.h"
 
 namespace Galactose {
 	class Texture;
@@ -20,8 +20,7 @@ namespace Galactose {
 		virtual void clear() = 0;
 		virtual void drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) = 0;
 
-		virtual void drawQuad(const Vector3& center, const Vector2& size, const std::shared_ptr<Texture>& texture) = 0;
-		virtual void drawQuad(const Vector3& center, const Vector2& size, const Vector4& color) = 0;
+		virtual void drawSprite(const Matrix4x4& transform, const Sprite& sprite) = 0;
 		virtual void drawQuad2D(const Vector2& topLeft, const Vector2& size, const std::shared_ptr<Texture>& texture, const Vector2& canvasSize) = 0;
 
 		std::shared_ptr<Shader> textureShader() const { return m_textureShader; }

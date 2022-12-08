@@ -98,27 +98,36 @@ namespace Galactose {
 		glDrawElements(GL_TRIANGLES, a_vertexArray->indexBuffer()->count(), GL_UNSIGNED_INT, nullptr);
 	}
 
-	void OpenGLRenderer::drawQuad(const Vector3& a_center, const Vector2& a_size, const std::shared_ptr<Texture>& a_texture) {
-		m_textureShader->bind();
-		a_texture->bind(0);
-		m_textureShader->setInt("u_texture", 0);
-		drawQuad(a_center, a_size);
+	void OpenGLRenderer::drawSprite(const Matrix4x4& a_transform, const Sprite& a_sprite) {
+		if (a_sprite.texture()) {
+			//TO DO: tint texture
+			m_textureShader->bind();
+			a_sprite.texture()->bind(0);
+			m_textureShader->setInt("u_texture", 0);
+		}
+		else {
+			m_colorShader->bind();
+			m_colorShader->setVector4("u_color", a_sprite.color());
+		}
+
+		drawSprite(a_transform, a_sprite.size(), a_sprite.pivot());
 	}
 
-	void OpenGLRenderer::drawQuad(const Vector3& a_center, const Vector2& a_size, const Vector4& a_color) {
-		m_colorShader->bind();
-		m_colorShader->setVector4("u_color", a_color);
-		drawQuad(a_center, a_size);
-	}
+	void OpenGLRenderer::drawSprite(const Matrix4x4& a_transform, const Vector2& a_size, const Vector2& a_pivot) {
+		const auto& reversePivot = Vector2(1, 1) - a_pivot;
+		const Vector2 minCorner = Vector2(-a_pivot.x * a_size.x, -a_pivot.y * a_size.y);
+		const Vector2 maxCorner = Vector2(reversePivot.x * a_size.x, reversePivot.y * a_size.y);
 
-	void OpenGLRenderer::drawQuad(const Vector3& a_center, const Vector2& a_size) {
-		const auto& halfSize = a_size / 2.0f;
+		const Vector3 topLeft = a_transform * Vector4(minCorner, 0, 1);
+		const Vector3 topRight = a_transform * Vector4(maxCorner.x, minCorner.y, 0, 1);
+		const Vector3 bottomRight = a_transform * Vector4(maxCorner, 0, 1);
+		const Vector3 bottomLeft = a_transform * Vector4(minCorner.x, maxCorner.y, 0, 1);
 
 		const float vertices[] = {
-			a_center.x - halfSize.x, a_center.y - halfSize.y, a_center.z, 0, 0,
-			a_center.x + halfSize.x, a_center.y - halfSize.y, a_center.z, 1, 0,
-			a_center.x + halfSize.x, a_center.y + halfSize.y, a_center.z, 1, 1,
-			a_center.x - halfSize.x, a_center.y + halfSize.y, a_center.z, 0, 1
+			topLeft.x, topLeft.y, topLeft.z, 0, 0,
+			topRight.x, topRight.y, topRight.z, 1, 0,
+			bottomRight.x, bottomRight.y, bottomRight.z, 1, 1,
+			bottomLeft.x, bottomLeft.y, bottomLeft.z, 0, 1
 		};
 
 		m_quadVertexArray->vertexBuffer(0)->setData(vertices, 4);
