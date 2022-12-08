@@ -58,16 +58,6 @@ namespace Galactose {
 
 		m_colorShader = std::make_shared<OpenGLShader>("QuadColor", vertexSrc, fragmentSrc);
 
-		vertexSrc =
-#include "shaders/Quad2DVertex.glsl"
-			;
-
-		fragmentSrc =
-#include "shaders/QuadTextureFragment.glsl"
-			;
-
-		m_quad2DShader = std::make_shared<OpenGLShader>("Quad2D", vertexSrc, fragmentSrc);
-
 		m_quadVertexArray = VertexArray::create();
 		const auto& quadLayout = VertexBuffer::Layout({ { "position", DataType::Vector3 }, { "uv", DataType::Vector2 } });
 		m_quadVertexArray->addVertexBuffer(VertexBuffer::create(nullptr, 4, quadLayout));
@@ -78,11 +68,6 @@ namespace Galactose {
 		};
 
 		m_quadVertexArray->setIndexBuffer(IndexBuffer::create(SPRITE_INDICES.data(), uint32_t(SPRITE_INDICES.size())));
-		
-		m_quad2DVertexArray = VertexArray::create();
-		const auto& quadLayout2D = VertexBuffer::Layout({ { "position", DataType::Vector2 }, { "uv", DataType::Vector2 } });
-		m_quad2DVertexArray->addVertexBuffer(VertexBuffer::create(nullptr, 4, quadLayout2D));
-		m_quad2DVertexArray->setIndexBuffer(IndexBuffer::create(SPRITE_INDICES.data(), uint32_t(SPRITE_INDICES.size())));
 	}
 
 	void OpenGLRenderer::setClearColor(const Vector4& color) {
@@ -132,24 +117,5 @@ namespace Galactose {
 
 		m_quadVertexArray->vertexBuffer(0)->setData(vertices, 4);
 		drawVertexArrayIndexed(m_quadVertexArray);
-	}
-
-	void OpenGLRenderer::drawQuad2D(const Vector2& a_topLeft, const Vector2& a_size, const std::shared_ptr<Texture>& a_texture, const Vector2& a_canvasSize) {
-		glDisable(GL_DEPTH_TEST);
-		m_quad2DShader->bind();
-		a_texture->bind(0);
-		m_quad2DShader->setInt("u_texture", 0);
-		m_quad2DShader->setVector2("u_canvasSize", a_canvasSize);
-
-		const float vertices[] = { // texture y axis reverted
-			a_topLeft.x, a_topLeft.y, 0, 1,
-			a_topLeft.x + a_size.x, a_topLeft.y, 1, 1,
-			a_topLeft.x + a_size.x, a_topLeft.y + a_size.y, 1, 0,
-			a_topLeft.x, a_topLeft.y + a_size.y, 0, 0
-		};
-
-		m_quad2DVertexArray->vertexBuffer(0)->setData(vertices, 4);
-		drawVertexArrayIndexed(m_quad2DVertexArray);
-		glEnable(GL_DEPTH_TEST);
 	}
 }

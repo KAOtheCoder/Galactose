@@ -21,7 +21,6 @@ namespace Galactose {
 		virtual void drawVertexArrayIndexed(const std::shared_ptr<VertexArray>& a_vertexArray) = 0;
 
 		virtual void drawSprite(const Matrix4x4& transform, const Sprite& sprite) = 0;
-		virtual void drawQuad2D(const Vector2& topLeft, const Vector2& size, const std::shared_ptr<Texture>& texture, const Vector2& canvasSize) = 0;
 
 		std::shared_ptr<Shader> textureShader() const { return m_textureShader; }
 		std::shared_ptr<Shader> colorShader() const { return m_colorShader; }
@@ -34,7 +33,6 @@ namespace Galactose {
 		std::shared_ptr<Window> m_window;
 		std::shared_ptr<Shader> m_textureShader;
 		std::shared_ptr<Shader> m_colorShader;
-		std::shared_ptr<Shader> m_quad2DShader;
 
 	private:
 		inline static std::vector<std::shared_ptr<Renderer>> s_renderers;
