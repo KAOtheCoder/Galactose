@@ -48,19 +48,9 @@ namespace Galactose {
 
 		m_textureShader = std::make_shared<OpenGLShader>("QuadTexture", vertexSrc, fragmentSrc);
 
-		vertexSrc =
-#include "shaders/QuadColorVertex.glsl"
-			;
-
-		fragmentSrc =
-#include "shaders/QuadColorFragment.glsl"
-			;
-
-		m_colorShader = std::make_shared<OpenGLShader>("QuadColor", vertexSrc, fragmentSrc);
-
 		m_quadVertexArray = VertexArray::create();
-		const auto& quadLayout = VertexBuffer::Layout({ { "position", DataType::Vector3 }, { "uv", DataType::Vector2 } });
-		m_quadVertexArray->addVertexBuffer(VertexBuffer::create(nullptr, 4, quadLayout));
+		const VertexBuffer::Layout QUAD_LAYOUT({ { "position", DataType::Vector3 }, { "uv", DataType::Vector2 } });
+		m_quadVertexArray->addVertexBuffer(VertexBuffer::create(nullptr, 4, QUAD_LAYOUT));
 
 		const std::array<uint32_t, 6> SPRITE_INDICES = {
 			0, 1, 2,
@@ -84,16 +74,14 @@ namespace Galactose {
 	}
 
 	void OpenGLRenderer::drawSprite(const Matrix4x4& a_transform, const Sprite& a_sprite) {
-		if (a_sprite.texture()) {
-			//TO DO: tint texture
-			m_textureShader->bind();
-			a_sprite.texture()->bind(0);
-			m_textureShader->setInt("u_texture", 0);
-		}
-		else {
-			m_colorShader->bind();
-			m_colorShader->setVector4("u_color", a_sprite.color());
-		}
+		auto texture = a_sprite.texture();
+		if (!texture)
+			texture = m_defaultTexture;
+
+		m_textureShader->bind();
+		texture->bind(0);
+		m_textureShader->setInt("u_texture", 0);
+		m_textureShader->setVector4("u_color", a_sprite.color());
 
 		drawSprite(a_transform, a_sprite.size(), a_sprite.pivot());
 	}

@@ -50,7 +50,7 @@ namespace GalactoseEditor {
 		auto component = entityPtr->addComponent<Component>();
 		GT_ASSERT(entityPtr.isValid() && component->entity() == entityPtr.get(), "");
 		auto child = Entity::create(entity, "child");
-		child->addComponent<SpriteRenderer>()->sprite = Sprite(Texture::create("assets/textures/SSwithPistol.gif"), { 0.2f, 0.3f, 0.7f, 1.0f });
+		child->addComponent<SpriteRenderer>()->sprite = Sprite(std::shared_ptr<Texture>(), {1.0f, 0.0f, 0.0f, 0.5f});
 		GT_ASSERT(child->parent() == entityPtr.get(), "");
 		//child->setParent(nullptr);
 		//GT_ASSERT(entity->getChildren().empty(), "");

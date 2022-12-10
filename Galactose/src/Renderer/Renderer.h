@@ -23,7 +23,6 @@ namespace Galactose {
 		virtual void drawSprite(const Matrix4x4& transform, const Sprite& sprite) = 0;
 
 		std::shared_ptr<Shader> textureShader() const { return m_textureShader; }
-		std::shared_ptr<Shader> colorShader() const { return m_colorShader; }
 
 		void setViewProjection(const Camera& camera);
 
@@ -31,8 +30,8 @@ namespace Galactose {
 		Renderer(const std::shared_ptr<Window>& a_window);
 
 		std::shared_ptr<Window> m_window;
+		std::shared_ptr<Texture> m_defaultTexture;
 		std::shared_ptr<Shader> m_textureShader;
-		std::shared_ptr<Shader> m_colorShader;
 
 	private:
 		inline static std::vector<std::shared_ptr<Renderer>> s_renderers;

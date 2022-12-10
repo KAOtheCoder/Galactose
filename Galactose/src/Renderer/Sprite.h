@@ -11,7 +11,7 @@ namespace Galactose {
 	public:
 		Sprite() = default;
 
-		Sprite(const std::shared_ptr<Texture>& texture, 
+		Sprite(const std::shared_ptr<Texture>& texture,
 			const Vector4& color = { 1, 1, 1, 1 }, 
 			const Vector2& pivot = { 0.5f, 0.5f }
 		);
