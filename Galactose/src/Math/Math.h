@@ -20,18 +20,27 @@
 	GT_GLM_EXTEND_IMP(_class, _baseClass) \
 }
 
+#define GT_GLM_EXTEND_VECTOR_IMP(_class, _baseClass) \
+	GT_GLM_EXTEND_IMP(_class, _baseClass) \
+public:\
+	static float dot(const _class& a_lhs, const _class& a_rhs) { return glm::dot(a_lhs.base(), a_rhs.base()); }\
+
+#define GT_GLM_EXTEND_VECTOR(_class, _baseClass) class _class : public glm::_baseClass {\
+	GT_GLM_EXTEND_VECTOR_IMP(_class, _baseClass) \
+}
+
 namespace Galactose {
 	namespace Math {
 		static float degreesToRadians(const float a_degrees) { return glm::radians(a_degrees); }
 		static float radiansToDegrees(const float a_radians) { return glm::degrees(a_radians); }
 	}
 
-	GT_GLM_EXTEND(Vector2, vec2);
-	GT_GLM_EXTEND(Vector4, vec4);
+	GT_GLM_EXTEND_VECTOR(Vector2, vec2);
+	GT_GLM_EXTEND_VECTOR(Vector4, vec4);
 	GT_GLM_EXTEND(Matrix4x4, mat4);
 	
 	class Vector3 : public glm::vec3 {
-		GT_GLM_EXTEND_IMP(Vector3, vec3)
+		GT_GLM_EXTEND_VECTOR_IMP(Vector3, vec3)
 
 	public:
 		static Vector3 cross(const Vector3& a_lhs, const Vector3& a_rhs) { return glm::cross(a_lhs.base(), a_rhs.base()); }
@@ -43,6 +52,8 @@ namespace Galactose {
 	public:
 		static Quaternion fromEulerDegrees(const Vector3& a_angles) { return Quaternion(glm::radians((glm::vec3)a_angles)); }
 
+		Quaternion(const Matrix4x4& a_matrix) : glm::quat(glm::quat_cast(a_matrix)) {}
+
 		Matrix4x4 toMatrix() const { return glm::toMat4(*this); }
 		Vector3 eulerRadians() const { return glm::eulerAngles(*this); }
 		Vector3 eulerDegrees() const { return glm::degrees((glm::vec3)eulerRadians()); }
@@ -51,3 +62,5 @@ namespace Galactose {
 
 #undef GT_GLM_EXTEND_IMP
 #undef GT_GLM_EXTEND
+#undef GT_GLM_EXTEND_VECTOR_IMP
+#undef GT_GLM_EXTEND_VECTOR

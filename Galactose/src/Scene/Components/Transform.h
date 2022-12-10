@@ -24,6 +24,8 @@ namespace Galactose {
 		Matrix4x4 worldMatrix() const;
 
 	private:
+		static void decomposeAffine(const Matrix4x4& transform, Vector3& position, Quaternion& rotation, Vector3& scale);
+
 		void updateWorldMatrix() const;
 
 		Vector3 m_localPosition = { 0, 0, 0 };
