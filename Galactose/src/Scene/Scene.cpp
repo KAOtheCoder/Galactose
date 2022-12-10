@@ -35,7 +35,7 @@ namespace Galactose {
 		for (const auto entityId : group) {
 			const auto& [transform, spriteRenderer] = group.get<Transform, SpriteRenderer>(entityId);
 
-			renderer->drawSprite(transform.worldMatrix(), spriteRenderer.sprite);
+			renderer->drawSprite(transform.localToWorldMatrix(), spriteRenderer.sprite);
 		}
 	}
 }

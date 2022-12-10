@@ -1,22 +1,26 @@
 #include "Transform.h"
 #include "Core/Global.h"
 
-#include <glm/gtx/transform.hpp>
-
 namespace Galactose {
 	// TO DO: cache matrices
 	Matrix4x4 Transform::localMatrix() const {
-		return glm::translate(m_localPosition) * m_localRotation.toMatrix() * glm::scale(m_localScale);
+		auto adjustedScale = m_localScale;
+
+		for (int i = 0; i < 3; ++i) // avoid zero
+			if (adjustedScale[i] == 0)
+				adjustedScale[i] = glm::epsilon<float>();
+
+		return Matrix4x4::translate(m_localPosition) * m_localRotation.toMatrix() * Matrix4x4::scale(adjustedScale);
 	}
 
-	void Transform::updateWorldMatrix() const {
-		auto parentEntity = entity()->parent();
-		auto parent = parentEntity ? parentEntity->getTransform() : nullptr;
+	void Transform::updateLocalToWorldMatrix() const {
+		const auto parentEntity = entity()->parent();
+		const auto parent = parentEntity ? parentEntity->getTransform() : nullptr;
 		if (!m_dirty && (!parent || !parent->m_dirty))
 			return;
 
 		if (parent) {
-			m_worldMatrix = parent->worldMatrix() * localMatrix();
+			m_worldMatrix = parent->localToWorldMatrix() * localMatrix();
 
 			decomposeAffine(m_worldMatrix, m_position, m_rotation, m_scale);
 
@@ -43,9 +47,8 @@ namespace Galactose {
 		Matrix4x4 rotation(transform); // we only need 3x3 matrix, maybe change that later
 		//rotation[3] = { 0, 0, 0, 1 };
 
-		rotation[0] /= a_scale.x;
-		rotation[1] /= a_scale.y;
-		rotation[2] /= a_scale.z;
+		for (int i = 0; i < 3; ++i) // avoid divide by zero
+			rotation[i] /= a_scale[i] == 0 ? glm::epsilon<float>() : a_scale[i];
 
 		// check for a coordinate system flip.If the determinant
 		// is - 1, then negate the matrixand the scaling factors.
@@ -60,19 +63,42 @@ namespace Galactose {
 		a_rotation = rotation;
 	}
 
-	Matrix4x4 Transform::worldMatrix() const {
-		updateWorldMatrix();
+	Matrix4x4 Transform::localToWorldMatrix() const {
+		updateLocalToWorldMatrix();
 		return m_worldMatrix;
 	}
 
 	Vector3 Transform::position() const {
-		updateWorldMatrix();
+		updateLocalToWorldMatrix();
 		return m_position;
 	}
 
+	void Transform::setPosition(const Vector3& a_position) {
+		const auto parentEntity = entity()->parent();
+
+		setLocalPosition(parentEntity 
+			? parentEntity->getTransform()->localToWorldMatrix().affineInverse() * Vector4(a_position, 1)
+			: a_position
+		);
+	}
+
 	Quaternion Transform::rotation() const {
-		updateWorldMatrix();
+		updateLocalToWorldMatrix();
 		return m_rotation;
+	}
+
+	void Transform::setRotation(const Quaternion& a_rotation) {
+		const auto parentEntity = entity()->parent();
+
+		setLocalRotation(parentEntity
+			? parentEntity->getTransform()->localToWorldMatrix().affineInverse() * a_rotation.toMatrix()
+			: a_rotation
+		);
+	}
+
+	Vector3 Transform::lossyScale() const {
+		updateLocalToWorldMatrix();
+		return m_scale;
 	}
 
 	void Transform::setLocalPosition(const Vector3& a_position) {

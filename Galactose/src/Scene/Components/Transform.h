@@ -18,15 +18,21 @@ namespace Galactose {
 		void setLocalScale(const Vector3& scale);
 
 		Vector3 position() const;
-		Quaternion rotation() const;
+		void setPosition(const Vector3& position);
 
-		Matrix4x4 localMatrix() const;
-		Matrix4x4 worldMatrix() const;
+		Quaternion rotation() const;
+		void setRotation(const Quaternion& rotation);
+
+		Vector3 lossyScale() const;
+
+		Matrix4x4 localToWorldMatrix() const;
+		Matrix4x4 worldToLocalMatrix() const { return localToWorldMatrix().affineInverse(); }
 
 	private:
 		static void decomposeAffine(const Matrix4x4& transform, Vector3& position, Quaternion& rotation, Vector3& scale);
 
-		void updateWorldMatrix() const;
+		Matrix4x4 localMatrix() const;
+		void updateLocalToWorldMatrix() const;
 
 		Vector3 m_localPosition = { 0, 0, 0 };
 		Quaternion m_localRotation;

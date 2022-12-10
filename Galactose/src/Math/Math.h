@@ -6,6 +6,8 @@
 #include "glm/gtx/string_cast.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtx/transform.hpp>
 
 #define GT_GLM_EXTEND_IMP(_class, _baseClass) \
 	public:\
@@ -37,13 +39,22 @@ namespace Galactose {
 
 	GT_GLM_EXTEND_VECTOR(Vector2, vec2);
 	GT_GLM_EXTEND_VECTOR(Vector4, vec4);
-	GT_GLM_EXTEND(Matrix4x4, mat4);
 	
 	class Vector3 : public glm::vec3 {
 		GT_GLM_EXTEND_VECTOR_IMP(Vector3, vec3)
 
 	public:
 		static Vector3 cross(const Vector3& a_lhs, const Vector3& a_rhs) { return glm::cross(a_lhs.base(), a_rhs.base()); }
+	};
+
+	class Matrix4x4 : public glm::mat4 {
+		GT_GLM_EXTEND_IMP(Matrix4x4, mat4)
+
+	public:
+		static Matrix4x4 translate(const Vector3& a_translation) { return glm::translate(a_translation); }
+		static Matrix4x4 scale(const Vector3& a_scale) { return glm::scale(a_scale); }
+
+		Matrix4x4 affineInverse() const { return glm::affineInverse(base()); }
 	};
 
 	class Quaternion : public glm::quat {
@@ -57,6 +68,7 @@ namespace Galactose {
 		Matrix4x4 toMatrix() const { return glm::toMat4(*this); }
 		Vector3 eulerRadians() const { return glm::eulerAngles(*this); }
 		Vector3 eulerDegrees() const { return glm::degrees((glm::vec3)eulerRadians()); }
+		Quaternion inverse() const { return glm::inverse(base()); }
 	};
 }
 
