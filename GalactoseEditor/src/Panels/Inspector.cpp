@@ -31,6 +31,14 @@ namespace GalactoseEditor {
 		ImGui::Separator();
 	}
 
+	void Inspector::drawLabel(const char* a_label) {
+		ImGui::TableNextRow();
+
+		ImGui::TableSetColumnIndex(0);
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text(a_label);
+	}
+
 	bool Inspector::dragVector3Axis(const int a_axis, float& a_value) {
 		const float AXIS_INTENSITY = 0.6f;
 		const float INTENSITY = 0.1f;
@@ -45,7 +53,7 @@ namespace GalactoseEditor {
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { hoverColor.x, hoverColor.y, hoverColor.z, ALPHA });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, buttonColor);
 
-		const int column = 3 * a_axis;
+		const int column = 2 * a_axis;
 		ImGui::TableSetColumnIndex(column);
 
 		const std::string label(1, 'X' + a_axis);
@@ -54,33 +62,25 @@ namespace GalactoseEditor {
 		ImGui::PopStyleColor(3);
 
 		ImGui::TableSetColumnIndex(column + 1);
-		ImGui::PushItemWidth(-1);
+		ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 		const auto& input_label = "##" + label;
 		const bool changed = ImGui::DragFloat(input_label.c_str(), &a_value, 0.1f);
 		ImGui::PopItemWidth();
 
 		if (clicked)
-			ImGui::SetKeyboardFocusHere(-1);
+			ImGui::SetKeyboardFocusHere(-1); // focus next item
 
 		return changed;
 	}
 
 	bool Inspector::dragVector(const char* a_label, const int a_axisCount, float* a_value) {
-		ImGui::TableNextRow();
-
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text(a_label);
+		drawLabel(a_label);
 
 		ImGui::TableSetColumnIndex(1);
-		if (ImGui::BeginTable(a_label, a_axisCount * 3 - 1, ImGuiTableFlags_NoPadInnerX)) {
-			//ImGui::PushID(a_label);
-
+		if (ImGui::BeginTable(a_label, 2 * a_axisCount, ImGuiTableFlags_NoPadInnerX)) {
 			for (int i = 0; i < a_axisCount; ++i) {
 				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
 				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
-
-				if (i < a_axisCount - 1)
-					ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
 			}
 
 			ImGui::TableNextRow();
@@ -89,7 +89,6 @@ namespace GalactoseEditor {
 			for (int i = 0; i < a_axisCount; ++i)
 				changed = dragVector3Axis(i, a_value[i]) || changed;
 
-			//ImGui::PopID();
 			ImGui::EndTable();
 
 			return changed;
@@ -139,21 +138,17 @@ namespace GalactoseEditor {
 
 		if (ImGui::BeginTable("SpriteRenderer", 2, ImGuiTableFlags_SizingStretchProp)) {
 			// TO DO: set texture
-			ImGui::TableNextRow();
-			ImGui::TableSetColumnIndex(0);
-			ImGui::Text("Texture");
+			drawLabel("Texture");
 
 			ImGui::TableSetColumnIndex(1);
 			auto texture = sprite.texture();
 			std::string textureName = texture ? texture->filePath() : "Default";
-			ImGui::PushItemWidth(-1);
+			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 			ImGui::InputText("##Texture", textureName.data(), textureName.size(), ImGuiInputTextFlags_ReadOnly);
 			ImGui::PopItemWidth();
 
 			// TO DO: stretch color button
-			ImGui::TableNextRow();
-			ImGui::TableSetColumnIndex(0);
-			ImGui::Text("Color");
+			drawLabel("Color");
 
 			ImGui::TableSetColumnIndex(1);
 

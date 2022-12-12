@@ -23,7 +23,7 @@ namespace GalactoseEditor {
 		const bool empty_label = a_label.empty() || a_label.find_first_not_of("#") >= 2;
 
 		if (empty_label)
-			ImGui::PushItemWidth(-1);
+			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 
 		const bool changed = ImGui::InputText(a_label.c_str(), s_text.data(), a_size < 0 ? s_text.capacity() + 1 : a_size, ImGuiInputTextFlags_CallbackResize, & InputString::resizeCallback, & s_text);
 
