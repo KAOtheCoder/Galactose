@@ -3,6 +3,8 @@
 #include "InputString.h"
 
 #include <Scene/Components/Transform.h>
+#include <Scene/Components/SpriteRenderer.h>
+#include <Renderer/Texture.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -24,11 +26,12 @@ namespace GalactoseEditor {
 		if (InputString::inputText("##Name", entity->name()))
 			entity->setName(InputString::text());
 
-		ImGui::Separator();
 		drawTransform();
+		drawSpriteRenderer();
+		ImGui::Separator();
 	}
 
-	bool Inspector::dragVector3Axis(const int a_axis, Vector3& a_value) {
+	bool Inspector::dragVector3Axis(const int a_axis, float& a_value) {
 		const float AXIS_INTENSITY = 0.6f;
 		const float INTENSITY = 0.1f;
 		const float ALPHA = 1.0f;
@@ -42,7 +45,7 @@ namespace GalactoseEditor {
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { hoverColor.x, hoverColor.y, hoverColor.z, ALPHA });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, buttonColor);
 
-		const int column = 3 * a_axis + 2;
+		const int column = 3 * a_axis;
 		ImGui::TableSetColumnIndex(column);
 
 		const std::string label(1, 'X' + a_axis);
@@ -53,7 +56,7 @@ namespace GalactoseEditor {
 		ImGui::TableSetColumnIndex(column + 1);
 		ImGui::PushItemWidth(-1);
 		const auto& input_label = "##" + label;
-		const bool changed = ImGui::DragFloat(input_label.c_str(), &a_value[a_axis], 0.1f);
+		const bool changed = ImGui::DragFloat(input_label.c_str(), &a_value, 0.1f);
 		ImGui::PopItemWidth();
 
 		if (clicked)
@@ -62,50 +65,109 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
-	bool Inspector::dragVector3(const char* a_label, Vector3& a_value) {
-		ImGui::PushID(a_label);
+	bool Inspector::dragVector(const char* a_label, const int a_axisCount, float* a_value) {
 		ImGui::TableNextRow();
 
 		ImGui::TableSetColumnIndex(0);
 		ImGui::Text(a_label);
 
-		const bool xChanged = dragVector3Axis(0, a_value);
-		const bool yChanged = dragVector3Axis(1, a_value);
-		const bool zChanged = dragVector3Axis(2, a_value);
+		ImGui::TableSetColumnIndex(1);
+		if (ImGui::BeginTable(a_label, a_axisCount * 3 - 1, ImGuiTableFlags_NoPadInnerX)) {
+			//ImGui::PushID(a_label);
 
-		ImGui::PopID();
+			for (int i = 0; i < a_axisCount; ++i) {
+				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
+				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
 
-		return xChanged || yChanged || zChanged;
+				if (i < a_axisCount - 1)
+					ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
+			}
+
+			ImGui::TableNextRow();
+
+			bool changed = false;
+			for (int i = 0; i < a_axisCount; ++i)
+				changed = dragVector3Axis(i, a_value[i]) || changed;
+
+			//ImGui::PopID();
+			ImGui::EndTable();
+
+			return changed;
+		}
+
+		return false;
+	}
+
+	bool Inspector::drawComponentHeader(const char* a_label) {
+		return ImGui::CollapsingHeader(a_label, ImGuiTreeNodeFlags_DefaultOpen);
 	}
 
 	void Inspector::drawTransform() {
+		if (!drawComponentHeader("Transform"))
+			return;
+
 		auto transform = m_sceneData->selectedEntity()->getTransform();
 
 		const float padding = 2 * ImGui::GetStyle().CellPadding.x;
 
-		if (ImGui::BeginTable("Transform", 10, ImGuiTableFlags_NoPadInnerX)) {
-			ImGui::TableSetupColumn("#Label", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("#XPadding", ImGuiTableColumnFlags_WidthFixed, padding);
-			ImGui::TableSetupColumn("#X", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("#XInput", ImGuiTableColumnFlags_WidthStretch);
-			ImGui::TableSetupColumn("#YPadding", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("#Y", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("#YInput", ImGuiTableColumnFlags_WidthStretch);
-			ImGui::TableSetupColumn("#ZPadding", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("#Z", ImGuiTableColumnFlags_WidthFixed);
-			ImGui::TableSetupColumn("#ZInput", ImGuiTableColumnFlags_WidthStretch);
-
+		if (ImGui::BeginTable("Transform", 2, ImGuiTableFlags_SizingStretchProp)) {
 			auto position = transform->localPosition();
-			if (dragVector3("Position", position))
+			if (dragVector("Position", 3, position.data()))
 				transform->setLocalPosition(position);
 
 			auto rotation = transform->localRotation().eulerDegrees();
-			if (dragVector3("Rotation", rotation))
+			if (dragVector("Rotation", 3, rotation.data()))
 				transform->setLocalRotation(Quaternion::fromEulerDegrees(rotation));
 
 			auto scale = transform->localScale();
-			if (dragVector3("Scale", scale))
+			if (dragVector("Scale", 3, scale.data()))
 				transform->setLocalScale(scale);
+
+			ImGui::EndTable();
+		}
+	}
+
+	void Inspector::drawSpriteRenderer() {
+		if (!m_sceneData->selectedEntity()->hasComponent<SpriteRenderer>())
+			return;
+
+		if (!drawComponentHeader("Sprite Renderer"))
+			return;
+
+		auto spriteRenderer = m_sceneData->selectedEntity()->getComponent<SpriteRenderer>();
+		auto& sprite = spriteRenderer->sprite;
+
+		if (ImGui::BeginTable("SpriteRenderer", 2, ImGuiTableFlags_SizingStretchProp)) {
+			// TO DO: set texture
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text("Texture");
+
+			ImGui::TableSetColumnIndex(1);
+			auto texture = sprite.texture();
+			std::string textureName = texture ? texture->filePath() : "Default";
+			ImGui::PushItemWidth(-1);
+			ImGui::InputText("##Texture", textureName.data(), textureName.size(), ImGuiInputTextFlags_ReadOnly);
+			ImGui::PopItemWidth();
+
+			// TO DO: stretch color button
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text("Color");
+
+			ImGui::TableSetColumnIndex(1);
+
+			auto color = sprite.color();
+			if (ImGui::ColorEdit4("##Color", color.data(), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel))
+				sprite.setColor(color);
+
+			auto size = sprite.size();
+			if (dragVector("Size", 2, size.data()))
+				sprite.setSize(size);
+
+			auto pivot = sprite.pivot();
+			if (dragVector("Pivot", 2, pivot.data()))
+				sprite.setPivot(pivot);
 
 			ImGui::EndTable();
 		}

@@ -37,7 +37,7 @@ namespace GalactoseEditor {
 					m_framebuffer->unbind();
 				}
 
-				ImGui::Image(ImTextureID(m_framebuffer->texture(0)->rendererId()), viewportSize, { 0, 1 }, { 1, 0 });
+				ImGui::Image((void*)(intptr_t)m_framebuffer->texture(0)->rendererId(), viewportSize, { 0, 1 }, { 1, 0 });
 			}
 		}
 	}

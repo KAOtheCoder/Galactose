@@ -20,9 +20,11 @@ namespace GalactoseEditor {
 		void onUpdate() override;
 
 	private:
-		bool dragVector3Axis(const int axis, Galactose::Vector3& value);
-		bool dragVector3(const char* label, Galactose::Vector3& value);
+		bool dragVector3Axis(const int axis, float& value);
+		bool dragVector(const char* label, const int axisCount, float* value);
+		bool drawComponentHeader(const char* label);
 		void drawTransform();
+		void drawSpriteRenderer();
 
 		std::shared_ptr<EditorSceneData> m_sceneData;
 	};

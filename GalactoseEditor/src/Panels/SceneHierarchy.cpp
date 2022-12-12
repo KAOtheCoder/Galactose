@@ -14,7 +14,8 @@ namespace GalactoseEditor {
 	void SceneHierarchy::drawEntityNode(Entity* a_entity) {
 		const auto& children = a_entity->getChildren();
 		
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_OpenOnArrow 
+			| ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
 
 		if (children.empty())
 			flags |= ImGuiTreeNodeFlags_Leaf;
