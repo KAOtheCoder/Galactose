@@ -97,6 +97,43 @@ namespace GalactoseEditor {
 		return false;
 	}
 
+	bool Inspector::colorButton(const char* a_label, Vector4& a_color) {
+		drawLabel(a_label);
+
+		ImGui::TableSetColumnIndex(1);
+
+		bool changed = false;
+		const ImVec4 color(a_color.r, a_color.g, a_color.b, a_color.a);
+		auto context = ImGui::GetCurrentContext();
+		
+		if (ImGui::ColorButton(a_label, color, 0, { ImGui::GetContentRegionAvail().x, 0 })) {
+			context->ColorPickerRef = color;
+			ImGui::OpenPopup("picker");
+			const auto& bottomLeft = context->LastItemData.Rect.GetBL();
+			ImGui::SetNextWindowPos({ bottomLeft.x, bottomLeft.y + ImGui::GetStyle().ItemSpacing.y });
+		}
+
+		if (ImGui::BeginPopup("picker"))
+		{
+			if (ImGui::GetCurrentWindow()->BeginCount == 1)
+			{
+				const char* labelEnd = ImGui::FindRenderedTextEnd(a_label);
+				if (a_label != labelEnd)
+				{
+					ImGui::TextEx(a_label, labelEnd);
+					ImGui::Spacing();
+				}
+
+				const ImGuiColorEditFlags flags = ImGuiColorEditFlags_DisplayMask_ | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreviewHalf;
+				changed = ImGui::ColorPicker4("Current", a_color.data(), flags, &context->ColorPickerRef.x);
+			}
+
+			ImGui::EndPopup();
+		}
+
+		return changed;
+	}
+
 	bool Inspector::drawComponentHeader(const char* a_label) {
 		return ImGui::CollapsingHeader(a_label, ImGuiTreeNodeFlags_DefaultOpen);
 	}
@@ -147,13 +184,8 @@ namespace GalactoseEditor {
 			ImGui::InputText("##Texture", textureName.data(), textureName.size(), ImGuiInputTextFlags_ReadOnly);
 			ImGui::PopItemWidth();
 
-			// TO DO: stretch color button
-			drawLabel("Color");
-
-			ImGui::TableSetColumnIndex(1);
-
 			auto color = sprite.color();
-			if (ImGui::ColorEdit4("##Color", color.data(), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel))
+			if (colorButton("Color", color))
 				sprite.setColor(color);
 
 			auto size = sprite.size();
