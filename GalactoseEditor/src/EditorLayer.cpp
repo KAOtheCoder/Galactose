@@ -106,6 +106,9 @@ namespace GalactoseEditor {
 
 			if (ImGui::BeginMenu("Panels"))
 			{
+				if (ImGui::MenuItem("Scene"))
+					m_sceneViewport.setVisible(true);
+
 				if (ImGui::MenuItem("Scene Hierarchy"))
 					m_sceneHierarchy.setVisible(true);
 
