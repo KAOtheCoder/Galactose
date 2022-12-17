@@ -26,6 +26,7 @@ namespace GalactoseEditor {
 		static bool colorButton(const char* descId, Galactose::Vector4& color);
 
 		static bool drawComponentHeader(const char* label);
+
 		void drawTransform();
 		void drawSpriteRenderer();
 

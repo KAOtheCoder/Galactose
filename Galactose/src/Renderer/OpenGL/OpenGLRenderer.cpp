@@ -8,6 +8,30 @@
 #include <glad/glad.h>
 
 namespace Galactose {
+	void debugMessageCallback(
+		GLenum a_source,
+		GLenum a_type,
+		GLuint a_id,
+		GLenum a_severity,
+		GLsizei a_length,
+		const GLchar* a_message,
+		const void* a_userParam) 
+	{
+		std::string severity;
+		switch (a_severity) {
+		case GL_DEBUG_SEVERITY_HIGH: severity = "High";
+			break;
+		case GL_DEBUG_SEVERITY_MEDIUM: severity = "Medium";
+			break;
+		case GL_DEBUG_SEVERITY_LOW: severity = "Low";
+			break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION: severity = "Notification";
+			break;
+		}
+
+		std::cout << "OpenGL " << severity << ": " << a_message << std::endl;
+	}
+
 	OpenGLRenderer::OpenGLRenderer(const std::shared_ptr<Window>& a_window) :
 		Renderer(a_window)
 	{
@@ -23,10 +47,13 @@ namespace Galactose {
 			<< "Vendor: " << glGetString(GL_VENDOR) << std::endl
 			<< "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
-//#ifdef GT_DEBUG
-//		glEnable(GL_DEBUG_OUTPUT);
-//		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-//#endif
+#ifdef GT_DEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(debugMessageCallback, nullptr);
+		// Disable notification messages
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+#endif
 
 		glEnable(GL_DEPTH_TEST);
 
