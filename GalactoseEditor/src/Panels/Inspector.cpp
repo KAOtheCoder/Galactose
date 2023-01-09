@@ -12,6 +12,8 @@
 
 #include <nfd.hpp>
 
+#include <filesystem>
+
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -147,7 +149,7 @@ namespace GalactoseEditor {
 			ImGui::TableNextRow();
 			ImGui::TableSetColumnIndex(0);
 
-			auto input_text = a_path.empty() ? a_emptyText : a_path;
+			auto input_text = a_path.empty() ? a_emptyText : std::filesystem::path(a_path).stem().generic_string();
 			const auto& input_label = std::string("##") + a_label;
 			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 			ImGui::InputText(input_label.c_str(), input_text.data(), input_text.size(), ImGuiInputTextFlags_ReadOnly);
@@ -218,7 +220,6 @@ namespace GalactoseEditor {
 		auto& sprite = spriteRenderer->sprite;
 
 		if (ImGui::BeginTable("SpriteRenderer", 2, ImGuiTableFlags_SizingStretchProp)) {
-			// TO DO: set texture
 			const auto& texture = sprite.texture();
 			auto textureFilePath = texture ? texture->filePath() : "";
 			if (drawFileInput("Texture", textureFilePath, "Default"))
