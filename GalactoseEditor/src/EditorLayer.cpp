@@ -11,6 +11,8 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#include <nfd.hpp>
+
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -45,6 +47,8 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 
+		GT_ASSERT(NFD_Init() == NFD_OKAY, "Failed to initialze NFD");
+
 		const auto entity = Entity::create(m_sceneData->scene().get(), "parent");
 		SceneObject::Ptr<Entity> entityPtr(entity);
 		auto component = entityPtr->addComponent<Component>();
@@ -57,6 +61,8 @@ namespace GalactoseEditor {
 	}
 
 	EditorLayer::~EditorLayer() {
+		NFD_Quit();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();

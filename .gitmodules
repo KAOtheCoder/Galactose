@@ -11,3 +11,6 @@
 	path = GalactoseEditor/vendor/ImGui/ImGui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+[submodule "GalactoseEditor/vendor/NativeFileDialogExtended/NativeFileDialogExtended"]
+	path = GalactoseEditor/vendor/NativeFileDialogExtended/NativeFileDialogExtended
+	url = https://github.com/btzy/nativefiledialog-extended.git

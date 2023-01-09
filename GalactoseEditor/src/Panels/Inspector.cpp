@@ -5,9 +5,12 @@
 #include <Scene/Components/Transform.h>
 #include <Scene/Components/SpriteRenderer.h>
 #include <Renderer/Texture.h>
+#include <Core/Global.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
+
+#include <nfd.hpp>
 
 using namespace Galactose;
 
@@ -134,6 +137,41 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
+	bool Inspector::drawFileInput(const char* a_label, std::string& a_path, const std::string& a_emptyText) {
+		drawLabel(a_label);
+
+		ImGui::TableSetColumnIndex(1);
+		bool changed = false;
+
+		if (ImGui::BeginTable(a_label, 2, ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_SizingStretchProp)) {
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+
+			auto input_text = a_path.empty() ? a_emptyText : a_path;
+			const auto& input_label = std::string("##") + a_label;
+			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
+			ImGui::InputText(input_label.c_str(), input_text.data(), input_text.size(), ImGuiInputTextFlags_ReadOnly);
+			ImGui::PopItemWidth();
+
+			ImGui::TableSetColumnIndex(1);
+			if (ImGui::Button("Choose")) {
+				nfdchar_t* path;
+				nfdfilteritem_t filter = { "Texture", "png" };
+				const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
+				GT_ASSERT(result != NFD_ERROR, NFD_GetError());
+				
+				if (result == NFD_OKAY) {
+					a_path = path;
+					changed = true;
+				}
+			}
+
+			ImGui::EndTable();
+		}
+
+		return changed;
+	}
+
 	bool Inspector::drawComponentHeader(const char* a_label) {
 		return ImGui::CollapsingHeader(a_label, ImGuiTreeNodeFlags_DefaultOpen);
 	}
@@ -175,14 +213,10 @@ namespace GalactoseEditor {
 
 		if (ImGui::BeginTable("SpriteRenderer", 2, ImGuiTableFlags_SizingStretchProp)) {
 			// TO DO: set texture
-			drawLabel("Texture");
-
-			ImGui::TableSetColumnIndex(1);
-			auto texture = sprite.texture();
-			std::string textureName = texture ? texture->filePath() : "Default";
-			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
-			ImGui::InputText("##Texture", textureName.data(), textureName.size(), ImGuiInputTextFlags_ReadOnly);
-			ImGui::PopItemWidth();
+			const auto& texture = sprite.texture();
+			auto textureFilePath = texture ? texture->filePath() : "";
+			if (drawFileInput("Texture", textureFilePath, "Default"))
+				sprite.setTexture(Texture::create(textureFilePath));
 
 			auto color = sprite.color();
 			if (colorButton("Color", color))

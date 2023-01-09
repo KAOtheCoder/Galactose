@@ -65,7 +65,7 @@ project "GLFW"
 			"GLFW/src/win32_thread.h",
 			"GLFW/src/win32_thread.c",
 			"GLFW/src/win32_window.c",
-			"GLFW/src/wgl_context.c",
+			"GLFW/src/wgl_context.c"
 		}
 
 		defines 

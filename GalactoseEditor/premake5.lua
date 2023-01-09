@@ -24,13 +24,15 @@ project "GalactoseEditor"
 		"%{wks.location}/Galactose/vendor/entt/src/entt",
 		"%{wks.location}/Galactose/vendor/GLFW/GLFW/include",
 		"src",
-		"vendor/ImGui/ImGui"
+		"vendor/ImGui/ImGui",
+		"vendor/NativeFileDialogExtended/NativeFileDialogExtended/src/include"
 	}
 
 	links
 	{
 		"Galactose",
-		"ImGui"
+		"ImGui",
+		"NativeFileDialogExtended"
 	}
 
 	filter "system:windows"
@@ -53,5 +55,6 @@ project "GalactoseEditor"
 
 	group "Dependencies"
 		include "GalactoseEditor/vendor/ImGui"
+		include "GalactoseEditor/vendor/NativeFileDialogExtended"
 	group ""
 	
