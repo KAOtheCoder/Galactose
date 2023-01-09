@@ -143,7 +143,7 @@ namespace GalactoseEditor {
 		ImGui::TableSetColumnIndex(1);
 		bool changed = false;
 
-		if (ImGui::BeginTable(a_label, 2, ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_SizingStretchProp)) {
+		if (ImGui::BeginTable(a_label, 3, ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_SizingStretchProp)) {
 			ImGui::TableNextRow();
 			ImGui::TableSetColumnIndex(0);
 
@@ -154,6 +154,12 @@ namespace GalactoseEditor {
 			ImGui::PopItemWidth();
 
 			ImGui::TableSetColumnIndex(1);
+			if (ImGui::Button("X") && !a_path.empty()) {
+				a_path = "";
+				changed = true;
+			}
+
+			ImGui::TableSetColumnIndex(2);
 			if (ImGui::Button("Choose")) {
 				nfdchar_t* path;
 				nfdfilteritem_t filter = { "Texture", "png" };
@@ -216,7 +222,7 @@ namespace GalactoseEditor {
 			const auto& texture = sprite.texture();
 			auto textureFilePath = texture ? texture->filePath() : "";
 			if (drawFileInput("Texture", textureFilePath, "Default"))
-				sprite.setTexture(Texture::create(textureFilePath));
+				sprite.setTexture(textureFilePath.empty() ? nullptr : Texture::create(textureFilePath));
 
 			auto color = sprite.color();
 			if (colorButton("Color", color))
