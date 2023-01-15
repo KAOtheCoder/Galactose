@@ -30,6 +30,7 @@ namespace GalactoseEditor {
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+		io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
 		//io.ConfigViewportsNoAutoMerge = true;
 		//io.ConfigViewportsNoTaskBarIcon = true;
 
@@ -46,6 +47,8 @@ namespace GalactoseEditor {
 		// Setup Platform/Renderer backends
 		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 410");
+
+		//ImGui::SetWindowFontScale(2);
 
 		GT_ASSERT(NFD_Init() == NFD_OKAY, "Failed to initialze NFD");
 

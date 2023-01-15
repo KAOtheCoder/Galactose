@@ -71,8 +71,8 @@ namespace Galactose {
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_rendererId);
 		glBindTexture(GL_TEXTURE_2D, m_rendererId); // Dont remove this line, or texture won't show up
 		glTextureStorage2D(m_rendererId, 1, toGLInternalFormat(m_format), m_width, m_height);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	}
 
 	void OpenGLTexture::setData(const void* a_data) {

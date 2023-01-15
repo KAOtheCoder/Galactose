@@ -20,7 +20,10 @@ namespace GalactoseEditor {
 	Inspector::Inspector(const std::shared_ptr<EditorSceneData>& a_sceneData) :
 		Panel("Inspector"),
 		m_sceneData(a_sceneData)
-	{}
+	{
+		m_icons.emplace("clear", Galactose::Texture::create("assets/textures/clear.png"));
+		m_icons.emplace("folder", Galactose::Texture::create("assets/textures/folder.png"));
+	}
 
 	void Inspector::onUpdate() {
 		auto entity = m_sceneData->selectedEntity();
@@ -139,6 +142,11 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
+	bool Inspector::iconButton(const char* a_icon) {
+		const float font_size = ImGui::GetFontSize();
+		return ImGui::ImageButton(a_icon, (void*)(intptr_t)m_icons[a_icon]->rendererId(), { font_size, font_size }, { 0, 1 }, { 1, 0 });
+	}
+
 	bool Inspector::drawFileInput(const char* a_label, std::string& a_path, const std::string& a_emptyText) {
 		drawLabel(a_label);
 
@@ -156,13 +164,14 @@ namespace GalactoseEditor {
 			ImGui::PopItemWidth();
 
 			ImGui::TableSetColumnIndex(1);
-			if (ImGui::Button("X") && !a_path.empty()) {
+			
+			if (iconButton("clear") && !a_path.empty()) {
 				a_path = "";
 				changed = true;
 			}
 
 			ImGui::TableSetColumnIndex(2);
-			if (ImGui::Button("Choose")) {
+			if (iconButton("folder")) {
 				nfdchar_t* path;
 				nfdfilteritem_t filter = { "Texture", "png" };
 				const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);

@@ -3,11 +3,13 @@
 #include "Panel.h"
 
 #include <memory>
+#include <unordered_map>
 
 struct ImGuiInputTextCallbackData;
 
 namespace Galactose {
 	class Vector4;
+	class Texture;
 }
 
 namespace GalactoseEditor {
@@ -24,7 +26,8 @@ namespace GalactoseEditor {
 		static bool dragVector3Axis(const int axis, float& value);
 		static bool dragVector(const char* label, const int axisCount, float* value);
 		static bool colorButton(const char* descId, Galactose::Vector4& color);
-		static bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
+		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
+		bool iconButton(const char* icon);
 
 		static bool drawComponentHeader(const char* label);
 
@@ -32,5 +35,6 @@ namespace GalactoseEditor {
 		void drawSpriteRenderer();
 
 		std::shared_ptr<EditorSceneData> m_sceneData;
+		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 	};
 }
