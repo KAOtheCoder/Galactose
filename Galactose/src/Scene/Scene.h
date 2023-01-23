@@ -14,6 +14,8 @@ namespace Galactose {
 
 		void render(const Camera& camera);
 
+		void save(const std::string& filePath) const;
+
 	private:
 		Entity* getEntity(const entt::entity id) const;
 		std::vector<Entity*> getEntities(const std::vector<entt::entity>& ids) const;

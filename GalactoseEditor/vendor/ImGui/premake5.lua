@@ -24,7 +24,6 @@ project "ImGui"
 	
 	filter "system:windows"
 		systemversion "latest"
-		
 
 	filter "system:linux"
 		pic "On"

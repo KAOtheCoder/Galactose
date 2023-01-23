@@ -4,6 +4,10 @@
 #include "Components/SpriteRenderer.h"
 #include "Renderer/Renderer.h"
 
+#include <yaml-cpp/yaml.h>
+
+#include <fstream>
+
 namespace Galactose {
 	Scene::Scene(const std::string& a_name) :
 		m_name(a_name)
@@ -37,5 +41,15 @@ namespace Galactose {
 
 			renderer->drawSprite(transform.localToWorldMatrix(), spriteRenderer.sprite);
 		}
+	}
+
+	void Scene::save(const std::string& filePath) const {
+		YAML::Emitter emitter;
+		emitter << YAML::BeginMap
+			<< YAML::Key << "name" << YAML::Value << m_name
+			<< YAML::EndMap;
+
+		std::ofstream fileStream(filePath);
+		fileStream << emitter.c_str();
 	}
 }

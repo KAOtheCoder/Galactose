@@ -61,6 +61,7 @@ namespace GalactoseEditor {
 		GT_ASSERT(child->parent() == entityPtr.get(), "");
 		//child->setParent(nullptr);
 		//GT_ASSERT(entity->getChildren().empty(), "");
+		//m_sceneData->scene()->save("scene.yaml");
 	}
 
 	EditorLayer::~EditorLayer() {

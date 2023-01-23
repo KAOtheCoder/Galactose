@@ -20,14 +20,16 @@ project "Galactose"
 
 	defines
 	{
-		"GLFW_INCLUDE_NONE"
+		"GLFW_INCLUDE_NONE",
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	links
 	{
 		"GLFW",
 		"Glad",
-		"opengl32.lib"
+		"opengl32.lib",
+		"yaml-cpp"
 	}
 
 	includedirs
@@ -37,7 +39,8 @@ project "Galactose"
 		"vendor/glad/include",
 		"vendor/glm",
 		"vendor/stb",
-		"vendor/entt/src/entt"
+		"vendor/entt/src/entt",
+		"vendor/yaml-cpp/yaml-cpp/include"
 	}
 
 	filter "system:windows"
@@ -61,4 +64,6 @@ project "Galactose"
 	group "Dependencies"
 		include "Galactose/vendor/GLFW"
 		include "Galactose/vendor/glad"
+		include "Galactose/vendor/yaml-cpp"
 	group ""
+	

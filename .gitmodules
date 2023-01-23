@@ -14,3 +14,6 @@
 [submodule "GalactoseEditor/vendor/NativeFileDialogExtended/NativeFileDialogExtended"]
 	path = GalactoseEditor/vendor/NativeFileDialogExtended/NativeFileDialogExtended
 	url = https://github.com/btzy/nativefiledialog-extended.git
+[submodule "Galactose/vendor/yaml-cpp/yaml-cpp"]
+	path = Galactose/vendor/yaml-cpp/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
