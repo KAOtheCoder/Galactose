@@ -3,6 +3,8 @@
 #include "Components/Transform.h"
 #include "Core/Global.h"
 
+#include <yaml-cpp/yaml.h>
+
 namespace Galactose {
 	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name) {
 		GT_ASSERT(a_scene, "Scene is null.");
@@ -65,5 +67,37 @@ namespace Galactose {
 
 	std::vector<Entity*> Entity::getChildren() const {
 		return m_data.scene->getEntities(m_children);
+	}
+
+	void Entity::save(YAML::Emitter& a_emitter) const {
+		a_emitter << YAML::BeginMap 
+			<< YAML::Key << GT_STRINGIFY(Entity) << YAML::Value << YAML::BeginMap
+			<< YAML::Key << "name" << YAML::Value << m_name
+			<< YAML::Key << "components" << YAML::Value << YAML::BeginSeq;
+
+		for (const auto component : getComponents())
+			component->save(a_emitter);
+
+		a_emitter << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
+	}
+
+	Component* Entity::getComponent(const entt::id_type id) const {
+		const auto pool = m_data.scene->m_registry.storage(id);
+
+		if (pool && pool->contains(m_data.entityId))
+			return static_cast<Component*>(pool->get(m_data.entityId));
+
+		return nullptr;
+	}
+
+	std::vector<Component*> Entity::getComponents() const {
+		std::vector<Component*> components;
+		components.reserve(m_components.size() + 1); // +1 for Transform
+		components.push_back(getTransform());
+
+		for (const auto componentId : m_components)
+			components.push_back(getComponent(componentId));
+
+		return components;
 	}
 }

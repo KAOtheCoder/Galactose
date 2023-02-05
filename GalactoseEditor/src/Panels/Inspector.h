@@ -5,10 +5,11 @@
 #include <memory>
 #include <unordered_map>
 
+#include <Math/Math.h>
+
 struct ImGuiInputTextCallbackData;
 
 namespace Galactose {
-	class Vector4;
 	class Texture;
 }
 

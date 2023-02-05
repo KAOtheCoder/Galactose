@@ -2,6 +2,10 @@
 
 #include "SceneObject.h"
 
+namespace YAML {
+	class Emitter;
+}
+
 namespace Galactose {
 	class Scene;
 	class Component;
@@ -38,6 +42,10 @@ namespace Galactose {
 			auto& component = m_data.scene->m_registry.emplace<C>(m_data.entityId, std::forward<Args>(args)...);
 			auto ptr = &component;
 			static_cast<SceneObject*>(ptr)->m_data = m_data;
+
+			if constexpr (!std::is_same_v<C, Transform>)
+				m_components.push_back(entt::type_id<C>().hash());
+
 			return ptr;
 		}
 
@@ -50,11 +58,18 @@ namespace Galactose {
 
 		Transform* getTransform() const;
 
+		std::vector<Component*> getComponents() const;
+
+		void save(YAML::Emitter& emitter) const;
+
 	private:
 		static Entity* createOrphan(Scene* scene, const std::string& name = "");
+
+		Component* getComponent(const entt::id_type id) const;
 
 		std::string m_name;
 		entt::entity m_parent = entt::null;
 		std::vector<entt::entity> m_children;
+		std::vector<entt::id_type> m_components;
 	};
 }

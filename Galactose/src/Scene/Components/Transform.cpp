@@ -1,8 +1,8 @@
 #include "Transform.h"
 #include "Core/Global.h"
+#include "Math/MathStream.h"
 
 namespace Galactose {
-	// TO DO: cache matrices
 	Matrix4x4 Transform::localMatrix() const {
 		auto adjustedScale = m_localScale;
 
@@ -114,5 +114,14 @@ namespace Galactose {
 	void Transform::setLocalScale(const Vector3& a_scale) {
 		m_localScale = a_scale;
 		m_dirty = true;
+	}
+
+	void Transform::save(YAML::Emitter& a_emitter) const {
+		a_emitter << YAML::BeginMap
+			<< YAML::Key << GT_STRINGIFY(Transform) << YAML::Value << YAML::BeginMap
+			<< YAML::Key << "localPosition" << YAML::Value << m_localPosition
+			<< YAML::Key << "localRotation" << YAML::Value << m_localRotation
+			<< YAML::Key << "localScale" << YAML::Value << m_localScale
+			<< YAML::EndMap << YAML::EndMap;
 	}
 }

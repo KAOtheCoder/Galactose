@@ -9,70 +9,66 @@
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtx/transform.hpp>
 
-#define GT_GLM_EXTEND_IMP(_class, _baseClass) \
-	public:\
-		using glm::_baseClass::_baseClass;\
-		std::string toString() const { return glm::to_string(base()); }\
-		const float* data() const { return glm::value_ptr(base()); }\
-		float* data() { return const_cast<float*>(glm::value_ptr(base())); }\
-	private:\
-		const glm::_baseClass& base() const { return *static_cast<const glm::_baseClass*>(this); }\
-
-#define GT_GLM_EXTEND(_class, _baseClass) class _class : public glm::_baseClass {\
-	GT_GLM_EXTEND_IMP(_class, _baseClass) \
-}
-
-#define GT_GLM_EXTEND_VECTOR_IMP(_class, _baseClass) \
-	GT_GLM_EXTEND_IMP(_class, _baseClass) \
-public:\
-	static float dot(const _class& a_lhs, const _class& a_rhs) { return glm::dot(a_lhs.base(), a_rhs.base()); }\
-
-#define GT_GLM_EXTEND_VECTOR(_class, _baseClass) class _class : public glm::_baseClass {\
-	GT_GLM_EXTEND_VECTOR_IMP(_class, _baseClass) \
-}
-
 namespace Galactose {
-	namespace Math {
-		static float degreesToRadians(const float a_degrees) { return glm::radians(a_degrees); }
-		static float radiansToDegrees(const float a_radians) { return glm::degrees(a_radians); }
+	namespace internal {
+		template<typename T>
+		class GlmExtend : public T {
+		public:
+			using T::T;
+			std::string toString() const { return glm::to_string(base()); }
+			const float* data() const { return glm::value_ptr(base()); }
+			float* data() { return const_cast<float*>(glm::value_ptr(base())); }
+
+		protected:
+			const T& base() const { return *static_cast<const T*>(this); }
+		};
+
+		template<glm::length_t L>
+		class Vector : public GlmExtend<glm::vec<L, float>> {
+		public:
+			using GlmExtend<glm::vec<L, float>>::GlmExtend;
+			static float dot(const Vector<L>& a_lhs, const Vector<L>& a_rhs) { return glm::dot(a_lhs.base(), a_rhs.base()); }
+		};
 	}
 
-	GT_GLM_EXTEND_VECTOR(Vector2, vec2);
-	GT_GLM_EXTEND_VECTOR(Vector4, vec4);
-	
-	class Vector3 : public glm::vec3 {
-		GT_GLM_EXTEND_VECTOR_IMP(Vector3, vec3)
+	typedef internal::Vector<2> Vector2;
+	typedef internal::Vector<4> Vector4;
 
+	class Vector3 : public internal::Vector<3> {
 	public:
+		using Vector<3>::Vector;
+
 		static Vector3 cross(const Vector3& a_lhs, const Vector3& a_rhs) { return glm::cross(a_lhs.base(), a_rhs.base()); }
+		
+		friend class Quaternion;
 	};
 
-	class Matrix4x4 : public glm::mat4 {
-		GT_GLM_EXTEND_IMP(Matrix4x4, mat4)
-
+	class Matrix4x4 : public internal::GlmExtend<glm::mat4> {
 	public:
+		using GlmExtend<glm::mat4>::GlmExtend;
+
 		static Matrix4x4 translate(const Vector3& a_translation) { return glm::translate(a_translation); }
 		static Matrix4x4 scale(const Vector3& a_scale) { return glm::scale(a_scale); }
 
 		Matrix4x4 affineInverse() const { return glm::affineInverse(base()); }
 	};
 
-	class Quaternion : public glm::quat {
-		GT_GLM_EXTEND_IMP(Quaternion, quat)
-
+	class Quaternion : public internal::GlmExtend<glm::quat> {
 	public:
-		static Quaternion fromEulerDegrees(const Vector3& a_angles) { return Quaternion(glm::radians((glm::vec3)a_angles)); }
+		using GlmExtend<glm::quat>::GlmExtend;
 
-		Quaternion(const Matrix4x4& a_matrix) : glm::quat(glm::quat_cast(a_matrix)) {}
+		static Quaternion fromEulerDegrees(const Vector3& a_angles) { return Quaternion(glm::radians(a_angles.base())); }
+
+		Quaternion(const Matrix4x4& a_matrix) : GlmExtend<glm::quat>(glm::quat_cast(a_matrix)) {}
 
 		Matrix4x4 toMatrix() const { return glm::toMat4(*this); }
 		Vector3 eulerRadians() const { return glm::eulerAngles(*this); }
-		Vector3 eulerDegrees() const { return glm::degrees((glm::vec3)eulerRadians()); }
+		Vector3 eulerDegrees() const { return glm::degrees(eulerRadians().base()); }
 		Quaternion inverse() const { return glm::inverse(base()); }
 	};
-}
 
-#undef GT_GLM_EXTEND_IMP
-#undef GT_GLM_EXTEND
-#undef GT_GLM_EXTEND_VECTOR_IMP
-#undef GT_GLM_EXTEND_VECTOR
+	namespace Math {
+		static float degreesToRadians(const float a_degrees) { return glm::radians(a_degrees); }
+		static float radiansToDegrees(const float a_radians) { return glm::degrees(a_radians); }
+	}
+}

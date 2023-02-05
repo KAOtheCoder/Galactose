@@ -4,11 +4,10 @@
 #include <unordered_map>
 #include <string>
 
+#include "Math/Math.h"
+
 namespace Galactose {
 	class Matrix4x4;
-	class Vector2;
-	class Vector3;
-	class Vector4;
 
 	class Shader {
 	public:

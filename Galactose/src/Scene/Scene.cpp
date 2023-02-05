@@ -47,7 +47,11 @@ namespace Galactose {
 		YAML::Emitter emitter;
 		emitter << YAML::BeginMap
 			<< YAML::Key << "name" << YAML::Value << m_name
-			<< YAML::EndMap;
+			<< YAML::Key << "entities" << YAML::Value << YAML::BeginSeq;
+		
+		m_registry.each([&](const auto id) { getEntity(id)->save(emitter); });
+		
+		emitter << YAML::EndSeq << YAML::EndMap;
 
 		std::ofstream fileStream(filePath);
 		fileStream << emitter.c_str();

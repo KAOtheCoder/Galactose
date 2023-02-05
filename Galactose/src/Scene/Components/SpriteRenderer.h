@@ -9,5 +9,7 @@ namespace Galactose {
 		SpriteRenderer() = default;
 		
 		Sprite sprite;
+
+		void save(YAML::Emitter& emitter) const override;
 	};
 }
