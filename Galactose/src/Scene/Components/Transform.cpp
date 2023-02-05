@@ -116,12 +116,13 @@ namespace Galactose {
 		m_dirty = true;
 	}
 
-	void Transform::save(YAML::Emitter& a_emitter) const {
-		a_emitter << YAML::BeginMap
-			<< YAML::Key << GT_STRINGIFY(Transform) << YAML::Value << YAML::BeginMap
-			<< YAML::Key << "localPosition" << YAML::Value << m_localPosition
+	void Transform::save(YAML::Emitter& a_out) const {
+		beginSave(a_out, GT_STRINGIFY(Transform));
+
+		a_out << YAML::Key << "localPosition" << YAML::Value << m_localPosition
 			<< YAML::Key << "localRotation" << YAML::Value << m_localRotation
-			<< YAML::Key << "localScale" << YAML::Value << m_localScale
-			<< YAML::EndMap << YAML::EndMap;
+			<< YAML::Key << "localScale" << YAML::Value << m_localScale;
+		
+		endSave(a_out);
 	}
 }

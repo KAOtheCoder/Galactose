@@ -35,3 +35,5 @@ namespace YAML {
 		return out;
 	}
 }
+
+#undef GT_MATH_CONVERT

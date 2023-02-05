@@ -3,6 +3,9 @@
 **/bin-int/
 **.exe
 
+# Text
+**.yaml
+
 # Visual Studio
 .vs/
 **.sln

@@ -11,6 +11,10 @@ namespace Galactose {
 	public:
 		Entity* entity() const;
 
-		virtual void save(YAML::Emitter& emitter) const = 0;
+		virtual void save(YAML::Emitter& out) const = 0;
+
+	protected:
+		static void beginSave(YAML::Emitter& out, const char* name);
+		static void endSave(YAML::Emitter& out);
 	};
 }
