@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SceneObject.h"
+#include "Core/Uuid.h"
 
 namespace YAML {
 	class Emitter;
@@ -13,10 +14,10 @@ namespace Galactose {
 
 	class Entity : public SceneObject {
 	public:
-		static Entity* create(Scene* scene, const std::string& name = "");
-		static Entity* create(Entity* parent, const std::string& name = "");
+		static Entity* create(Scene* scene, const std::string& name = "", const Uuid& id = Uuid::create());
+		static Entity* create(Entity* parent, const std::string& name = "", const Uuid& id = Uuid::create());
 
-		Entity(const std::string& name = "");
+		Entity(const std::string& name = "", const Uuid& id = Uuid::create());
 
 		std::string name() const { return m_name; }
 		void setName(const std::string& a_name) { m_name = a_name; }
@@ -63,10 +64,11 @@ namespace Galactose {
 		void save(YAML::Emitter& emitter) const;
 
 	private:
-		static Entity* createOrphan(Scene* scene, const std::string& name = "");
+		static Entity* createOrphan(Scene* scene, const std::string& name = "", const Uuid& id = Uuid::create());
 
 		Component* getComponent(const entt::id_type id) const;
 
+		Uuid m_id;
 		std::string m_name;
 		entt::entity m_parent = entt::null;
 		std::vector<entt::entity> m_children;

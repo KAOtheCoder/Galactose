@@ -6,11 +6,11 @@
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
-	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name) {
+	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name, const Uuid& a_id) {
 		GT_ASSERT(a_scene, "Scene is null.");
 		const auto id = a_scene->m_registry.create();
 
-		auto& entity = a_scene->m_registry.emplace<Entity>(id, a_name);
+		auto& entity = a_scene->m_registry.emplace<Entity>(id, a_name, a_id);
 		entity.m_data = { a_scene, id };
 
 		auto& transform = a_scene->m_registry.emplace<Transform>(id);
@@ -19,23 +19,24 @@ namespace Galactose {
 		return &entity;
 	}
 
-	Entity* Entity::create(Scene* a_scene, const std::string& a_name) {
-		const auto entity = createOrphan(a_scene, a_name);
+	Entity* Entity::create(Scene* a_scene, const std::string& a_name, const Uuid& a_id) {
+		const auto entity = createOrphan(a_scene, a_name, a_id);
 		a_scene->m_rootEntities.push_back(entity->m_data.entityId);
 
 		return entity;
 	}
 
-	Entity* Entity::create(Entity* a_parent, const std::string& a_name) {
+	Entity* Entity::create(Entity* a_parent, const std::string& a_name, const Uuid& a_id) {
 		GT_ASSERT(a_parent, std::string("Parent can't be null, use '") + GT_STRINGIFY(Entity::create(Scene*)) + "' to create root entity.");
-		auto entity = createOrphan(a_parent->m_data.scene, a_name);
+		auto entity = createOrphan(a_parent->m_data.scene, a_name, a_id);
 		entity->m_parent = a_parent->m_data.entityId;
 		a_parent->m_children.push_back(entity->m_data.entityId);
 
 		return entity;
 	}
 
-	Entity::Entity(const std::string& a_name) :
+	Entity::Entity(const std::string& a_name, const Uuid& a_id) :
+		m_id(a_id),
 		m_name(a_name) 
 	{}
 
@@ -72,6 +73,7 @@ namespace Galactose {
 	void Entity::save(YAML::Emitter& a_emitter) const {
 		a_emitter << YAML::BeginMap 
 			<< YAML::Key << GT_STRINGIFY(Entity) << YAML::Value << YAML::BeginMap
+			<< YAML::Key << "id" << YAML::Value << m_id.toHex()
 			<< YAML::Key << "name" << YAML::Value << m_name
 			<< YAML::Key << "components" << YAML::Value << YAML::BeginSeq;
 
