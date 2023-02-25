@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Math.h"
+#include "Math/Math.h"
+#include "Core/Uuid.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -24,16 +25,26 @@
 	}\
 
 namespace YAML {
-	GT_MATH_CONVERT(Galactose::Vector2);
-	GT_MATH_CONVERT(Galactose::Vector3);
-	GT_MATH_CONVERT(Galactose::Vector4);
-	GT_MATH_CONVERT(Galactose::Quaternion);
-
 	template <typename T>
 	Emitter& operator<<(Emitter& out, const T& rhs) {
 		out << convert<T>::encode(rhs);
 		return out;
 	}
+
+	GT_MATH_CONVERT(Galactose::Vector2);
+	GT_MATH_CONVERT(Galactose::Vector3);
+	GT_MATH_CONVERT(Galactose::Vector4);
+	GT_MATH_CONVERT(Galactose::Quaternion);
+
+	template<>
+	struct convert<Galactose::Uuid> {
+		static Node encode(const Galactose::Uuid& a_uuid) { return Node(a_uuid); }
+
+		static bool decode(const Node& a_node, Galactose::Uuid& a_uuid) {
+			a_uuid = Galactose::Uuid::fromHex(a_node.Scalar());
+			return a_uuid.isValid();
+		}
+	};
 }
 
 #undef GT_MATH_CONVERT

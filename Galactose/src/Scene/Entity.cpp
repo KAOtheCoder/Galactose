@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "Components/Transform.h"
 #include "Core/Global.h"
-
+#include "Scene/Serialize.h"
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
@@ -73,7 +73,7 @@ namespace Galactose {
 	void Entity::save(YAML::Emitter& a_emitter) const {
 		a_emitter << YAML::BeginMap 
 			<< YAML::Key << GT_STRINGIFY(Entity) << YAML::Value << YAML::BeginMap
-			<< YAML::Key << "id" << YAML::Value << m_id.toHex()
+			<< YAML::Key << "id" << YAML::Value << m_id
 			<< YAML::Key << "name" << YAML::Value << m_name
 			<< YAML::Key << "components" << YAML::Value << YAML::BeginSeq;
 

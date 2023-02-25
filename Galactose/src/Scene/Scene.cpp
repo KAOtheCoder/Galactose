@@ -13,8 +13,7 @@ namespace Galactose {
 		m_name(a_name)
 	{}
 
-	Entity* Scene::getEntity(const entt::entity id) const { 
-		// const_cast :(
+	Entity* Scene::getEntity(const entt::entity id) const {
 		return const_cast<Entity*>(&(m_registry.get<Entity>(id)));
 	}
 

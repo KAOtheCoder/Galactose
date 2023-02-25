@@ -1,6 +1,6 @@
 #include "Transform.h"
 #include "Core/Global.h"
-#include "Math/MathStream.h"
+#include "Scene/Serialize.h"
 
 namespace Galactose {
 	Matrix4x4 Transform::localMatrix() const {

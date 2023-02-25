@@ -11,6 +11,7 @@ namespace Galactose {
 
 		Uuid(const uint64_t a_id);
 
+		bool isValid() const { return m_id != 0 && m_id != ULLONG_MAX; }
 		std::string toHex() const;
 
 	private:
