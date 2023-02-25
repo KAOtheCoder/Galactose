@@ -9,12 +9,17 @@ namespace YAML {
 namespace Galactose {
 	class Component : public SceneObject {
 	public:
-		Entity* entity() const;
+		Entity* entity() const { return m_entity; }
 
 		virtual void save(YAML::Emitter& out) const = 0;
 
 	protected:
 		static void beginSave(YAML::Emitter& out, const char* name);
 		static void endSave(YAML::Emitter& out);
+
+	private:
+		Entity* m_entity;
+
+		friend class Entity;
 	};
 }

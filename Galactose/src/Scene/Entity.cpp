@@ -8,29 +8,29 @@
 namespace Galactose {
 	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name, const Uuid& a_id) {
 		GT_ASSERT(a_scene, "Scene is null.");
-		const auto id = a_scene->m_registry.create();
+		const auto entityId = a_scene->m_registry.create();
 
-		auto& entity = a_scene->m_registry.emplace<Entity>(id, a_name, a_id);
-		entity.m_data = { a_scene, id };
+		auto& entity = a_scene->m_registry.emplace<Entity>(entityId, a_name, a_id);
+		entity.m_scene = a_scene;
+		entity.m_entityId = entityId;
 
-		auto& transform = a_scene->m_registry.emplace<Transform>(id);
-		transform.m_data = { a_scene, id };
+		entity.addComponent<Transform>();
 
 		return &entity;
 	}
 
 	Entity* Entity::create(Scene* a_scene, const std::string& a_name, const Uuid& a_id) {
 		const auto entity = createOrphan(a_scene, a_name, a_id);
-		a_scene->m_rootEntities.push_back(entity->m_data.entityId);
+		a_scene->m_rootEntities.push_back(entity);
 
 		return entity;
 	}
 
 	Entity* Entity::create(Entity* a_parent, const std::string& a_name, const Uuid& a_id) {
 		GT_ASSERT(a_parent, std::string("Parent can't be null, use '") + GT_STRINGIFY(Entity::create(Scene*)) + "' to create root entity.");
-		auto entity = createOrphan(a_parent->m_data.scene, a_name, a_id);
-		entity->m_parent = a_parent->m_data.entityId;
-		a_parent->m_children.push_back(entity->m_data.entityId);
+		auto entity = createOrphan(a_parent->m_scene, a_name, a_id);
+		entity->m_parent = a_parent;
+		a_parent->m_children.push_back(entity);
 
 		return entity;
 	}
@@ -41,33 +41,29 @@ namespace Galactose {
 	{}
 
 	Transform* Entity::getTransform() const {
-		return &(m_data.scene->m_registry.get<Transform>(m_data.entityId));
+		return &(m_scene->m_registry.get<Transform>(m_entityId));
 	}
 
 	void Entity::setParent(Entity* a_parent) {
 		if (a_parent == parent())
 			return;
 
-		GT_ASSERT(!a_parent || a_parent->m_data.entityId != m_data.entityId, "Entity can't be parent of itself.");
-		GT_ASSERT(!a_parent || a_parent->m_data.scene == m_data.scene, "Moving entities across scenes is not allowed.");
+		GT_ASSERT(!a_parent || a_parent->m_entityId != m_entityId, "Entity can't be parent of itself.");
+		GT_ASSERT(!a_parent || a_parent->m_scene == m_scene, "Moving entities across scenes is not allowed.");
 
-		auto& siblings = m_parent == entt::null ? m_data.scene->m_rootEntities : m_data.scene->getEntity(m_parent)->m_children;
-		const auto& iter = std::find(siblings.begin(), siblings.end(), m_data.entityId);
+		auto& siblings = m_parent ? m_parent->m_children : m_scene->m_rootEntities;
+		const auto& iter = std::find(siblings.begin(), siblings.end(), this);
 		GT_ASSERT(iter != siblings.end(), "Cannot find entity id in parent.");
 		siblings.erase(iter);
 
 		if (a_parent) {
-			a_parent->m_children.push_back(m_data.entityId);
-			m_parent = a_parent->m_data.entityId;
+			a_parent->m_children.push_back(this);
+			m_parent = a_parent;
 		}
 		else {
-			m_data.scene->m_rootEntities.push_back(m_data.entityId);
-			m_parent = entt::null;
+			m_scene->m_rootEntities.push_back(this);
+			m_parent = nullptr;
 		}
-	}
-
-	std::vector<Entity*> Entity::getChildren() const {
-		return m_data.scene->getEntities(m_children);
 	}
 
 	void Entity::save(YAML::Emitter& a_emitter) const {
@@ -84,10 +80,10 @@ namespace Galactose {
 	}
 
 	Component* Entity::getComponent(const entt::id_type id) const {
-		const auto pool = m_data.scene->m_registry.storage(id);
+		const auto pool = m_scene->m_registry.storage(id);
 
-		if (pool && pool->contains(m_data.entityId))
-			return static_cast<Component*>(pool->get(m_data.entityId));
+		if (pool && pool->contains(m_entityId))
+			return static_cast<Component*>(pool->get(m_entityId));
 
 		return nullptr;
 	}

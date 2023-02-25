@@ -10,7 +10,7 @@ namespace Galactose {
 	public:
 		Scene(const std::string& name);
 
-		std::vector<Entity*> getRootEntites() const { return getEntities(m_rootEntities); }
+		std::vector<Entity*> rootEntites() const { return m_rootEntities; }
 
 		void render(const Camera& camera);
 
@@ -22,7 +22,7 @@ namespace Galactose {
 
 		entt::registry m_registry;
 		std::string m_name;
-		std::vector<entt::entity> m_rootEntities;
+		std::vector<Entity*> m_rootEntities;
 
 		friend class Entity;
 		friend class Component;

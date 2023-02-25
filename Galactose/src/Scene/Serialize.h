@@ -38,7 +38,7 @@ namespace YAML {
 
 	template<>
 	struct convert<Galactose::Uuid> {
-		static Node encode(const Galactose::Uuid& a_uuid) { return Node(a_uuid); }
+		static Node encode(const Galactose::Uuid& a_uuid) { return Node(a_uuid.toHex()); }
 
 		static bool decode(const Node& a_node, Galactose::Uuid& a_uuid) {
 			a_uuid = Galactose::Uuid::fromHex(a_node.Scalar());

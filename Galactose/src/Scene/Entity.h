@@ -19,18 +19,20 @@ namespace Galactose {
 
 		Entity(const std::string& name = "", const Uuid& id = Uuid::create());
 
+		Scene* scene() const { return m_scene; }
+
 		std::string name() const { return m_name; }
 		void setName(const std::string& a_name) { m_name = a_name; }
 
-		Entity* parent() const { return m_parent == entt::null ? nullptr : m_data.scene->getEntity(m_parent); }
+		Entity* parent() const { return m_parent; }
 		void setParent(Entity* parent);
 
-		std::vector<Entity*> getChildren() const;
+		std::vector<Entity*> children() const { return m_children; }
 
 		template <class C>
 		bool hasComponent() const { 
 			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
-			return m_data.scene->m_registry.any_of<C>(m_data.entityId); 
+			return m_scene->m_registry.any_of<C>(m_entityId); 
 		}
 
 		template <class C, typename... Args>
@@ -40,9 +42,9 @@ namespace Galactose {
 			if (hasComponent<C>())
 				return nullptr;
 
-			auto& component = m_data.scene->m_registry.emplace<C>(m_data.entityId, std::forward<Args>(args)...);
+			auto& component = m_scene->m_registry.emplace<C>(m_entityId, std::forward<Args>(args)...);
 			auto ptr = &component;
-			static_cast<SceneObject*>(ptr)->m_data = m_data;
+			static_cast<Component*>(ptr)->m_entity = this;
 
 			if constexpr (!std::is_same_v<C, Transform>)
 				m_components.push_back(entt::type_id<C>().hash());
@@ -54,7 +56,7 @@ namespace Galactose {
 		C* getComponent() const {
 			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
 
-			return m_data.scene->m_registry.try_get<C>(m_data.entityId);
+			return m_scene->m_registry.try_get<C>(m_entityId);
 		}
 
 		Transform* getTransform() const;
@@ -68,10 +70,12 @@ namespace Galactose {
 
 		Component* getComponent(const entt::id_type id) const;
 
+		Scene* m_scene = nullptr;
+		entt::entity m_entityId = entt::null;
 		Uuid m_id;
 		std::string m_name;
-		entt::entity m_parent = entt::null;
-		std::vector<entt::entity> m_children;
+		Entity* m_parent = nullptr;
+		std::vector<Entity*> m_children;
 		std::vector<entt::id_type> m_components;
 	};
 }

@@ -12,7 +12,7 @@ namespace GalactoseEditor {
 	{}
 
 	void SceneHierarchy::drawEntityNode(Entity* a_entity) {
-		const auto& children = a_entity->getChildren();
+		const auto& children = a_entity->children();
 		
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_OpenOnArrow 
 			| ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
@@ -39,7 +39,7 @@ namespace GalactoseEditor {
 	void SceneHierarchy::onUpdate() {
 		const auto& scene = m_sceneData->scene();
 		if (scene) {
-			for (const auto entity : scene->getRootEntites())
+			for (const auto entity : scene->rootEntites())
 				drawEntityNode(entity);
 		}
 	}
