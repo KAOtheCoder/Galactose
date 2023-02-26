@@ -5,11 +5,14 @@
 
 namespace Galactose {
 	class SpriteRenderer : public Component {
+		GT_COMPONENT(SpriteRenderer)
+
 	public:
 		SpriteRenderer() = default;
 		
 		Sprite sprite;
 
-		void save(YAML::Emitter& emitter) const override;
+	protected:
+		void saveContent(YAML::Emitter& emitter) const override;
 	};
 }

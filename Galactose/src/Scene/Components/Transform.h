@@ -5,6 +5,8 @@
 
 namespace Galactose {
 	class Transform : public Component {
+		GT_COMPONENT(Transform)
+	
 	public:
 		Transform() = default;
 
@@ -28,7 +30,8 @@ namespace Galactose {
 		Matrix4x4 localToWorldMatrix() const;
 		Matrix4x4 worldToLocalMatrix() const { return localToWorldMatrix().affineInverse(); }
 
-		void save(YAML::Emitter& out) const override;
+	protected:
+		void saveContent(YAML::Emitter& out) const override;
 
 	private:
 		static void decomposeAffine(const Matrix4x4& transform, Vector3& position, Quaternion& rotation, Vector3& scale);

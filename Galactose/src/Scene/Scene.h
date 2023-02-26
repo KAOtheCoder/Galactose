@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Uuid.h"
+
 #include <entity/registry.hpp>
 
 namespace Galactose {
@@ -15,6 +17,9 @@ namespace Galactose {
 		void render(const Camera& camera);
 
 		void save(const std::string& filePath) const;
+		bool load(const std::string& filePath);
+
+		Entity* getEntity(const Uuid& a_uuid) const;
 
 	private:
 		Entity* getEntity(const entt::entity id) const;
@@ -23,6 +28,7 @@ namespace Galactose {
 		entt::registry m_registry;
 		std::string m_name;
 		std::vector<Entity*> m_rootEntities;
+		std::unordered_map<Uuid, Entity*> m_entityMap;
 
 		friend class Entity;
 		friend class Component;

@@ -1,5 +1,4 @@
 #include "Transform.h"
-#include "Core/Global.h"
 #include "Scene/Serialize.h"
 
 namespace Galactose {
@@ -116,13 +115,9 @@ namespace Galactose {
 		m_dirty = true;
 	}
 
-	void Transform::save(YAML::Emitter& a_out) const {
-		beginSave(a_out, GT_STRINGIFY(Transform));
-
+	void Transform::saveContent(YAML::Emitter& a_out) const {
 		a_out << YAML::Key << "localPosition" << YAML::Value << m_localPosition
 			<< YAML::Key << "localRotation" << YAML::Value << m_localRotation
 			<< YAML::Key << "localScale" << YAML::Value << m_localScale;
-		
-		endSave(a_out);
 	}
 }

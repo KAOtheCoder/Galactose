@@ -6,38 +6,38 @@
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
-	Entity* Entity::createOrphan(Scene* a_scene, const std::string& a_name, const Uuid& a_id) {
+	Entity* Entity::createOrphan(Scene* a_scene, const Uuid& a_uuid) {
 		GT_ASSERT(a_scene, "Scene is null.");
 		const auto entityId = a_scene->m_registry.create();
 
-		auto& entity = a_scene->m_registry.emplace<Entity>(entityId, a_name, a_id);
-		entity.m_scene = a_scene;
-		entity.m_entityId = entityId;
+		auto entity = &(a_scene->m_registry.emplace<Entity>(entityId, a_uuid));
+		entity->m_scene = a_scene;
+		entity->m_entityId = entityId;
+		a_scene->m_entityMap[a_uuid] = entity;
 
-		entity.addComponent<Transform>();
+		entity->addComponent<Transform>();
 
-		return &entity;
+		return entity;
 	}
 
-	Entity* Entity::create(Scene* a_scene, const std::string& a_name, const Uuid& a_id) {
-		const auto entity = createOrphan(a_scene, a_name, a_id);
+	Entity* Entity::create(Scene* a_scene, const Uuid& a_id) {
+		const auto entity = createOrphan(a_scene, a_id);
 		a_scene->m_rootEntities.push_back(entity);
 
 		return entity;
 	}
 
-	Entity* Entity::create(Entity* a_parent, const std::string& a_name, const Uuid& a_id) {
+	Entity* Entity::create(Entity* a_parent, const Uuid& a_id) {
 		GT_ASSERT(a_parent, std::string("Parent can't be null, use '") + GT_STRINGIFY(Entity::create(Scene*)) + "' to create root entity.");
-		auto entity = createOrphan(a_parent->m_scene, a_name, a_id);
+		auto entity = createOrphan(a_parent->m_scene, a_id);
 		entity->m_parent = a_parent;
 		a_parent->m_children.push_back(entity);
 
 		return entity;
 	}
 
-	Entity::Entity(const std::string& a_name, const Uuid& a_id) :
-		m_id(a_id),
-		m_name(a_name) 
+	Entity::Entity(const Uuid& a_id) :
+		m_uuid(a_id)
 	{}
 
 	Transform* Entity::getTransform() const {
@@ -67,9 +67,14 @@ namespace Galactose {
 	}
 
 	void Entity::save(YAML::Emitter& a_emitter) const {
+		const auto& parentNode = m_parent
+			? YAML::convert<Uuid>::encode(m_parent->m_uuid)
+			: YAML::Node(YAML::NodeType::Null);
+
 		a_emitter << YAML::BeginMap 
 			<< YAML::Key << GT_STRINGIFY(Entity) << YAML::Value << YAML::BeginMap
-			<< YAML::Key << "id" << YAML::Value << m_id
+			<< YAML::Key << "uuid" << YAML::Value << m_uuid
+			<< YAML::Key << "parent" << YAML::Value << parentNode
 			<< YAML::Key << "name" << YAML::Value << m_name
 			<< YAML::Key << "components" << YAML::Value << YAML::BeginSeq;
 
@@ -77,6 +82,26 @@ namespace Galactose {
 			component->save(a_emitter);
 
 		a_emitter << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
+	}
+
+	bool Entity::load(const YAML::Node& a_node) {
+		const auto& entityNode = a_node["Entity"];
+		m_name = entityNode["name"].as<std::string>();
+		const auto& parentNode = entityNode["parent"];
+		setParent(parentNode.IsNull() ? nullptr : m_scene->getEntity(parentNode.as<Uuid>()));
+
+		for (const auto& componentWrapperNode : entityNode["components"]) {
+			auto component = addComponent(componentWrapperNode.begin()->first.as<std::string>());
+			//component->load(componentWrapperNode);
+		}
+
+		return true;
+	}
+
+	Component* Entity::addComponent(const std::string& a_name) {
+		const auto& iter = Component::Meta::s_metas.find(a_name);
+		GT_ASSERT(iter != Component::Meta::s_metas.end(), "No such component '" + a_name + "' exist.");
+		return iter->second->creator(this);
 	}
 
 	Component* Entity::getComponent(const entt::id_type id) const {
@@ -90,8 +115,7 @@ namespace Galactose {
 
 	std::vector<Component*> Entity::getComponents() const {
 		std::vector<Component*> components;
-		components.reserve(m_components.size() + 1); // +1 for Transform
-		components.push_back(getTransform());
+		components.reserve(m_components.size());
 
 		for (const auto componentId : m_components)
 			components.push_back(getComponent(componentId));

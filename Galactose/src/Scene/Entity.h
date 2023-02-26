@@ -5,6 +5,7 @@
 
 namespace YAML {
 	class Emitter;
+	class Node;
 }
 
 namespace Galactose {
@@ -14,10 +15,11 @@ namespace Galactose {
 
 	class Entity : public SceneObject {
 	public:
-		static Entity* create(Scene* scene, const std::string& name = "", const Uuid& id = Uuid::create());
-		static Entity* create(Entity* parent, const std::string& name = "", const Uuid& id = Uuid::create());
+		static Entity* create(Scene* scene, const Uuid& id = Uuid::create());
+		static Entity* create(Entity* parent, const Uuid& id = Uuid::create());
 
-		Entity(const std::string& name = "", const Uuid& id = Uuid::create());
+		// TO DO: move to private and make entt friend
+		Entity(const Uuid& id = Uuid::create());
 
 		Scene* scene() const { return m_scene; }
 
@@ -46,8 +48,7 @@ namespace Galactose {
 			auto ptr = &component;
 			static_cast<Component*>(ptr)->m_entity = this;
 
-			if constexpr (!std::is_same_v<C, Transform>)
-				m_components.push_back(entt::type_id<C>().hash());
+			m_components.push_back(entt::type_id<C>().hash());
 
 			return ptr;
 		}
@@ -63,16 +64,18 @@ namespace Galactose {
 
 		std::vector<Component*> getComponents() const;
 
-		void save(YAML::Emitter& emitter) const;
+		void save(YAML::Emitter& out) const;
+		bool load(const YAML::Node& node);
 
 	private:
-		static Entity* createOrphan(Scene* scene, const std::string& name = "", const Uuid& id = Uuid::create());
+		static Entity* createOrphan(Scene* scene, const Uuid& id = Uuid::create());
 
+		Component* addComponent(const std::string& name);
 		Component* getComponent(const entt::id_type id) const;
 
 		Scene* m_scene = nullptr;
 		entt::entity m_entityId = entt::null;
-		Uuid m_id;
+		Uuid m_uuid;
 		std::string m_name;
 		Entity* m_parent = nullptr;
 		std::vector<Entity*> m_children;

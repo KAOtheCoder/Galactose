@@ -52,12 +52,15 @@ namespace GalactoseEditor {
 
 		GT_ASSERT(NFD_Init() == NFD_OKAY, "Failed to initialze NFD");
 
-		const auto entity = Entity::create(m_sceneData->scene().get(), "parent");
-		auto child = Entity::create(entity, "child");
-		child->addComponent<SpriteRenderer>()->sprite = Sprite(std::shared_ptr<Texture>(), {1.0f, 0.0f, 0.0f, 0.5f});
-		//child->setParent(nullptr);
-		//GT_ASSERT(entity->getChildren().empty(), "");
-		m_sceneData->scene()->save("scene.yaml");
+		m_sceneData->scene()->load("scene.yaml");
+		//auto entity = Entity::create(m_sceneData->scene().get());
+		//entity->setName("parent");
+		//auto child = Entity::create(entity);
+		//child->setName("child");
+		//child->addComponent<SpriteRenderer>()->sprite = Sprite(std::shared_ptr<Texture>(), {1.0f, 0.0f, 0.0f, 0.5f});
+		////child->setParent(nullptr);
+		////GT_ASSERT(entity->getChildren().empty(), "");
+		//m_sceneData->scene()->save("scene.yaml");
 	}
 
 	EditorLayer::~EditorLayer() {

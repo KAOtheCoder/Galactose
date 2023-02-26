@@ -3,10 +3,12 @@
 #include "Components/Transform.h"
 #include "Components/SpriteRenderer.h"
 #include "Renderer/Renderer.h"
+#include "Serialize.h"
 
 #include <yaml-cpp/yaml.h>
 
 #include <fstream>
+#include <iostream>
 
 namespace Galactose {
 	Scene::Scene(const std::string& a_name) :
@@ -25,6 +27,11 @@ namespace Galactose {
 			children[i] = getEntity(a_ids[i]);
 
 		return children;
+	}
+
+	Entity* Scene::getEntity(const Uuid& a_uuid) const {
+		const auto& iter = m_entityMap.find(a_uuid);
+		return iter == m_entityMap.end() ? nullptr : iter->second;
 	}
 
 	void Scene::render(const Camera& a_camera) {
@@ -54,5 +61,33 @@ namespace Galactose {
 
 		std::ofstream fileStream(filePath);
 		fileStream << emitter.c_str();
+	}
+
+	bool Scene::load(const std::string& filePath) {
+		try
+		{
+			const auto& node = YAML::LoadFile(filePath);
+
+			const auto& entitiesNode = node["entities"];
+
+			for (const auto& entityWrapperNode : entitiesNode) {
+				const auto& entityNode = entityWrapperNode["Entity"];
+				const auto& uuid = entityNode["uuid"].as<Uuid>();
+				Entity::create(this, uuid);
+			}
+
+			for (const auto& entityWrapperNode : entitiesNode) {
+				const auto& entityNode = entityWrapperNode["Entity"];
+				const auto& uuid = entityNode["uuid"].as<Uuid>();
+				m_entityMap[uuid]->load(entityWrapperNode);
+			}
+		}
+		catch (const YAML::Exception& x)
+		{
+			std::cerr << "Failed to load file '" << filePath << "': " << x.what() << std::endl;
+			return false;
+		}
+
+		return true;
 	}
 }

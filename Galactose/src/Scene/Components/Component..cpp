@@ -4,12 +4,17 @@
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
-	void Component::beginSave(YAML::Emitter& a_out, const char* a_name) {
-		a_out << YAML::BeginMap
-			<< YAML::Key << a_name << YAML::Value << YAML::BeginMap;
+	Component::Meta::Meta(const std::string& a_name, const std::function<Component* (Entity* a_entity)>& a_creator) :
+		creator(a_creator)
+	{
+		GT_ASSERT(s_metas.find(a_name) == s_metas.end(), "Component name '" + a_name + "' is not unique.");
+		s_metas[a_name] = this;
 	}
 
-	void Component::endSave(YAML::Emitter& a_out) {
+	void Component::save(YAML::Emitter& a_out) const {
+		a_out << YAML::BeginMap
+			<< YAML::Key << name() << YAML::Value << YAML::BeginMap;
+		saveContent(a_out);
 		a_out << YAML::EndMap << YAML::EndMap;
 	}
 }
