@@ -44,13 +44,12 @@ namespace Galactose {
 			if (hasComponent<C>())
 				return nullptr;
 
-			auto& component = m_scene->m_registry.emplace<C>(m_entityId, std::forward<Args>(args)...);
-			auto ptr = &component;
-			static_cast<Component*>(ptr)->m_entity = this;
+			auto component = &(m_scene->m_registry.emplace<C>(m_entityId, std::forward<Args>(args)...));
+			static_cast<Component*>(component)->m_entity = this;
 
-			m_components.push_back(entt::type_id<C>().hash());
+			m_components.push_back(component);
 
-			return ptr;
+			return component;
 		}
 
 		template <class C>
@@ -62,7 +61,7 @@ namespace Galactose {
 
 		Transform* getTransform() const;
 
-		std::vector<Component*> getComponents() const;
+		const std::vector<Component*>& getComponents() const { return m_components; }
 
 		void save(YAML::Emitter& out) const;
 		bool load(const YAML::Node& node);
@@ -79,6 +78,6 @@ namespace Galactose {
 		std::string m_name;
 		Entity* m_parent = nullptr;
 		std::vector<Entity*> m_children;
-		std::vector<entt::id_type> m_components;
+		std::vector<Component*> m_components;
 	};
 }

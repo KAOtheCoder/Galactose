@@ -13,4 +13,14 @@ namespace Galactose {
 			<< YAML::Key << "pivot" << YAML::Value << sprite.pivot()
 			<< YAML::Key << "size" << YAML::Value << sprite.size();
 	}
+
+	bool SpriteRenderer::loadContent(const YAML::Node& a_node) {
+		const auto& textureNode = a_node["texture"];
+		sprite.setTexture(textureNode.IsNull() ? std::shared_ptr<Texture>() : Texture::create(textureNode.as<std::string>()));
+		sprite.setColor(a_node["color"].as<Vector4>());
+		sprite.setPivot(a_node["pivot"].as<Vector2>());
+		sprite.setSize(a_node["size"].as<Vector2>());
+
+		return true;
+	}
 }

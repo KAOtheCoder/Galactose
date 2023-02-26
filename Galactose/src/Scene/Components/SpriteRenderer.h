@@ -14,5 +14,6 @@ namespace Galactose {
 
 	protected:
 		void saveContent(YAML::Emitter& emitter) const override;
+		bool loadContent(const YAML::Node& node) override;
 	};
 }

@@ -32,6 +32,7 @@ namespace Galactose {
 
 	protected:
 		void saveContent(YAML::Emitter& out) const override;
+		bool loadContent(const YAML::Node& node) override;
 
 	private:
 		static void decomposeAffine(const Matrix4x4& transform, Vector3& position, Quaternion& rotation, Vector3& scale);

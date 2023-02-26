@@ -91,35 +91,27 @@ namespace Galactose {
 		setParent(parentNode.IsNull() ? nullptr : m_scene->getEntity(parentNode.as<Uuid>()));
 
 		for (const auto& componentWrapperNode : entityNode["components"]) {
-			auto component = addComponent(componentWrapperNode.begin()->first.as<std::string>());
-			//component->load(componentWrapperNode);
+			const auto& componentName = componentWrapperNode.begin()->first.as<std::string>();
+			auto component = getComponent(Component::Meta::meta(componentName)->id);
+
+			if (!component)
+				component = addComponent(componentName);
+
+			component->load(componentWrapperNode);
 		}
 
 		return true;
 	}
 
 	Component* Entity::addComponent(const std::string& a_name) {
-		const auto& iter = Component::Meta::s_metas.find(a_name);
-		GT_ASSERT(iter != Component::Meta::s_metas.end(), "No such component '" + a_name + "' exist.");
-		return iter->second->creator(this);
+		return Component::Meta::meta(a_name)->creator(this);
 	}
 
-	Component* Entity::getComponent(const entt::id_type id) const {
-		const auto pool = m_scene->m_registry.storage(id);
-
+	Component* Entity::getComponent(const entt::id_type a_id) const {
+		const auto pool = m_scene->m_registry.storage(a_id);
 		if (pool && pool->contains(m_entityId))
-			return static_cast<Component*>(pool->get(m_entityId));
+			return static_cast<Component*>(m_scene->m_registry.storage(a_id)->get(m_entityId));
 
 		return nullptr;
-	}
-
-	std::vector<Component*> Entity::getComponents() const {
-		std::vector<Component*> components;
-		components.reserve(m_components.size());
-
-		for (const auto componentId : m_components)
-			components.push_back(getComponent(componentId));
-
-		return components;
 	}
 }

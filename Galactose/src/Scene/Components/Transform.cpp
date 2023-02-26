@@ -120,4 +120,13 @@ namespace Galactose {
 			<< YAML::Key << "localRotation" << YAML::Value << m_localRotation
 			<< YAML::Key << "localScale" << YAML::Value << m_localScale;
 	}
+
+	bool Transform::loadContent(const YAML::Node& a_node) {
+		m_localPosition = a_node["localPosition"].as<Vector3>();
+		m_localRotation = a_node["localRotation"].as<Quaternion>();
+		m_localScale = a_node["localScale"].as<Vector3>();
+		m_dirty = true;
+
+		return true;
+	}
 }
