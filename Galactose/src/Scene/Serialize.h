@@ -19,7 +19,7 @@
 			if (!a_node.IsSequence() || a_node.size() != _T::length())\
 				return false;\
 			for (int i = 0; i < _T::length(); ++i)\
-				a_rhs.x = a_node[i].as<float>();\
+				a_rhs[i] = a_node[i].as<float>();\
 			return true;\
 		}\
 	}\
