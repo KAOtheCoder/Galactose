@@ -78,7 +78,7 @@ namespace Galactose {
 			<< YAML::Key << "name" << YAML::Value << m_name
 			<< YAML::Key << "components" << YAML::Value << YAML::BeginSeq;
 
-		for (const auto component : getComponents())
+		for (const auto component : components())
 			component->save(a_emitter);
 
 		a_emitter << YAML::EndSeq << YAML::EndMap << YAML::EndMap;

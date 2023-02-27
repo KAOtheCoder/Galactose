@@ -8,7 +8,7 @@ public:\
 	std::string name() const override { return GT_STRINGIFY(_C); }\
 	entt::id_type type() const override { return s_meta.id; }\
 private:\
-	inline static Component::Meta s_meta{ GT_STRINGIFY(_C), entt::type_hash<_C>(), [](Entity* a_entity) { return a_entity->addComponent<_C>(); } };\
+	inline static Component::Meta s_meta{ GT_STRINGIFY(_C), entt::type_hash<_C>::value(), [](Entity* a_entity) { return a_entity->addComponent<_C>(); } };\
 
 namespace YAML {
 	class Emitter;
@@ -39,7 +39,7 @@ namespace Galactose {
 		virtual bool loadContent(const YAML::Node& node) = 0;
 
 	private:
-		Entity* m_entity;
+		Entity* m_entity = nullptr;
 
 		friend class Entity;
 	};

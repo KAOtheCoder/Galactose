@@ -46,7 +46,6 @@ namespace Galactose {
 
 			auto component = &(m_scene->m_registry.emplace<C>(m_entityId, std::forward<Args>(args)...));
 			static_cast<Component*>(component)->m_entity = this;
-
 			m_components.push_back(component);
 
 			return component;
@@ -61,7 +60,7 @@ namespace Galactose {
 
 		Transform* getTransform() const;
 
-		const std::vector<Component*>& getComponents() const { return m_components; }
+		const std::vector<Component*>& components() const { return m_components; }
 
 		void save(YAML::Emitter& out) const;
 		bool load(const YAML::Node& node);

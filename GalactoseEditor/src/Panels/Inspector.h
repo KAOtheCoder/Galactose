@@ -7,10 +7,10 @@
 
 #include <Math/Math.h>
 
-struct ImGuiInputTextCallbackData;
-
 namespace Galactose {
 	class Texture;
+	class Transform;
+	class SpriteRenderer;
 }
 
 namespace GalactoseEditor {
@@ -32,10 +32,17 @@ namespace GalactoseEditor {
 
 		static bool drawComponentHeader(const char* label);
 
-		void drawTransform();
-		void drawSpriteRenderer();
+		template <class C>
+		void bindComponentDrawer() { m_componentDrawers[entt::type_hash<C>::value()] = &Inspector::drawComponent<C>; }
+
+		template <class C>
+		void drawComponent();
+
+		template<> void drawComponent<Galactose::Transform>();
+		template<> void drawComponent<Galactose::SpriteRenderer>();
 
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
+		std::unordered_map<uint32_t, void(Inspector::*)()> m_componentDrawers;
 	};
 }

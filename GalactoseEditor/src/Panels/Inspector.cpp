@@ -23,6 +23,9 @@ namespace GalactoseEditor {
 	{
 		m_icons.emplace("clear", Galactose::Texture::create("assets/textures/clear.png"));
 		m_icons.emplace("folder", Galactose::Texture::create("assets/textures/folder.png"));
+
+		bindComponentDrawer<Transform>();
+		bindComponentDrawer<SpriteRenderer>();
 	}
 
 	void Inspector::onUpdate() {
@@ -34,8 +37,12 @@ namespace GalactoseEditor {
 		if (InputString::inputText("##Name", entity->name()))
 			entity->setName(InputString::text());
 
-		drawTransform();
-		drawSpriteRenderer();
+		for (auto component : entity->components()) {
+			auto iter = m_componentDrawers.find(component->type());
+			GT_ASSERT(iter != m_componentDrawers.end(), "No drawer assigned for component '" + component->name() + "'.");
+			(this->*iter->second)();
+		}
+
 		ImGui::Separator();
 	}
 
@@ -193,13 +200,12 @@ namespace GalactoseEditor {
 		return ImGui::CollapsingHeader(a_label, ImGuiTreeNodeFlags_DefaultOpen);
 	}
 
-	void Inspector::drawTransform() {
+	template <>
+	void Inspector::drawComponent<Transform>() {
 		if (!drawComponentHeader("Transform"))
 			return;
 
 		auto transform = m_sceneData->selectedEntity()->getTransform();
-
-		const float padding = 2 * ImGui::GetStyle().CellPadding.x;
 
 		if (ImGui::BeginTable("Transform", 2, ImGuiTableFlags_SizingStretchProp)) {
 			auto position = transform->localPosition();
@@ -218,10 +224,8 @@ namespace GalactoseEditor {
 		}
 	}
 
-	void Inspector::drawSpriteRenderer() {
-		if (!m_sceneData->selectedEntity()->hasComponent<SpriteRenderer>())
-			return;
-
+	template <>
+	void Inspector::drawComponent<SpriteRenderer>() {
 		if (!drawComponentHeader("Sprite Renderer"))
 			return;
 
