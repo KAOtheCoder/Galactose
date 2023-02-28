@@ -13,6 +13,7 @@ namespace GalactoseEditor {
 		std::shared_ptr<Galactose::Scene> scene() const { return m_scene; }
 
 		std::string filePath() const { return m_filePath; }
+		void open();
 		void save();
 		void saveAs();
 

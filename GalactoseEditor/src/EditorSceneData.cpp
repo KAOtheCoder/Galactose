@@ -4,10 +4,27 @@
 
 #include <nfd.hpp>
 
+using namespace Galactose;
+
 namespace GalactoseEditor {
 	void EditorSceneData::saveAndPrint() {
 		m_scene->save(m_filePath);
 		std::cout << "Scene saved to '" << m_filePath << "'." << std::endl;
+	}
+
+	void EditorSceneData::open() {
+		nfdchar_t* path;
+		nfdfilteritem_t filter = { "Scene", "yaml" };
+		const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
+		GT_ASSERT(result != NFD_ERROR, NFD_GetError());
+
+		auto scene = std::make_shared<Scene>();
+		if (result == NFD_OKAY && scene->load(path)) {
+			m_scene = scene;
+			m_filePath = path;
+			m_selectedEntity = nullptr;
+			std::cout << "Scene '" << m_filePath << "' loaded." << std::endl;
+		}
 	}
 
 	void EditorSceneData::saveAs() {

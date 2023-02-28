@@ -10,7 +10,7 @@ namespace Galactose {
 
 	class Scene {
 	public:
-		Scene(const std::string& name);
+		Scene(const std::string& name = "");
 
 		std::string name() const { return m_name; }
 		std::vector<Entity*> rootEntites() const { return m_rootEntities; }
