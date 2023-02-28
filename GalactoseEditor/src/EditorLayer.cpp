@@ -17,7 +17,6 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer(Window* a_window) :
-		//m_texture(Texture::create("assets/textures/SSwithPistol.gif")),
 		m_sceneData(std::make_shared<EditorSceneData>()),
 		m_sceneViewport(m_sceneData),
 		m_sceneHierarchy(m_sceneData),
@@ -47,7 +46,6 @@ namespace GalactoseEditor {
 		// Setup Platform/Renderer backends
 		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 410");
-
 		//ImGui::SetWindowFontScale(2);
 
 		GT_ASSERT(NFD_Init() == NFD_OKAY, "Failed to initialze NFD");
@@ -105,9 +103,15 @@ namespace GalactoseEditor {
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("Save", "Ctrl+S"))
+					m_sceneData->save();
+
+				if (ImGui::MenuItem("Save As", "Ctrl+Shift+S"))
+					m_sceneData->saveAs();
+
 				ImGui::Separator();
 
-				if (ImGui::MenuItem("Exit", "ALT+F4"))
+				if (ImGui::MenuItem("Exit", "Alt+F4"))
 					Application::instance()->exit();
 
 				ImGui::EndMenu();

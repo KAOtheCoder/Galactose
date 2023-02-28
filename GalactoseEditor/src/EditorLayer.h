@@ -28,7 +28,6 @@ namespace GalactoseEditor {
 	private:
 		void drawMenuBar();
 
-		//std::shared_ptr<Galactose::Texture> m_texture;
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		SceneViewport m_sceneViewport;
 		SceneHierarchy m_sceneHierarchy;

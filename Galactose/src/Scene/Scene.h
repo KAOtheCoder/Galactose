@@ -12,6 +12,7 @@ namespace Galactose {
 	public:
 		Scene(const std::string& name);
 
+		std::string name() const { return m_name; }
 		std::vector<Entity*> rootEntites() const { return m_rootEntities; }
 
 		void render(const Camera& camera);
