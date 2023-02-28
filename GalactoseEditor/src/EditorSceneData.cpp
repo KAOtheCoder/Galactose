@@ -12,7 +12,13 @@ namespace GalactoseEditor {
 		std::cout << "Scene saved to '" << m_filePath << "'." << std::endl;
 	}
 
-	void EditorSceneData::open() {
+	void EditorSceneData::newScene() {
+		m_scene = std::make_shared<Scene>("Untitled");
+		m_filePath.clear();
+		m_selectedEntity = nullptr;
+	}
+
+	void EditorSceneData::openScene() {
 		nfdchar_t* path;
 		nfdfilteritem_t filter = { "Scene", "yaml" };
 		const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);

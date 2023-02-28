@@ -7,13 +7,14 @@ namespace GalactoseEditor {
 	class EditorSceneData {
 	public:
 		EditorSceneData() :
-			m_scene(std::make_shared<Galactose::Scene>("New Scene"))
+			m_scene(std::make_shared<Galactose::Scene>("Untitled"))
 		{}
 
 		std::shared_ptr<Galactose::Scene> scene() const { return m_scene; }
 
 		std::string filePath() const { return m_filePath; }
-		void open();
+		void newScene();
+		void openScene();
 		void save();
 		void saveAs();
 

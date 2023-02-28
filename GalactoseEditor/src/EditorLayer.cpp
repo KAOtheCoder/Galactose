@@ -103,8 +103,13 @@ namespace GalactoseEditor {
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+					m_sceneData->newScene();
+
 				if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
-					m_sceneData->open();
+					m_sceneData->openScene();
+
+				ImGui::Separator();
 
 				if (ImGui::MenuItem("Save", "Ctrl+S"))
 					m_sceneData->save();
