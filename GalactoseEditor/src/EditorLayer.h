@@ -3,6 +3,7 @@
 #include "Panels/SceneViewport.h"
 #include "Panels/SceneHierarchy.h"
 #include "Panels/Inspector.h"
+#include "MenuBar.h"
 
 #include <Core/Layer.h>
 #include <Math/Math.h>
@@ -11,7 +12,6 @@
 
 namespace Galactose {
 	class Window;
-	class Framebuffer;
 }
 
 namespace GalactoseEditor {
@@ -26,11 +26,10 @@ namespace GalactoseEditor {
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
 
 	private:
-		void drawMenuBar();
-
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		SceneViewport m_sceneViewport;
 		SceneHierarchy m_sceneHierarchy;
 		Inspector m_inspector;
+		MenuBar m_menuBar;
 	};
 }

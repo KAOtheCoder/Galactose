@@ -48,17 +48,24 @@ namespace GalactoseEditor {
 		ImGui_ImplOpenGL3_Init("#version 410");
 		//ImGui::SetWindowFontScale(2);
 
-		GT_ASSERT(NFD_Init() == NFD_OKAY, "Failed to initialze NFD");
+		const auto nfdResult = NFD_Init();
+		GT_ASSERT(nfdResult == NFD_OKAY, "Failed to initialze NFD");
 
-		m_sceneData->scene()->load("scene.yaml");
-		//auto entity = Entity::create(m_sceneData->scene().get());
-		//entity->setName("parent");
-		//auto child = Entity::create(entity);
-		//child->setName("child");
-		//child->addComponent<SpriteRenderer>()->sprite = Sprite(std::shared_ptr<Texture>(), {1.0f, 0.0f, 0.0f, 0.5f});
-		////child->setParent(nullptr);
-		////GT_ASSERT(entity->getChildren().empty(), "");
-		//m_sceneData->scene()->save("scene.yaml");
+		m_menuBar.menus.push_back({ "File", {  
+			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_sceneData->newScene(); } },
+			{ "Open Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyO }, [&]() { m_sceneData->openScene(); } },
+			{ },
+			{ "Save", { KeyEvent::KeyLeftControl, KeyEvent::KeyS }, [&]() { m_sceneData->save(); } },
+			{ "Save As", { KeyEvent::KeyLeftControl, KeyEvent::KeyLeftShift, KeyEvent::KeyS }, [&]() { m_sceneData->saveAs(); } },
+			{ },
+			{ "Exit", { KeyEvent::KeyLeftAlt, KeyEvent::KeyF4 }, [&]() { Application::instance()->exit(); } }
+		} });
+
+		m_menuBar.menus.push_back({ "Panels", {
+			{ "Scene", { }, [&]() { m_sceneViewport.setVisible(true); } },
+			{ "Scene Hierarchy", { }, [&]() { m_sceneHierarchy.setVisible(true); } },
+			{ "Inspector", { }, [&]() { m_inspector.setVisible(true); } }
+		} });
 	}
 
 	EditorLayer::~EditorLayer() {
@@ -74,7 +81,7 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		drawMenuBar();
+		m_menuBar.draw();
 
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
@@ -98,53 +105,8 @@ namespace GalactoseEditor {
 		}
 	}
 
-	void EditorLayer::drawMenuBar() {
-		if (ImGui::BeginMainMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
-					m_sceneData->newScene();
-
-				if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
-					m_sceneData->openScene();
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Save", "Ctrl+S"))
-					m_sceneData->save();
-
-				if (ImGui::MenuItem("Save As", "Ctrl+Shift+S"))
-					m_sceneData->saveAs();
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Exit", "Alt+F4"))
-					Application::instance()->exit();
-
-				ImGui::EndMenu();
-			}
-
-			if (ImGui::BeginMenu("Panels"))
-			{
-				if (ImGui::MenuItem("Scene"))
-					m_sceneViewport.setVisible(true);
-
-				if (ImGui::MenuItem("Scene Hierarchy"))
-					m_sceneHierarchy.setVisible(true);
-
-				if (ImGui::MenuItem("Inspector"))
-					m_inspector.setVisible(true);
-
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMainMenuBar();
-		}
-	}
-
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {
-		//std::cout << a_event->toString() << std::endl;
+		m_menuBar.onEvent(a_event);
 
 		if (Panel::focusedPanel() == &m_sceneViewport)
 			m_sceneViewport.onEvent(a_event);
