@@ -1,11 +1,9 @@
 #include "Inspector.h"
-#include "EditorSceneData.h"
-#include "InputString.h"
+#include "Panels/InputString.h"
 
-#include <Scene/Components/Transform.h>
-#include <Scene/Components/SpriteRenderer.h>
-#include <Renderer/Texture.h>
 #include <Core/Global.h>
+#include <Renderer/Texture.h>
+#include <Scene/Components/Transform.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -198,59 +196,5 @@ namespace GalactoseEditor {
 
 	bool Inspector::drawComponentHeader(const char* a_label) {
 		return ImGui::CollapsingHeader(a_label, ImGuiTreeNodeFlags_DefaultOpen);
-	}
-
-	template <>
-	void Inspector::drawComponent<Transform>() {
-		if (!drawComponentHeader("Transform"))
-			return;
-
-		auto transform = m_sceneData->selectedEntity()->getTransform();
-
-		if (ImGui::BeginTable("Transform", 2, ImGuiTableFlags_SizingStretchProp)) {
-			auto position = transform->localPosition();
-			if (dragVector("Position", 3, position.data()))
-				transform->setLocalPosition(position);
-
-			auto rotation = transform->localRotation().eulerDegrees();
-			if (dragVector("Rotation", 3, rotation.data()))
-				transform->setLocalRotation(Quaternion::fromEulerDegrees(rotation));
-
-			auto scale = transform->localScale();
-			if (dragVector("Scale", 3, scale.data()))
-				transform->setLocalScale(scale);
-
-			ImGui::EndTable();
-		}
-	}
-
-	template <>
-	void Inspector::drawComponent<SpriteRenderer>() {
-		if (!drawComponentHeader("Sprite Renderer"))
-			return;
-
-		auto spriteRenderer = m_sceneData->selectedEntity()->getComponent<SpriteRenderer>();
-		auto& sprite = spriteRenderer->sprite;
-
-		if (ImGui::BeginTable("SpriteRenderer", 2, ImGuiTableFlags_SizingStretchProp)) {
-			const auto& texture = sprite.texture();
-			auto textureFilePath = texture ? texture->filePath() : "";
-			if (drawFileInput("Texture", textureFilePath, "Default"))
-				sprite.setTexture(textureFilePath.empty() ? nullptr : Texture::create(textureFilePath));
-
-			auto color = sprite.color();
-			if (colorButton("Color", color))
-				sprite.setColor(color);
-
-			auto size = sprite.size();
-			if (dragVector("Size", 2, size.data()))
-				sprite.setSize(size);
-
-			auto pivot = sprite.pivot();
-			if (dragVector("Pivot", 2, pivot.data()))
-				sprite.setPivot(pivot);
-
-			ImGui::EndTable();
-		}
 	}
 }

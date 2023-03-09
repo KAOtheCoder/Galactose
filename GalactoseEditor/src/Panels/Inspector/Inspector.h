@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Panel.h"
+#include "Panels/Panel.h"
+#include "EditorSceneData.h"
 
 #include <memory>
 #include <unordered_map>
@@ -14,8 +15,6 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
-	class EditorSceneData;
-
 	class Inspector : public Panel {
 	public:
 		Inspector(const std::shared_ptr<EditorSceneData>& sceneData);
@@ -33,16 +32,19 @@ namespace GalactoseEditor {
 		static bool drawComponentHeader(const char* label);
 
 		template <class C>
+		C* getSelectedComponent() const { return m_sceneData->selectedEntity()->getComponent<C>(); }
+
+		template <class C>
 		void bindComponentDrawer() { m_componentDrawers[entt::type_hash<C>::value()] = &Inspector::drawComponent<C>; }
 
 		template <class C>
 		void drawComponent();
 
-		template<> void drawComponent<Galactose::Transform>();
-		template<> void drawComponent<Galactose::SpriteRenderer>();
-
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		std::unordered_map<uint32_t, void(Inspector::*)()> m_componentDrawers;
 	};
+
+	extern template void Inspector::drawComponent<Galactose::Transform>();
+	extern template void Inspector::drawComponent<Galactose::SpriteRenderer>();
 }
