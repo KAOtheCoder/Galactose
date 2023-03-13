@@ -30,6 +30,13 @@ namespace Galactose {
 		Matrix4x4 localToWorldMatrix() const;
 		Matrix4x4 worldToLocalMatrix() const { return localToWorldMatrix().affineInverse(); }
 
+		Vector3 right() const;
+		Vector3 up() const;
+		Vector3 forward() const;
+
+		Vector3 transformPoint(const Vector3& point) const;
+		Vector3 transformVector(const Vector3& vector) const;
+
 	protected:
 		void saveContent(YAML::Emitter& out) const override;
 		bool loadContent(const YAML::Node& node) override;

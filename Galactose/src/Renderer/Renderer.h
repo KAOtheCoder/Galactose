@@ -24,7 +24,7 @@ namespace Galactose {
 
 		std::shared_ptr<Shader> textureShader() const { return m_textureShader; }
 
-		void setViewProjection(const Camera& camera);
+		void setViewProjection(const Matrix4x4& viewProjection);
 
 	protected:
 		Renderer(const std::shared_ptr<Window>& a_window);

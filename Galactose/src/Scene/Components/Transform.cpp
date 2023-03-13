@@ -115,6 +115,26 @@ namespace Galactose {
 		m_dirty = true;
 	}
 
+	Vector3 Transform::right() const {
+		return transformVector({ 1, 0, 0 }).normalized();
+	}
+
+	Vector3 Transform::up() const {
+		return transformVector({ 0, 1, 0 }).normalized();
+	}
+
+	Vector3 Transform::forward() const {
+		return transformVector({ 0, 0, 1 }).normalized();
+	}
+
+	Vector3 Transform::transformPoint(const Vector3& point) const {
+		return localToWorldMatrix() * Vector4(point, 1);
+	}
+
+	Vector3 Transform::transformVector(const Vector3& vector) const {
+		return transformPoint(vector) - transformPoint({ 0, 0, 0 });
+	}
+
 	void Transform::saveContent(YAML::Emitter& a_out) const {
 		a_out << YAML::Key << "localPosition" << YAML::Value << m_localPosition
 			<< YAML::Key << "localRotation" << YAML::Value << m_localRotation

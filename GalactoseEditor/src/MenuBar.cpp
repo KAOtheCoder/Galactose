@@ -62,6 +62,7 @@ namespace GalactoseEditor {
 						if (shortcutMatch) {
 							menuItem.action();
 							a_event->setHandled();
+							m_pressedKeys.clear();
 							return;
 						}
 					}

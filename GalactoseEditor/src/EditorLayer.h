@@ -6,9 +6,6 @@
 #include "MenuBar.h"
 
 #include <Core/Layer.h>
-#include <Math/Math.h>
-#include <Renderer/Camera.h>
-#include <Renderer/Texture.h>
 
 namespace Galactose {
 	class Window;

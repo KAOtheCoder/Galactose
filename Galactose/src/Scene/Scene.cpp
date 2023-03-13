@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Components/Transform.h"
 #include "Components/SpriteRenderer.h"
+#include "Components/Camera.h"
 #include "Renderer/Renderer.h"
 #include "Serialize.h"
 
@@ -34,11 +35,11 @@ namespace Galactose {
 		return iter == m_entityMap.end() ? nullptr : iter->second;
 	}
 
-	void Scene::render(const Camera& a_camera) {
+	void Scene::render(const Camera* a_camera) {
 		auto renderer = Renderer::renderer();
 
 		renderer->clear();
-		renderer->setViewProjection(a_camera);
+		renderer->setViewProjection(a_camera->viewProjectionMatrix());
 
 		const auto& group = m_registry.group<Transform>(entt::get<SpriteRenderer>);
 

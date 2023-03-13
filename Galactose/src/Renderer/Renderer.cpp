@@ -1,6 +1,5 @@
 #include "OpenGL/OpenGLRenderer.h"
 #include "Shader.h"
-#include "Camera.h"
 #include "Texture.h"
 
 #include <array>
@@ -23,8 +22,7 @@ namespace Galactose {
 		m_window(a_window)
 	{}
 
-	void Renderer::setViewProjection(const Camera& a_camera) {
-		const auto& viewProjection = a_camera.projectionMatrix() * a_camera.viewMatrix();
+	void Renderer::setViewProjection(const Matrix4x4& viewProjection) {
 		m_textureShader->bind();
 		m_textureShader->setMatrix4x4("u_viewProjection", viewProjection);
 	}

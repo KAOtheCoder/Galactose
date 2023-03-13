@@ -15,9 +15,12 @@ namespace YAML {
 }
 
 namespace Galactose {
+	class Transform;
+
 	class Component : public SceneObject {
 	public:
 		Entity* entity() const { return m_entity; }
+		Transform* getTransform() const;
 
 		virtual std::string name() const = 0;
 		virtual entt::id_type type() const = 0;
@@ -30,7 +33,7 @@ namespace Galactose {
 
 			static Meta* meta(const std::string& name);
 			inline static std::unordered_map<std::string, Meta*> s_metas;
-
+			
 			const entt::id_type id;
 			const std::function<Component*(Entity*)> creator;
 		};

@@ -26,8 +26,11 @@ namespace Galactose {
 		template<glm::length_t L>
 		class Vector : public GlmExtend<glm::vec<L, float>> {
 		public:
-			using GlmExtend<glm::vec<L, float>>::GlmExtend;
 			static float dot(const Vector<L>& a_lhs, const Vector<L>& a_rhs) { return glm::dot(a_lhs.base(), a_rhs.base()); }
+
+			using GlmExtend<glm::vec<L, float>>::GlmExtend;
+
+			Vector<L> normalized() const { return glm::normalize(*this); }
 		};
 	}
 

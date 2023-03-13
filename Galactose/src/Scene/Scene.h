@@ -15,7 +15,7 @@ namespace Galactose {
 		std::string name() const { return m_name; }
 		std::vector<Entity*> rootEntites() const { return m_rootEntities; }
 
-		void render(const Camera& camera);
+		void render(const Camera* camera);
 
 		void save(const std::string& filePath) const;
 		bool load(const std::string& filePath);

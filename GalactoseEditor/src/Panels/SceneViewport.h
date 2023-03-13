@@ -2,7 +2,7 @@
 
 #include "Panel.h"
 
-#include <Renderer/Camera.h>
+#include <Scene/Scene.h>
 
 #include <memory>
 
@@ -27,10 +27,8 @@ namespace GalactoseEditor {
 	private:
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		std::shared_ptr<Galactose::Framebuffer> m_framebuffer;
-		Galactose::Camera m_camera;
-		Galactose::Vector3 m_cameraPosition;
-		Galactose::Vector3 m_cameraDirection;
-		const Galactose::Vector3 m_up;
+		Galactose::Scene m_privateScene;
+		Galactose::Entity* m_cameraEntity = nullptr;
 		bool m_rotate = false;
 		Galactose::Vector2 m_cursorPos;
 	};

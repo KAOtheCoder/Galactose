@@ -1,12 +1,14 @@
 #pragma once
 
+#include "Component.h"
 #include "Math/Math.h"
 
 namespace Galactose {
-	class Camera {
+	class Camera : public Component {
+		GT_COMPONENT(Camera)
+
 	public:
-		Camera();
-		virtual ~Camera() = default;
+		Camera() = default;
 
 		float fov() const { return m_fov; }
 		void setFOV(const float a_fov) { m_fov = a_fov; }
@@ -20,16 +22,16 @@ namespace Galactose {
 		float farClip() const { return m_farClip; }
 		void setFarClip(const float a_farClip) { m_farClip = a_farClip; }
 
-		Matrix4x4 projectionMatrix() const;
+		Matrix4x4 viewProjectionMatrix() const;
 
-		Matrix4x4 viewMatrix() const { return m_view; }
-		void setView(const Vector3& position, const Vector3& direction, const Vector3& up);
+	protected:
+		void saveContent(YAML::Emitter& emitter) const override;
+		bool loadContent(const YAML::Node& node) override;
 
 	private:
 		float m_fov = Math::degreesToRadians(40);
 		float m_aspectRatio = 16.f / 9.f;
 		float m_nearClip = 0.1f;
 		float m_farClip = 5000.f;
-		Matrix4x4 m_view;
 	};
 }

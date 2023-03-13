@@ -18,6 +18,10 @@ namespace Galactose {
 		return iter->second;
 	}
 
+	Transform* Component::getTransform() const {
+		return m_entity ? m_entity->getTransform() : nullptr;
+	}
+
 	void Component::save(YAML::Emitter& a_out) const {
 		a_out << YAML::BeginMap
 			<< YAML::Key << name() << YAML::Value << YAML::BeginMap;
