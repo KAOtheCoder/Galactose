@@ -4,7 +4,7 @@
 #include "Renderer/Sprite.h"
 
 namespace Galactose {
-	class SpriteRenderer : public Component {
+	class SpriteRenderer final : public Component {
 		GT_COMPONENT(SpriteRenderer)
 
 	public:

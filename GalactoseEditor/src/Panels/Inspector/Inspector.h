@@ -12,6 +12,7 @@ namespace Galactose {
 	class Texture;
 	class Transform;
 	class SpriteRenderer;
+	class Camera;
 }
 
 namespace GalactoseEditor {
@@ -47,4 +48,5 @@ namespace GalactoseEditor {
 
 	extern template void Inspector::drawComponent<Galactose::Transform>();
 	extern template void Inspector::drawComponent<Galactose::SpriteRenderer>();
+	extern template void Inspector::drawComponent<Galactose::Camera>();
 }

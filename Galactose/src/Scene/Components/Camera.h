@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 
 namespace Galactose {
-	class Camera : public Component {
+	class Camera final : public Component {
 		GT_COMPONENT(Camera)
 
 	public:

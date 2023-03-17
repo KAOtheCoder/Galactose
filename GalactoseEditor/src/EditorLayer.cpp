@@ -54,7 +54,7 @@ namespace GalactoseEditor {
 		m_menuBar.menus.push_back({ "File", {  
 			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_sceneData->newScene(); } },
 			{ "Open Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyO }, [&]() { m_sceneData->openScene(); } },
-			{ },
+			{ }, // Separator
 			{ "Save", { KeyEvent::KeyLeftControl, KeyEvent::KeyS }, [&]() { m_sceneData->save(); } },
 			{ "Save As", { KeyEvent::KeyLeftControl, KeyEvent::KeyLeftShift, KeyEvent::KeyS }, [&]() { m_sceneData->saveAs(); } },
 			{ },

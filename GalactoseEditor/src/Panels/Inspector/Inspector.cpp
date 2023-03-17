@@ -24,6 +24,7 @@ namespace GalactoseEditor {
 
 		bindComponentDrawer<Transform>();
 		bindComponentDrawer<SpriteRenderer>();
+		bindComponentDrawer<Camera>();
 	}
 
 	void Inspector::onUpdate() {

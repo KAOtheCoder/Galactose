@@ -48,7 +48,7 @@ namespace Galactose {
 		if (a_parent == parent())
 			return;
 
-		GT_ASSERT(!a_parent || a_parent->m_entityId != m_entityId, "Entity can't be parent of itself.");
+		GT_ASSERT(!a_parent || a_parent != this, "Entity can't be parent of itself.");
 		GT_ASSERT(!a_parent || a_parent->m_scene == m_scene, "Moving entities across scenes is not allowed.");
 
 		auto& siblings = m_parent ? m_parent->m_children : m_scene->m_rootEntities;

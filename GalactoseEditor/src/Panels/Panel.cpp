@@ -33,24 +33,23 @@ namespace GalactoseEditor {
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { paddingValue.x, paddingValue.y });
 		}
 
-		ImGui::Begin(m_name.c_str(), &m_visible);
+		if (ImGui::Begin(m_name.c_str(), &m_visible)) {
+			if (ImGui::IsWindowFocused()) {
+				if (s_focusedPanel != this) {
+					if (s_focusedPanel)
+						s_focusedPanel->onFocusOut();
 
-		if (ImGui::IsWindowFocused()) {
-			if (s_focusedPanel != this) {
-				if (s_focusedPanel)
-					s_focusedPanel->onFocusOut();
-
-				s_focusedPanel = this;
+					s_focusedPanel = this;
+				}
 			}
-		}
-		else if (s_focusedPanel == this) {
-			s_focusedPanel->onFocusOut();
-			s_focusedPanel = nullptr;
-		}
+			else if (s_focusedPanel == this) {
+				s_focusedPanel->onFocusOut();
+				s_focusedPanel = nullptr;
+			}
 
-		onUpdate();
-
-		ImGui::End();
+			onUpdate();
+			ImGui::End();
+		}
 
 		if (customPadding)
 			ImGui::PopStyleVar();

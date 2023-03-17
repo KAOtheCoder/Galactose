@@ -39,8 +39,34 @@ namespace GalactoseEditor {
 	void SceneHierarchy::onUpdate() {
 		const auto& scene = m_sceneData->scene();
 		if (scene) {
-			for (const auto entity : scene->rootEntites())
-				drawEntityNode(entity);
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
+				m_sceneData->setSelectedEntity(nullptr);
+
+			const auto& sceneName = scene->name();
+			const auto safeSceneName = sceneName.empty() ? "Untitled" : sceneName.c_str();
+			bool opened = false;
+
+			if (ImGui::BeginTable(safeSceneName, 3, ImGuiTableFlags_NoPadInnerX)) {
+				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
+				// CollapsingHeader overflows as half of window padding
+				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, ImGui::GetStyle().WindowPadding.x * 0.5f); 
+				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
+				ImGui::TableNextRow();
+				
+				ImGui::TableSetColumnIndex(0);
+				opened = ImGui::CollapsingHeader(safeSceneName, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth);
+
+				ImGui::TableSetColumnIndex(2);
+				if (ImGui::Button("+"))
+					Entity::create(scene.get())->setName("New Entity");
+
+				ImGui::EndTable();
+			}
+
+			if (opened) {
+				for (const auto entity : scene->rootEntities())
+					drawEntityNode(entity);
+			}
 		}
 	}
 }
