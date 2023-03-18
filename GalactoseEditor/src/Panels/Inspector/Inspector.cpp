@@ -4,6 +4,8 @@
 #include <Core/Global.h>
 #include <Renderer/Texture.h>
 #include <Scene/Components/Transform.h>
+#include <Scene/Components/Camera.h>
+#include <Scene/Components/SpriteRenderer.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -32,9 +34,31 @@ namespace GalactoseEditor {
 
 		if (!entity)
 			return;
-		
-		if (InputString::inputText("##Name", entity->name()))
-			entity->setName(InputString::text());
+
+		if (ImGui::BeginTable("Name", 2)) {
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
+			ImGui::TableNextRow();
+
+			ImGui::TableSetColumnIndex(0);
+			if (InputString::inputText("##Name", entity->name()))
+				entity->setName(InputString::text());
+
+			ImGui::TableSetColumnIndex(1);
+			if (ImGui::Button("+"))
+				openPopup("Add Component");
+
+			if (ImGui::BeginPopup("Add Component")) {
+				if (ImGui::Selectable("Camera"))
+					entity->addComponent<Camera>();
+				if (ImGui::Selectable("Sprite Renderer"))
+					entity->addComponent<SpriteRenderer>();
+
+				ImGui::EndPopup();
+			}
+
+			ImGui::EndTable();
+		}
 
 		for (auto component : entity->components()) {
 			auto iter = m_componentDrawers.find(component->type());
@@ -43,6 +67,12 @@ namespace GalactoseEditor {
 		}
 
 		ImGui::Separator();
+	}
+
+	void Inspector::openPopup(const char* a_label) {
+		ImGui::OpenPopup(a_label);
+		const auto& bottomRight = ImGui::GetCurrentContext()->LastItemData.Rect.GetBR();
+		ImGui::SetNextWindowPos({ bottomRight.x, bottomRight.y + ImGui::GetStyle().ItemSpacing.y }, 0, { 1, 0 });
 	}
 
 	void Inspector::drawLabel(const char* a_label) {
@@ -122,12 +152,10 @@ namespace GalactoseEditor {
 		
 		if (ImGui::ColorButton(a_label, color, 0, { ImGui::GetContentRegionAvail().x, 0 })) {
 			context->ColorPickerRef = color;
-			ImGui::OpenPopup("picker");
-			const auto& bottomLeft = context->LastItemData.Rect.GetBL();
-			ImGui::SetNextWindowPos({ bottomLeft.x, bottomLeft.y + ImGui::GetStyle().ItemSpacing.y });
+			openPopup("Color Picker");
 		}
 
-		if (ImGui::BeginPopup("picker"))
+		if (ImGui::BeginPopup("Color Picker"))
 		{
 			if (ImGui::GetCurrentWindow()->BeginCount == 1)
 			{

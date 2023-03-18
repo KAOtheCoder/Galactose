@@ -27,6 +27,7 @@ namespace GalactoseEditor {
 		static bool dragVector3Axis(const int axis, float& value);
 		static bool dragVector(const char* label, const int axisCount, float* value);
 		static bool colorButton(const char* descId, Galactose::Vector4& color);
+		static void openPopup(const char* label);
 		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
 		bool iconButton(const char* icon);
 
