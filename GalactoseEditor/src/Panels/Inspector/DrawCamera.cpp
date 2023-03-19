@@ -12,26 +12,26 @@ namespace GalactoseEditor {
 		if (!drawComponentHeader("Camera"))
 			return;
 
-		auto camera = getSelectedComponent<Camera>();
-
 		if (ImGui::BeginTable("Camera", 2, ImGuiTableFlags_SizingStretchProp)) {
+			auto camera = getSelectedComponent<Camera>();
+
 			drawLabel("Field of View");
 			ImGui::TableSetColumnIndex(1);
+			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 			auto fov = camera->fov();
-			if (ImGui::SliderFloat("##Field of View", &fov, 45, 90))
+			if (ImGui::SliderFloat("##Field of View", &fov, 1, 179, "%.3f", ImGuiSliderFlags_AlwaysClamp))
 				camera->setFOV(fov);
+			ImGui::PopItemWidth();
 
-			drawLabel("Near Clip");
-			ImGui::TableSetColumnIndex(1);
 			auto near = camera->nearClip();
-			if (ImGui::DragFloat("##Near Clip", &near))
+			auto far = camera->farClip();
+			const float EPSILON = 0.001f;
+
+			if (dragFloat("Near Clip", near, 0.1f, EPSILON, far - EPSILON))
 				camera->setNearClip(near);
 
-			drawLabel("Far Clip");
-			ImGui::TableSetColumnIndex(1);
-			auto far = camera->nearClip();
-			if (ImGui::DragFloat("##Far Clip", &far))
-				camera->setNearClip(far);
+			if (dragFloat("Far Clip", far, 0.1f, near + EPSILON, std::numeric_limits<float>().max()))
+				camera->setFarClip(far);
 
 			ImGui::EndTable();
 		}

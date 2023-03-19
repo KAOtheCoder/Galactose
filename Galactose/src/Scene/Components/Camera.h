@@ -29,7 +29,7 @@ namespace Galactose {
 		bool loadContent(const YAML::Node& node) override;
 
 	private:
-		float m_fov = Math::degreesToRadians(40);
+		float m_fov = 60;
 		float m_aspectRatio = 16.f / 9.f;
 		float m_nearClip = 0.1f;
 		float m_farClip = 5000.f;

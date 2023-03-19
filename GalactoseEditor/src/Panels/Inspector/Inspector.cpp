@@ -106,10 +106,7 @@ namespace GalactoseEditor {
 		ImGui::PopStyleColor(3);
 
 		ImGui::TableSetColumnIndex(column + 1);
-		ImGui::PushItemWidth(-std::numeric_limits<float>().min());
-		const auto& input_label = "##" + label;
-		const bool changed = ImGui::DragFloat(input_label.c_str(), &a_value, 0.1f);
-		ImGui::PopItemWidth();
+		const bool changed = spanDragFloat(label.c_str(), a_value);
 
 		if (clicked)
 			ImGui::SetKeyboardFocusHere(-1); // focus next item
@@ -139,6 +136,22 @@ namespace GalactoseEditor {
 		}
 
 		return false;
+	}
+
+	bool Inspector::spanDragFloat(const char* a_label, float& a_value, const float a_speed, const float a_min, const float a_max) {
+		ImGui::PushItemWidth(-std::numeric_limits<float>().min());
+		const auto& label = std::string("##") + a_label;
+		const auto changed = ImGui::DragFloat(label.c_str(), &a_value, a_speed, a_min, a_max, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::PopItemWidth();
+
+		return changed;
+	}
+
+	bool Inspector::dragFloat(const char* a_label, float& a_value, const float a_speed, const float a_min, const float a_max) {
+		drawLabel(a_label);
+
+		ImGui::TableSetColumnIndex(1);
+		return spanDragFloat(a_label, a_value, a_speed, a_min, a_max);
 	}
 
 	bool Inspector::colorButton(const char* a_label, Vector4& a_color) {

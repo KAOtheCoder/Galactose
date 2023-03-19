@@ -25,7 +25,9 @@ namespace GalactoseEditor {
 	private:
 		static void drawLabel(const char* label);
 		static bool dragVector3Axis(const int axis, float& value);
-		static bool dragVector(const char* label, const int axisCount, float* value);
+		static bool dragVector(const char* label, const int axisCount, float* values);
+		static bool dragFloat(const char* label, float& value, const float speed = 0.1f, const float min = 0, const float max = 0);
+		static bool spanDragFloat(const char* label, float& value, const float speed = 0.1f, const float min = 0, const float max = 0);
 		static bool colorButton(const char* descId, Galactose::Vector4& color);
 		static void openPopup(const char* label);
 		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
