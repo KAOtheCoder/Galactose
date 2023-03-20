@@ -8,7 +8,8 @@ namespace Galactose {
 		GT_COMPONENT(Camera)
 
 	public:
-		Camera() = default;
+		Camera();
+		~Camera() override;
 
 		float fov() const { return m_fov; }
 		void setFOV(const float a_fov) { m_fov = a_fov; }

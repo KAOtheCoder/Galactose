@@ -21,6 +21,8 @@ namespace Galactose {
 		bool load(const std::string& filePath);
 
 		Entity* getEntity(const Uuid& a_uuid) const;
+		Camera* mainCamera() const { return m_mainCamera; }
+		void setMainCamera(Camera* camera);
 
 	private:
 		Entity* getEntity(const entt::entity id) const;
@@ -30,6 +32,7 @@ namespace Galactose {
 		std::string m_name;
 		std::vector<Entity*> m_rootEntities;
 		std::unordered_map<Uuid, Entity*> m_entityMap;
+		Camera* m_mainCamera = nullptr;
 
 		friend class Entity;
 		friend class Component;

@@ -4,6 +4,18 @@
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
+	Camera::Camera() {
+		auto scene = entity()->scene();
+		if (!scene->mainCamera())
+			scene->setMainCamera(this);
+	}
+
+	Camera::~Camera() {
+		auto scene = entity()->scene();
+		if (scene->mainCamera() == this)
+			scene->setMainCamera(nullptr);
+	}
+
 	Matrix4x4 Camera::viewProjectionMatrix() const {
 		auto transform = getTransform();
 		const auto& eye = transform->position();

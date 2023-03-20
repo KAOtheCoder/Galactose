@@ -35,6 +35,18 @@ namespace Galactose {
 		return iter == m_entityMap.end() ? nullptr : iter->second;
 	}
 
+	void Scene::setMainCamera(Camera* a_camera) {
+		if (!a_camera) {
+			const auto& view = m_registry.view<Camera>();
+			for (const auto entity : view) {
+				m_mainCamera = &(view.get<Camera>(entity));
+				return;
+			}
+		}
+
+		m_mainCamera = a_camera;
+	}
+
 	void Scene::render(const Camera* a_camera) {
 		auto renderer = Renderer::renderer();
 

@@ -20,7 +20,7 @@ namespace Galactose {
 	class Component : public SceneObject {
 	public:
 		Entity* entity() const { return m_entity; }
-		Transform* getTransform() const;
+		Transform* getTransform() const { return m_entity->getTransform(); }
 
 		virtual std::string name() const = 0;
 		virtual entt::id_type type() const = 0;
