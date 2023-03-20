@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "Transform.h"
 
+#include <yaml-cpp/yaml.h>
+
 namespace Galactose {
 	Matrix4x4 Camera::viewProjectionMatrix() const {
 		auto transform = getTransform();
@@ -11,9 +13,16 @@ namespace Galactose {
 	}
 
 	void Camera::saveContent(YAML::Emitter& a_out) const {
+		a_out << YAML::Key << "fov" << YAML::Value << m_fov
+			<< YAML::Key << "nearClip" << YAML::Value << m_nearClip
+			<< YAML::Key << "farClip" << YAML::Value << m_farClip;
 	}
 
 	bool Camera::loadContent(const YAML::Node& a_node) {
+		setFOV(a_node["fov"].as<float>());
+		setNearClip(a_node["nearClip"].as<float>());
+		setFarClip(a_node["farClip"].as<float>());
+
 		return true;
 	}
 }
