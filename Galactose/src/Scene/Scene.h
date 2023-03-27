@@ -11,11 +11,13 @@ namespace Galactose {
 	class Scene {
 	public:
 		Scene(const std::string& name = "");
+		virtual ~Scene();
 
 		std::string name() const { return m_name; }
 		std::vector<Entity*> rootEntities() const { return m_rootEntities; }
 
 		void render(const Camera* camera);
+		void render() { render(m_mainCamera); }
 
 		void save(const std::string& filePath) const;
 		bool load(const std::string& filePath);
@@ -36,6 +38,5 @@ namespace Galactose {
 
 		friend class Entity;
 		friend class Component;
-		friend class SceneObject;
 	};
 }

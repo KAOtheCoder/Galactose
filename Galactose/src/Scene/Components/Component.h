@@ -5,6 +5,7 @@
 
 #define GT_COMPONENT(_C)\
 public:\
+	GT_UNMOVABLE(_C)\
 	std::string name() const override { return GT_STRINGIFY(_C); }\
 	entt::id_type type() const override { return s_meta.id; }\
 private:\
@@ -38,6 +39,7 @@ namespace Galactose {
 			const std::function<Component*(Entity*)> creator;
 		};
 
+		virtual void start() {}
 		virtual void saveContent(YAML::Emitter& out) const = 0;
 		virtual bool loadContent(const YAML::Node& node) = 0;
 

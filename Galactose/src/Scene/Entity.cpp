@@ -40,8 +40,30 @@ namespace Galactose {
 		m_uuid(a_id)
 	{}
 
+	Entity::~Entity() {
+		removeFromSiblings();
+
+		for (const auto component : m_components)
+			m_scene->m_registry.storage(component->type())->erase(m_entityId);
+
+		while (!m_children.empty())
+			m_children.back()->destroy(); // Make sure all other components deleted first
+	}
+
+	void Entity::destroy() {
+		m_scene->m_registry.erase<Entity>(m_entityId);
+		m_scene->m_registry.destroy(m_entityId);
+	}
+
 	Transform* Entity::getTransform() const {
 		return &(m_scene->m_registry.get<Transform>(m_entityId));
+	}
+
+	void Entity::removeFromSiblings() const {
+		auto& siblings = m_parent ? m_parent->m_children : m_scene->m_rootEntities;
+		const auto& iter = std::find(siblings.begin(), siblings.end(), this);
+		GT_ASSERT(iter != siblings.end(), "Cannot find entity id in siblings.");
+		siblings.erase(iter);
 	}
 
 	void Entity::setParent(Entity* a_parent) {
@@ -51,19 +73,14 @@ namespace Galactose {
 		GT_ASSERT(!a_parent || a_parent != this, "Entity can't be parent of itself.");
 		GT_ASSERT(!a_parent || a_parent->m_scene == m_scene, "Moving entities across scenes is not allowed.");
 
-		auto& siblings = m_parent ? m_parent->m_children : m_scene->m_rootEntities;
-		const auto& iter = std::find(siblings.begin(), siblings.end(), this);
-		GT_ASSERT(iter != siblings.end(), "Cannot find entity id in parent.");
-		siblings.erase(iter);
+		removeFromSiblings();
 
-		if (a_parent) {
+		if (a_parent)
 			a_parent->m_children.push_back(this);
-			m_parent = a_parent;
-		}
-		else {
+		else
 			m_scene->m_rootEntities.push_back(this);
-			m_parent = nullptr;
-		}
+		
+		m_parent = a_parent;
 	}
 
 	void Entity::save(YAML::Emitter& a_emitter) const {
@@ -114,4 +131,14 @@ namespace Galactose {
 
 		return nullptr;
 	}
+
+	int Entity::findComponent(const entt::id_type a_id) const {
+		const auto componentsSize = m_components.size();
+		for (int i = 0; i < componentsSize; ++i)
+			if (m_components[i]->type() == a_id)
+				return i;
+
+		return -1;
+	}
+
 }

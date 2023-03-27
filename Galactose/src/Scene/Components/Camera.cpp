@@ -4,16 +4,16 @@
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
-	Camera::Camera() {
-		auto scene = entity()->scene();
-		if (!scene->mainCamera())
-			scene->setMainCamera(this);
-	}
-
 	Camera::~Camera() {
 		auto scene = entity()->scene();
 		if (scene->mainCamera() == this)
 			scene->setMainCamera(nullptr);
+	}
+
+	void Camera::start() {
+		auto scene = entity()->scene();
+		if (!scene->mainCamera())
+			scene->setMainCamera(this);
 	}
 
 	Matrix4x4 Camera::viewProjectionMatrix() const {

@@ -20,14 +20,19 @@ namespace Galactose {
 		return const_cast<Entity*>(&(m_registry.get<Entity>(id)));
 	}
 
+	Scene::~Scene() {
+		while (!m_rootEntities.empty())
+			m_rootEntities.back()->destroy();
+	}
+
 	std::vector<Entity*> Scene::getEntities(const std::vector<entt::entity>& a_ids) const {
 		const auto entites_size = a_ids.size();
-		std::vector<Entity*> children(entites_size);
+		std::vector<Entity*> entities(entites_size);
 
 		for (size_t i = 0; i < entites_size; ++i)
-			children[i] = getEntity(a_ids[i]);
+			entities[i] = getEntity(a_ids[i]);
 
-		return children;
+		return entities;
 	}
 
 	Entity* Scene::getEntity(const Uuid& a_uuid) const {
@@ -51,35 +56,38 @@ namespace Galactose {
 		auto renderer = Renderer::renderer();
 
 		renderer->clear();
+
+		if (!a_camera)
+			return;
+
 		renderer->setViewProjection(a_camera->viewProjectionMatrix());
 
-		const auto& group = m_registry.group<Transform>(entt::get<SpriteRenderer>);
+		const auto& view = m_registry.view<SpriteRenderer>();
 
-		for (const auto entityId : group) {
-			const auto& [transform, spriteRenderer] = group.get<Transform, SpriteRenderer>(entityId);
-
-			renderer->drawSprite(transform.localToWorldMatrix(), spriteRenderer.sprite);
+		for (const auto entity : view) {
+			auto& spriteRenderer = view.get<SpriteRenderer>(entity);
+			renderer->drawSprite(spriteRenderer.getTransform()->localToWorldMatrix(), spriteRenderer.sprite);
 		}
 	}
 
-	void Scene::save(const std::string& filePath) const {
+	void Scene::save(const std::string& a_filePath) const {
 		YAML::Emitter emitter;
 		emitter << YAML::BeginMap
 			<< YAML::Key << "name" << YAML::Value << m_name
 			<< YAML::Key << "entities" << YAML::Value << YAML::BeginSeq;
 		
-		m_registry.each([&](const auto id) { getEntity(id)->save(emitter); });
+		m_registry.each([&](const auto a_id) { getEntity(a_id)->save(emitter); });
 		
 		emitter << YAML::EndSeq << YAML::EndMap;
 
-		std::ofstream fileStream(filePath);
+		std::ofstream fileStream(a_filePath);
 		fileStream << emitter.c_str();
 	}
 
-	bool Scene::load(const std::string& filePath) {
+	bool Scene::load(const std::string& a_filePath) {
 		try
 		{
-			const auto& node = YAML::LoadFile(filePath);
+			const auto& node = YAML::LoadFile(a_filePath);
 
 			const auto& entitiesNode = node["entities"];
 
@@ -97,7 +105,7 @@ namespace Galactose {
 		}
 		catch (const YAML::Exception& x)
 		{
-			std::cerr << "Failed to load file '" << filePath << "': " << x.what() << std::endl;
+			std::cerr << "Failed to load file '" << a_filePath << "': " << x.what() << std::endl;
 			return false;
 		}
 

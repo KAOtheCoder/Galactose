@@ -4,6 +4,7 @@
 
 #define GT_STRINGIFY(x) #x
 #define GT_STRINGIFY_VALUE(x) GT_STRINGIFY(x)
+#define GT_UNMOVABLE(T) T(const T&&) = delete; T& operator=(T&&) = delete;
 
 #if defined(GT_WINDOWS)
 #define GT_DEBUGBREAK() __debugbreak()

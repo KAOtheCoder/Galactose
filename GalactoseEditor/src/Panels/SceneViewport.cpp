@@ -16,10 +16,12 @@ namespace GalactoseEditor {
 		Panel("Scene"),
 		m_sceneData(a_sceneData),
 		m_framebuffer(Framebuffer::create(1, 1, { Texture::RGBA8, Texture::Depth24Stencil8 })),
+		m_privateScene("EditorPrivate"),
 		m_cameraEntity(Entity::create(&m_privateScene))
 	{
 		setPadding({ 0, 0 });
 
+		m_cameraEntity->setName("EditorCamera");
 		m_cameraEntity->addComponent<Camera>();
 		m_cameraEntity->getTransform()->setPosition({ 0, 0, 9 });
 	}
