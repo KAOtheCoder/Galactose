@@ -71,7 +71,7 @@ namespace Galactose {
 	};
 
 	namespace Math {
-		static float degreesToRadians(const float a_degrees) { return glm::radians(a_degrees); }
-		static float radiansToDegrees(const float a_radians) { return glm::degrees(a_radians); }
+		inline float degreesToRadians(const float a_degrees) { return glm::radians(a_degrees); }
+		inline float radiansToDegrees(const float a_radians) { return glm::degrees(a_radians); }
 	}
 }

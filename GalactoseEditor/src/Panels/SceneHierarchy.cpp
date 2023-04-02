@@ -15,23 +15,44 @@ namespace GalactoseEditor {
 		const auto& children = a_entity->children();
 		
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_OpenOnArrow 
-			| ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
+			| ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
 
 		if (children.empty())
 			flags |= ImGuiTreeNodeFlags_Leaf;
 
-		if (m_sceneData->selectedEntity() == a_entity)
+		bool selected = m_sceneData->selectedEntity() == a_entity;
+		
+		if (selected)
 			flags |= ImGuiTreeNodeFlags_Selected;
 		
-		const bool opened = ImGui::TreeNodeEx(a_entity, flags, a_entity->name().c_str());
+		bool opened = ImGui::TreeNodeEx(a_entity, flags, a_entity->name().c_str());
 
-		if (ImGui::IsItemClicked())
+		if (ImGui::IsItemClicked()) {
 			m_sceneData->setSelectedEntity(a_entity);
+			selected = true;
+		}
+		
+		if (ImGui::IsItemHovered() || selected) {
+			const auto frameHeight = ImGui::GetFrameHeight();
+			ImGui::SameLine(ImGui::GetWindowWidth() - ImGui::GetStyle().WindowPadding.x - frameHeight);
+			
+			if (ImGui::Button("-", { frameHeight, frameHeight })) {
+				a_entity->destroy();
+
+				if (selected)
+					m_sceneData->setSelectedEntity(nullptr);
+
+				if (opened) {
+					ImGui::TreePop();
+					opened = false;
+				}
+			}
+		}
 
 		if (opened) {
 			for (const auto child : children)
 				drawEntityNode(child);
-			
+
 			ImGui::TreePop();
 		}
 	}
@@ -57,7 +78,9 @@ namespace GalactoseEditor {
 				opened = ImGui::CollapsingHeader(safeSceneName, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth);
 
 				ImGui::TableSetColumnIndex(2);
-				if (ImGui::Button("+"))
+				const auto frameHeight = ImGui::GetFrameHeight();
+
+				if (ImGui::Button("+", { frameHeight, frameHeight }))
 					Entity::create(scene.get())->setName("New Entity");
 
 				ImGui::EndTable();

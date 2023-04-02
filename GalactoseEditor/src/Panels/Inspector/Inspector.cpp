@@ -45,7 +45,9 @@ namespace GalactoseEditor {
 				entity->setName(InputString::text());
 
 			ImGui::TableSetColumnIndex(1);
-			if (ImGui::Button("+"))
+			const auto frameHeight = ImGui::GetFrameHeight();
+
+			if (ImGui::Button("+", { frameHeight, frameHeight }))
 				openPopup("Add Component");
 
 			if (ImGui::BeginPopup("Add Component")) {
