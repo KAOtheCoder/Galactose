@@ -8,6 +8,7 @@ public:\
 	GT_UNMOVABLE(_C)\
 	std::string name() const override { return GT_STRINGIFY(_C); }\
 	entt::id_type type() const override { return s_meta.id; }\
+	void destroy() override { entity()->removeComponent<_C>(); }\
 private:\
 	inline static Component::Meta s_meta{ GT_STRINGIFY(_C), entt::type_hash<_C>::value(), [](Entity* a_entity) { return a_entity->addComponent<_C>(); } };\
 
@@ -25,6 +26,8 @@ namespace Galactose {
 
 		virtual std::string name() const = 0;
 		virtual entt::id_type type() const = 0;
+		virtual void destroy() = 0;
+
 		void save(YAML::Emitter& out) const;
 		bool load(const YAML::Node& node);
 

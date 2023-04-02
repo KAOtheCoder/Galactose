@@ -1,5 +1,6 @@
 #include "SceneHierarchy.h"
 #include "EditorSceneData.h"
+#include "Widgets/TrailingCollapsingHeader.h"
 
 #include <imgui.h>
 
@@ -65,26 +66,11 @@ namespace GalactoseEditor {
 
 			const auto& sceneName = scene->name();
 			const auto safeSceneName = sceneName.empty() ? "Untitled" : sceneName.c_str();
-			bool opened = false;
+			bool createEntity = false;
+			const bool opened = TrailingCollapsingHeader::draw(safeSceneName, "+", createEntity);
 
-			if (ImGui::BeginTable(safeSceneName, 3, ImGuiTableFlags_NoPadInnerX)) {
-				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
-				// CollapsingHeader overflows as half of window padding
-				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, ImGui::GetStyle().WindowPadding.x * 0.5f); 
-				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
-				ImGui::TableNextRow();
-				
-				ImGui::TableSetColumnIndex(0);
-				opened = ImGui::CollapsingHeader(safeSceneName, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth);
-
-				ImGui::TableSetColumnIndex(2);
-				const auto frameHeight = ImGui::GetFrameHeight();
-
-				if (ImGui::Button("+", { frameHeight, frameHeight }))
-					Entity::create(scene.get())->setName("New Entity");
-
-				ImGui::EndTable();
-			}
+			if (createEntity)
+				Entity::create(scene.get())->setName("New Entity");
 
 			if (opened) {
 				for (const auto entity : scene->rootEntities())

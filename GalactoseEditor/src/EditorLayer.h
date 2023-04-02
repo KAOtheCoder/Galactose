@@ -3,7 +3,7 @@
 #include "Panels/SceneViewport.h"
 #include "Panels/SceneHierarchy.h"
 #include "Panels/Inspector/Inspector.h"
-#include "MenuBar.h"
+#include "Widgets/MenuBar.h"
 
 #include <Core/Layer.h>
 

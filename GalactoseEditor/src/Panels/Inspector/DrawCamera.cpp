@@ -9,12 +9,12 @@ using namespace Galactose;
 namespace GalactoseEditor {
 	template <>
 	void Inspector::drawComponent<Camera>() {
-		if (!drawComponentHeader("Camera"))
+		auto camera = getSelectedComponent<Camera>();
+
+		if (!drawComponentHeader(camera, "Camera"))
 			return;
 
 		if (ImGui::BeginTable("Camera", 2, ImGuiTableFlags_SizingStretchProp)) {
-			auto camera = getSelectedComponent<Camera>();
-
 			drawLabel("Field of View");
 			ImGui::TableSetColumnIndex(1);
 			ImGui::PushItemWidth(-std::numeric_limits<float>().min());

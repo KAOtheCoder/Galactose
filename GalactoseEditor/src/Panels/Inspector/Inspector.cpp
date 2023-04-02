@@ -1,5 +1,6 @@
 #include "Inspector.h"
-#include "Panels/InputString.h"
+#include "Widgets/InputString.h"
+#include "Widgets/TrailingCollapsingHeader.h"
 
 #include <Core/Global.h>
 #include <Renderer/Texture.h>
@@ -25,8 +26,8 @@ namespace GalactoseEditor {
 		m_icons.emplace("folder", Galactose::Texture::create("assets/textures/folder.png"));
 
 		bindComponentDrawer<Transform>();
-		bindComponentDrawer<SpriteRenderer>();
 		bindComponentDrawer<Camera>();
+		bindComponentDrawer<SpriteRenderer>();
 	}
 
 	void Inspector::onUpdate() {
@@ -51,9 +52,9 @@ namespace GalactoseEditor {
 				openPopup("Add Component");
 
 			if (ImGui::BeginPopup("Add Component")) {
-				if (ImGui::Selectable("Camera"))
+				if (ImGui::Selectable("Camera", false, entity->hasComponent<Camera>() ? ImGuiSelectableFlags_Disabled : 0))
 					entity->addComponent<Camera>();
-				if (ImGui::Selectable("Sprite Renderer"))
+				if (ImGui::Selectable("Sprite Renderer", false, entity->hasComponent<SpriteRenderer>() ? ImGuiSelectableFlags_Disabled : 0))
 					entity->addComponent<SpriteRenderer>();
 
 				ImGui::EndPopup();
@@ -69,6 +70,11 @@ namespace GalactoseEditor {
 		}
 
 		ImGui::Separator();
+
+		if (m_removeComponent) {
+			m_removeComponent->destroy();
+			m_removeComponent = nullptr;
+		}
 	}
 
 	void Inspector::openPopup(const char* a_label) {
@@ -238,7 +244,15 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
-	bool Inspector::drawComponentHeader(const char* a_label) {
-		return ImGui::CollapsingHeader(a_label, ImGuiTreeNodeFlags_DefaultOpen);
+	bool Inspector::drawComponentHeader(Component* a_component, const char* a_label) {
+		bool remove = false;
+		const bool opened = TrailingCollapsingHeader::draw(a_label, "-", remove);
+
+		if (remove) {
+			m_removeComponent = a_component;
+			return false;
+		}
+
+		return opened;
 	}
 }

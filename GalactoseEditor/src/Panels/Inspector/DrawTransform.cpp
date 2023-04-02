@@ -9,12 +9,12 @@ using namespace Galactose;
 namespace GalactoseEditor {
 	template <>
 	void Inspector::drawComponent<Transform>() {
-		if (!drawComponentHeader("Transform"))
+		if (!ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth))
 			return;
 
-		auto transform = getSelectedComponent<Transform>();
-
 		if (ImGui::BeginTable("Transform", 2, ImGuiTableFlags_SizingStretchProp)) {
+			auto transform = getSelectedComponent<Transform>();
+
 			auto position = transform->localPosition();
 			if (dragVector("Position", 3, position.data()))
 				transform->setLocalPosition(position);

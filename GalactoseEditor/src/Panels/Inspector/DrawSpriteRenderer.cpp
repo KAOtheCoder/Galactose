@@ -10,15 +10,16 @@ using namespace Galactose;
 namespace GalactoseEditor {
 	template <>
 	void Inspector::drawComponent<SpriteRenderer>() {
-		if (!drawComponentHeader("Sprite Renderer"))
+		auto spriteRenderer = getSelectedComponent<SpriteRenderer>();
+
+		if (!drawComponentHeader(spriteRenderer, "Sprite Renderer"))
 			return;
 
-		auto spriteRenderer = getSelectedComponent<SpriteRenderer>();
-		auto& sprite = spriteRenderer->sprite;
-
 		if (ImGui::BeginTable("SpriteRenderer", 2, ImGuiTableFlags_SizingStretchProp)) {
+			auto& sprite = spriteRenderer->sprite;
+
 			const auto& texture = sprite.texture();
-			auto textureFilePath = texture ? texture->filePath() : "";
+			std::string textureFilePath = texture ? texture->filePath() : "";
 			if (drawFileInput("Texture", textureFilePath, "Default"))
 				sprite.setTexture(textureFilePath.empty() ? nullptr : Texture::create(textureFilePath));
 

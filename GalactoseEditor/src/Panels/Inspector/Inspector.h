@@ -33,7 +33,7 @@ namespace GalactoseEditor {
 		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
 		bool iconButton(const char* icon);
 
-		static bool drawComponentHeader(const char* label);
+		bool drawComponentHeader(Galactose::Component* component, const char* label);
 
 		template <class C>
 		C* getSelectedComponent() const { return m_sceneData->selectedEntity()->getComponent<C>(); }
@@ -47,6 +47,7 @@ namespace GalactoseEditor {
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		std::unordered_map<uint32_t, void(Inspector::*)()> m_componentDrawers;
+		Galactose::Component* m_removeComponent = nullptr;
 	};
 
 	extern template void Inspector::drawComponent<Galactose::Transform>();
