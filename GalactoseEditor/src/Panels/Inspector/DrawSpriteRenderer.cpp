@@ -9,8 +9,8 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	template <>
-	void Inspector::drawComponentContent<SpriteRenderer>() {
-		auto& sprite = getSelectedComponent<SpriteRenderer>()->sprite;
+	void Inspector::drawComponentContent<SpriteRenderer>(SpriteRenderer* a_spriteRenderer) {
+		auto& sprite = a_spriteRenderer->sprite;
 
 		const auto& texture = sprite.texture();
 		std::string textureFilePath = texture ? texture->filePath() : "";

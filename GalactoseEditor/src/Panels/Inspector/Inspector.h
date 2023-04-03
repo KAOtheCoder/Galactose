@@ -25,7 +25,7 @@ namespace GalactoseEditor {
 	private:
 		struct ComponentInfo {
 			std::string name;
-			void(Inspector::*draw)();
+			void(Inspector::*draw)(Galactose::Component*);
 			bool(Galactose::Entity::*has)() const;
 			Galactose::Component*(*create)(Galactose::Entity*);
 		};
@@ -51,14 +51,19 @@ namespace GalactoseEditor {
 		void bindComponent() { 
 			m_componentInfos[C::staticType()] = { 
 				toReadableName(C::staticName()), 
-				&Inspector::drawComponentContent<C>,
+				&Inspector::drawComponentContentHelper<C>,
 				&Galactose::Entity::hasComponent<C>,
 				&C::create
 			}; 
 		}
 
 		template <class C>
-		void drawComponentContent();
+		void drawComponentContent(C* component);
+
+		template <class C>
+		void drawComponentContentHelper(Galactose::Component* a_component) {
+			drawComponentContent<C>(static_cast<C*>(a_component));
+		}
 
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
@@ -66,7 +71,7 @@ namespace GalactoseEditor {
 		Galactose::Component* m_removeComponent = nullptr;
 	};
 
-	extern template void Inspector::drawComponentContent<Galactose::Transform>();
-	extern template void Inspector::drawComponentContent<Galactose::SpriteRenderer>();
-	extern template void Inspector::drawComponentContent<Galactose::Camera>();
+	extern template void Inspector::drawComponentContent<Galactose::Transform>(Galactose::Transform*);
+	extern template void Inspector::drawComponentContent<Galactose::SpriteRenderer>(Galactose::SpriteRenderer*);
+	extern template void Inspector::drawComponentContent<Galactose::Camera>(Galactose::Camera*);
 }

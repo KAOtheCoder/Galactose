@@ -263,7 +263,7 @@ namespace GalactoseEditor {
 		}
 
 		if (opened && ImGui::BeginTable(info.name.c_str(), 2, ImGuiTableFlags_SizingStretchProp)) {
-			(this->*info.draw)();
+			(this->*info.draw)(a_component);
 			ImGui::EndTable();
 		}
 	}

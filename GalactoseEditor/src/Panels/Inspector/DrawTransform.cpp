@@ -8,19 +8,17 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	template <>
-	void Inspector::drawComponentContent<Transform>() {
-		auto transform = getSelectedComponent<Transform>();
-
-		auto position = transform->localPosition();
+	void Inspector::drawComponentContent<Transform>(Transform* a_transform) {
+		auto position = a_transform->localPosition();
 		if (dragVector("Position", 3, position.data()))
-			transform->setLocalPosition(position);
+			a_transform->setLocalPosition(position);
 
-		auto rotation = transform->localRotation().eulerDegrees();
+		auto rotation = a_transform->localRotation().eulerDegrees();
 		if (dragVector("Rotation", 3, rotation.data()))
-			transform->setLocalRotation(Quaternion::fromEulerDegrees(rotation));
+			a_transform->setLocalRotation(Quaternion::fromEulerDegrees(rotation));
 
-		auto scale = transform->localScale();
+		auto scale = a_transform->localScale();
 		if (dragVector("Scale", 3, scale.data()))
-			transform->setLocalScale(scale);
+			a_transform->setLocalScale(scale);
 	}
 }
