@@ -23,6 +23,14 @@ namespace GalactoseEditor {
 		void onUpdate() override;
 
 	private:
+		struct ComponentInfo {
+			std::string name;
+			void(Inspector::*draw)();
+			bool(Galactose::Entity::*has)() const;
+			Galactose::Component*(*create)(Galactose::Entity*);
+		};
+
+		static std::string toReadableName(const std::string& name);
 		static void drawLabel(const char* label);
 		static bool dragVector3Axis(const int axis, float& value);
 		static bool dragVector(const char* label, const int axisCount, float* values);
@@ -30,27 +38,35 @@ namespace GalactoseEditor {
 		static bool spanDragFloat(const char* label, float& value, const float speed = 0.1f, const float min = 0, const float max = 0);
 		static bool colorButton(const char* descId, Galactose::Vector4& color);
 		static void openPopup(const char* label);
+
 		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
 		bool iconButton(const char* icon);
 
-		bool drawComponentHeader(Galactose::Component* component, const char* label);
+		void drawComponent(Galactose::Component* component);
 
 		template <class C>
 		C* getSelectedComponent() const { return m_sceneData->selectedEntity()->getComponent<C>(); }
 
 		template <class C>
-		void bindComponentDrawer() { m_componentDrawers[entt::type_hash<C>::value()] = &Inspector::drawComponent<C>; }
+		void bindComponent() { 
+			m_componentInfos[C::staticType()] = { 
+				toReadableName(C::staticName()), 
+				&Inspector::drawComponentContent<C>,
+				&Galactose::Entity::hasComponent<C>,
+				&C::create
+			}; 
+		}
 
 		template <class C>
-		void drawComponent();
+		void drawComponentContent();
 
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
-		std::unordered_map<uint32_t, void(Inspector::*)()> m_componentDrawers;
+		std::unordered_map<uint32_t, ComponentInfo> m_componentInfos;
 		Galactose::Component* m_removeComponent = nullptr;
 	};
 
-	extern template void Inspector::drawComponent<Galactose::Transform>();
-	extern template void Inspector::drawComponent<Galactose::SpriteRenderer>();
-	extern template void Inspector::drawComponent<Galactose::Camera>();
+	extern template void Inspector::drawComponentContent<Galactose::Transform>();
+	extern template void Inspector::drawComponentContent<Galactose::SpriteRenderer>();
+	extern template void Inspector::drawComponentContent<Galactose::Camera>();
 }

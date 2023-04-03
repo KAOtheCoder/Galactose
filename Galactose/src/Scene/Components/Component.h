@@ -6,11 +6,14 @@
 #define GT_COMPONENT(_C)\
 public:\
 	GT_UNMOVABLE(_C)\
+	static Component* create(Entity* a_entity) { return a_entity->addComponent<_C>(); }\
+	static std::string staticName() { return GT_STRINGIFY(_C); }\
+	static uint32_t staticType() { return s_meta.id; }\
 	std::string name() const override { return GT_STRINGIFY(_C); }\
-	entt::id_type type() const override { return s_meta.id; }\
+	uint32_t type() const override { return s_meta.id; }\
 	void destroy() override { entity()->removeComponent<_C>(); }\
 private:\
-	inline static Component::Meta s_meta{ GT_STRINGIFY(_C), entt::type_hash<_C>::value(), [](Entity* a_entity) { return a_entity->addComponent<_C>(); } };\
+	inline static Component::Meta s_meta{ GT_STRINGIFY(_C), entt::type_hash<_C>::value(), &_C::create };\
 
 namespace YAML {
 	class Emitter;
@@ -25,7 +28,7 @@ namespace Galactose {
 		Transform* getTransform() const { return m_entity->getTransform(); }
 
 		virtual std::string name() const = 0;
-		virtual entt::id_type type() const = 0;
+		virtual uint32_t type() const = 0;
 		virtual void destroy() = 0;
 
 		void save(YAML::Emitter& out) const;
@@ -33,13 +36,13 @@ namespace Galactose {
 
 	protected:
 		struct Meta {
-			Meta(const std::string& name, const entt::id_type id, const std::function<Component* (Entity* a_entity)>& creator);
+			Meta(const std::string& name, const uint32_t id, Component*(*creator)(Entity*));
 
 			static Meta* meta(const std::string& name);
 			inline static std::unordered_map<std::string, Meta*> s_metas;
 			
-			const entt::id_type id;
-			const std::function<Component*(Entity*)> creator;
+			const uint32_t id;
+			Component*(*creator)(Entity*);
 		};
 
 		virtual void start() {}

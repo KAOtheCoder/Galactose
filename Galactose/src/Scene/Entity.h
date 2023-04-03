@@ -45,14 +45,14 @@ namespace Galactose {
 			return m_scene->m_registry.any_of<C>(m_entityId); 
 		}
 
-		template <class C, typename... Args>
-		C* addComponent(Args&&... args) {
+		template <class C>
+		C* addComponent() {
 			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
 
 			if (hasComponent<C>())
 				return nullptr;
 
-			auto component = &(m_scene->m_registry.emplace<C>(m_entityId, std::forward<Args>(args)...));
+			auto component = &(m_scene->m_registry.emplace<C>(m_entityId));
 			static_cast<Component*>(component)->m_entity = this;
 			m_components.push_back(component);
 			component->start();
@@ -91,8 +91,8 @@ namespace Galactose {
 		static Entity* createOrphan(Scene* scene, const Uuid& id = Uuid::create());
 
 		Component* addComponent(const std::string& name);
-		Component* getComponent(const entt::id_type id) const;
-		int findComponent(const entt::id_type id) const;
+		Component* getComponent(const uint32_t id) const;
+		int findComponent(const uint32_t id) const;
 		void removeFromSiblings() const;
 
 		Scene* m_scene = nullptr;

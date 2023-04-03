@@ -124,7 +124,7 @@ namespace Galactose {
 		return Component::Meta::meta(a_name)->creator(this);
 	}
 
-	Component* Entity::getComponent(const entt::id_type a_id) const {
+	Component* Entity::getComponent(const uint32_t a_id) const {
 		const auto pool = m_scene->m_registry.storage(a_id);
 		if (pool && pool->contains(m_entityId))
 			return static_cast<Component*>(m_scene->m_registry.storage(a_id)->get(m_entityId));
@@ -132,7 +132,7 @@ namespace Galactose {
 		return nullptr;
 	}
 
-	int Entity::findComponent(const entt::id_type a_id) const {
+	int Entity::findComponent(const uint32_t a_id) const {
 		const auto componentsSize = m_components.size();
 		for (int i = 0; i < componentsSize; ++i)
 			if (m_components[i]->type() == a_id)

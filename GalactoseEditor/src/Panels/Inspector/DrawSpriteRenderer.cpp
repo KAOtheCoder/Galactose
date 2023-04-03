@@ -9,33 +9,24 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	template <>
-	void Inspector::drawComponent<SpriteRenderer>() {
-		auto spriteRenderer = getSelectedComponent<SpriteRenderer>();
+	void Inspector::drawComponentContent<SpriteRenderer>() {
+		auto& sprite = getSelectedComponent<SpriteRenderer>()->sprite;
 
-		if (!drawComponentHeader(spriteRenderer, "Sprite Renderer"))
-			return;
+		const auto& texture = sprite.texture();
+		std::string textureFilePath = texture ? texture->filePath() : "";
+		if (drawFileInput("Texture", textureFilePath, "Default"))
+			sprite.setTexture(textureFilePath.empty() ? nullptr : Texture::create(textureFilePath));
 
-		if (ImGui::BeginTable("SpriteRenderer", 2, ImGuiTableFlags_SizingStretchProp)) {
-			auto& sprite = spriteRenderer->sprite;
+		auto color = sprite.color();
+		if (colorButton("Color", color))
+			sprite.setColor(color);
 
-			const auto& texture = sprite.texture();
-			std::string textureFilePath = texture ? texture->filePath() : "";
-			if (drawFileInput("Texture", textureFilePath, "Default"))
-				sprite.setTexture(textureFilePath.empty() ? nullptr : Texture::create(textureFilePath));
+		auto size = sprite.size();
+		if (dragVector("Size", 2, size.data()))
+			sprite.setSize(size);
 
-			auto color = sprite.color();
-			if (colorButton("Color", color))
-				sprite.setColor(color);
-
-			auto size = sprite.size();
-			if (dragVector("Size", 2, size.data()))
-				sprite.setSize(size);
-
-			auto pivot = sprite.pivot();
-			if (dragVector("Pivot", 2, pivot.data()))
-				sprite.setPivot(pivot);
-
-			ImGui::EndTable();
-		}
+		auto pivot = sprite.pivot();
+		if (dragVector("Pivot", 2, pivot.data()))
+			sprite.setPivot(pivot);
 	}
 }

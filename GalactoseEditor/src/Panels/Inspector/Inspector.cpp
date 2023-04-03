@@ -25,9 +25,9 @@ namespace GalactoseEditor {
 		m_icons.emplace("clear", Galactose::Texture::create("assets/textures/clear.png"));
 		m_icons.emplace("folder", Galactose::Texture::create("assets/textures/folder.png"));
 
-		bindComponentDrawer<Transform>();
-		bindComponentDrawer<Camera>();
-		bindComponentDrawer<SpriteRenderer>();
+		bindComponent<Transform>();
+		bindComponent<Camera>();
+		bindComponent<SpriteRenderer>();
 	}
 
 	void Inspector::onUpdate() {
@@ -52,10 +52,11 @@ namespace GalactoseEditor {
 				openPopup("Add Component");
 
 			if (ImGui::BeginPopup("Add Component")) {
-				if (ImGui::Selectable("Camera", false, entity->hasComponent<Camera>() ? ImGuiSelectableFlags_Disabled : 0))
-					entity->addComponent<Camera>();
-				if (ImGui::Selectable("Sprite Renderer", false, entity->hasComponent<SpriteRenderer>() ? ImGuiSelectableFlags_Disabled : 0))
-					entity->addComponent<SpriteRenderer>();
+				const auto transformId = Transform::staticType();
+
+				for (const auto& [type, info] : m_componentInfos)
+					if (type != transformId && ImGui::Selectable(info.name.c_str(), false, (entity->*info.has)() ? ImGuiSelectableFlags_Disabled : 0))
+						(*info.create)(entity);
 
 				ImGui::EndPopup();
 			}
@@ -63,11 +64,8 @@ namespace GalactoseEditor {
 			ImGui::EndTable();
 		}
 
-		for (auto component : entity->components()) {
-			auto iter = m_componentDrawers.find(component->type());
-			GT_ASSERT(iter != m_componentDrawers.end(), "No drawer assigned for component '" + component->name() + "'.");
-			(this->*iter->second)();
-		}
+		for (auto component : entity->components())
+			drawComponent(component);
 
 		ImGui::Separator();
 
@@ -244,15 +242,46 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
-	bool Inspector::drawComponentHeader(Component* a_component, const char* a_label) {
-		bool remove = false;
-		const bool opened = TrailingCollapsingHeader::draw(a_label, "-", remove);
+	void Inspector::drawComponent(Component* a_component) {
+		const auto type = a_component->type();
+		auto iter = m_componentInfos.find(type);
+		GT_ASSERT(iter != m_componentInfos.end(), "Component '" + a_component->name() + "' not binded.");
+		const auto& info = iter->second;
 
-		if (remove) {
-			m_removeComponent = a_component;
-			return false;
+		bool opened = false;
+		if (type == Transform::staticType()) {
+			opened = ImGui::CollapsingHeader(info.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth);
+		}
+		else {
+			bool remove = false;
+			opened = TrailingCollapsingHeader::draw(info.name.c_str(), "-", remove);
+
+			if (remove) {
+				m_removeComponent = a_component;
+				return;
+			}
 		}
 
-		return opened;
+		if (opened && ImGui::BeginTable(info.name.c_str(), 2, ImGuiTableFlags_SizingStretchProp)) {
+			(this->*info.draw)();
+			ImGui::EndTable();
+		}
+	}
+
+	std::string Inspector::toReadableName(const std::string& a_name) {
+		GT_ASSERT(!a_name.empty(), "Component name is empty.");
+		std::string readable(1, a_name.front());
+		const auto nameSize = a_name.size();
+		readable.reserve(nameSize);
+
+		for (int i = 1; i < nameSize; ++i) {
+			const auto c = a_name[i];
+			if (std::isupper(c) && std::islower(a_name[i - 1]))
+				readable.push_back(' ');
+
+			readable.push_back(c);
+		}
+
+		return readable;
 	}
 }

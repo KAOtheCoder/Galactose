@@ -4,7 +4,7 @@
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
-	Component::Meta::Meta(const std::string& a_name, const entt::id_type a_id, const std::function<Component* (Entity* a_entity)>& a_creator) :
+	Component::Meta::Meta(const std::string& a_name, const uint32_t a_id, Component* (*a_creator)(Entity*)) :
 		id(a_id),
 		creator(a_creator)
 	{
