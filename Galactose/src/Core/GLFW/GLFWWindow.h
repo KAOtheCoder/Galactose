@@ -25,6 +25,9 @@ namespace Galactose {
 
 	private:
 		static std::shared_ptr<Window> toWindow(GLFWwindow* window);
+		static GLFWWindow* getCurrentContext();
+		static void setCurrentContext(GLFWWindow* context);
+
 		static void errorCallBack(const int error, const char* description);
 		static void windowCloseCallback(GLFWwindow* a_window);
 		static void keyCallback(GLFWwindow* window, const int key, const int scancode, const int action, const int modes);

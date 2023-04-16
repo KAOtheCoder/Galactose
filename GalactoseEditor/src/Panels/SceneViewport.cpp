@@ -1,7 +1,5 @@
 #include "SceneViewport.h"
-#include "EditorSceneData.h"
 
-#include <Renderer/Framebuffer.h>
 #include <Core/Events/KeyEvent.h>
 #include <Core/Events/MouseEvent.h>
 #include <Scene/Components/Transform.h>
@@ -13,39 +11,16 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	SceneViewport::SceneViewport(const std::shared_ptr<EditorSceneData>& a_sceneData) :
-		Panel("Scene"),
-		m_sceneData(a_sceneData),
-		m_framebuffer(Framebuffer::create(1, 1, { Texture::RGBA8, Texture::Depth24Stencil8 })),
+		Viewport("Scene", a_sceneData),
 		m_privateScene("EditorPrivate"),
 		m_cameraEntity(Entity::create(&m_privateScene))
 	{
-		setPadding({ 0, 0 });
-
 		m_cameraEntity->setName("EditorCamera");
 		m_cameraEntity->addComponent<Camera>();
 		m_cameraEntity->getTransform()->setPosition({ 0, 0, 9 });
 	}
 
-	void SceneViewport::onUpdate() {
-		const auto& scene = m_sceneData->scene();
-		if (scene) {
-			const auto& viewportSize = ImGui::GetContentRegionAvail();
-			if (viewportSize.x >= 1 && viewportSize.y >= 1) {
-				auto scene = m_sceneData->scene();
-				if (scene) {
-					m_framebuffer->resize(int32_t(viewportSize.x), int32_t(viewportSize.y));
-					auto* camera = m_cameraEntity->getComponent<Camera>();
-					camera->setAspectRatio(viewportSize.x / viewportSize.y);
-
-					m_framebuffer->bind();
-					scene->render(camera);
-					m_framebuffer->unbind();
-				}
-
-				ImGui::Image((void*)(intptr_t)m_framebuffer->texture(0)->rendererId(), viewportSize, { 0, 1 }, { 1, 0 });
-			}
-		}
-	}
+	Camera* SceneViewport::getCamera() const { return m_cameraEntity->getComponent<Camera>(); }
 
 	void SceneViewport::onEvent(const std::shared_ptr<Event>& a_event) {
 		//std::cout << a_event->toString() << std::endl;

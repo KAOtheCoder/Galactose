@@ -1,32 +1,24 @@
 #pragma once
 
-#include "Panel.h"
+#include "Viewport.h"
 
 #include <Scene/Scene.h>
 
-#include <memory>
-
 namespace Galactose {
 	class Entity;
-	class Framebuffer;
 	class Event;
 }
 
 namespace GalactoseEditor {
-	class EditorSceneData;
-
-	class SceneViewport : public Panel {
+	class SceneViewport : public Viewport {
 	public:
 		SceneViewport(const std::shared_ptr<EditorSceneData>& sceneData);
 
-		void onUpdate() override;
+		Galactose::Camera* getCamera() const override;
 		void onFocusOut() override { m_rotate = false; }
-
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event);
 
 	private:
-		std::shared_ptr<EditorSceneData> m_sceneData;
-		std::shared_ptr<Galactose::Framebuffer> m_framebuffer;
 		Galactose::Scene m_privateScene;
 		Galactose::Entity* m_cameraEntity = nullptr;
 		bool m_rotate = false;

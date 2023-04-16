@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Panels/SceneViewport.h"
+#include "Panels/GameViewport.h"
 #include "Panels/SceneHierarchy.h"
 #include "Panels/Inspector/Inspector.h"
 #include "Widgets/MenuBar.h"
@@ -25,6 +26,7 @@ namespace GalactoseEditor {
 	private:
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		SceneViewport m_sceneViewport;
+		GameViewport m_gameViewport;
 		SceneHierarchy m_sceneHierarchy;
 		Inspector m_inspector;
 		MenuBar m_menuBar;

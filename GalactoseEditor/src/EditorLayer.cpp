@@ -19,6 +19,7 @@ namespace GalactoseEditor {
 	EditorLayer::EditorLayer(Window* a_window) :
 		m_sceneData(std::make_shared<EditorSceneData>()),
 		m_sceneViewport(m_sceneData),
+		m_gameViewport(m_sceneData),
 		m_sceneHierarchy(m_sceneData),
 		m_inspector(m_sceneData)
 	{
@@ -46,7 +47,6 @@ namespace GalactoseEditor {
 		// Setup Platform/Renderer backends
 		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 410");
-		//ImGui::SetWindowFontScale(2);
 
 		const auto nfdResult = NFD_Init();
 		GT_ASSERT(nfdResult == NFD_OKAY, "Failed to initialze NFD");
@@ -88,6 +88,7 @@ namespace GalactoseEditor {
 		m_sceneHierarchy.update();
 		m_inspector.update();
 		m_sceneViewport.update();
+		m_gameViewport.update();
 
 		ImGui::ShowDemoWindow();
 
@@ -98,10 +99,10 @@ namespace GalactoseEditor {
 		// (Platform functions may change the current OpenGL context
 		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			//GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			auto context = Window::getCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			//glfwMakeContextCurrent(backup_current_context);
+			Window::setCurrentContext(context);
 		}
 	}
 

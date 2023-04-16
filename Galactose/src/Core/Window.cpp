@@ -27,4 +27,7 @@ namespace Galactose {
 			layer->onEvent(a_event);
 		}
 	}
+
+	Window* Window::getCurrentContext() { return GLFWWindow::getCurrentContext(); }
+	void Window::setCurrentContext(Window* a_context) { GLFWWindow::setCurrentContext(static_cast<GLFWWindow*>(a_context)); }
 }

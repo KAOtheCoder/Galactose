@@ -14,6 +14,9 @@ namespace Galactose {
 		static std::shared_ptr<Window> create(const std::string& a_title, const int32_t a_width, const int32_t a_height);
 		static bool areAllWindowsClosed();
 
+		static Window* getCurrentContext();
+		static void setCurrentContext(Window* context);
+
 		virtual ~Window() = default;
 
 		virtual std::string title() const = 0;

@@ -1,6 +1,7 @@
 #include "Panel.h"
 
 #include <imgui.h>
+
 #include <iostream>
 
 using namespace Galactose;
@@ -48,8 +49,10 @@ namespace GalactoseEditor {
 			}
 
 			onUpdate();
-			ImGui::End();
 		}
+
+		// Don't move End into Begin block
+		ImGui::End();
 
 		if (customPadding)
 			ImGui::PopStyleVar();

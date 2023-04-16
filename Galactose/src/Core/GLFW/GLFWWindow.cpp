@@ -8,6 +8,9 @@
 #include <GLFW/glfw3.h>
 
 namespace Galactose {
+	GLFWWindow* GLFWWindow::getCurrentContext() { return static_cast<GLFWWindow*>(toWindow(glfwGetCurrentContext()).get()); }
+	void GLFWWindow::setCurrentContext(GLFWWindow* a_context) { glfwMakeContextCurrent(a_context->m_glfwWindow); }
+
 	GLFWWindow::GLFWWindow(const std::string& a_title, const int32_t a_width, const int32_t a_height)
 		: m_title(a_title),
 		  m_vsync(true)
