@@ -1,7 +1,6 @@
 #include "Camera.h"
 #include "Transform.h"
-
-#include <yaml-cpp/yaml.h>
+#include "Scene/Serialize.h"
 
 namespace Galactose {
 	Camera::~Camera() {
@@ -27,14 +26,15 @@ namespace Galactose {
 	void Camera::saveContent(YAML::Emitter& a_out) const {
 		a_out << YAML::Key << "fov" << YAML::Value << m_fov
 			<< YAML::Key << "nearClip" << YAML::Value << m_nearClip
-			<< YAML::Key << "farClip" << YAML::Value << m_farClip;
+			<< YAML::Key << "farClip" << YAML::Value << m_farClip
+			<< YAML::Key << "backgroundColor" << YAML::Value << m_backgroundColor;
 	}
 
 	bool Camera::loadContent(const YAML::Node& a_node) {
-		setFOV(a_node["fov"].as<float>());
-		setNearClip(a_node["nearClip"].as<float>());
-		setFarClip(a_node["farClip"].as<float>());
-
+		setFOV(a_node["fov"].as<float>(m_fov));
+		setNearClip(a_node["nearClip"].as<float>(m_nearClip));
+		setFarClip(a_node["farClip"].as<float>(m_farClip));
+		setBackgroundColor(a_node["backgroundColor"].as<Vector3>(m_backgroundColor));
 		return true;
 	}
 }

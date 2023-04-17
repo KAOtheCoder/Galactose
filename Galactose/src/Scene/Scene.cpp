@@ -55,11 +55,15 @@ namespace Galactose {
 	void Scene::render(const Camera* a_camera) {
 		auto renderer = Renderer::renderer();
 
-		renderer->clear();
+		if (!a_camera) {
+			renderer->setClearColor({ 0, 0, 0, 1 });
+			renderer->clear();
 
-		if (!a_camera)
 			return;
+		}
 
+		renderer->setClearColor(Vector4(a_camera->backgroundColor(), 1));
+		renderer->clear();
 		renderer->setViewProjection(a_camera->viewProjectionMatrix());
 
 		const auto& view = m_registry.view<SpriteRenderer>();

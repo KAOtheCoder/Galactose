@@ -27,6 +27,9 @@ namespace Galactose {
 
 		Matrix4x4 viewProjectionMatrix() const;
 
+		Vector3 backgroundColor() const { return m_backgroundColor; }
+		void setBackgroundColor(const Vector3& a_color) { m_backgroundColor = a_color; }
+
 	protected:
 		void saveContent(YAML::Emitter& emitter) const override;
 		bool loadContent(const YAML::Node& node) override;
@@ -36,5 +39,6 @@ namespace Galactose {
 		float m_aspectRatio = 16.f / 9.f;
 		float m_nearClip = 0.1f;
 		float m_farClip = 5000.f;
+		Vector3 m_backgroundColor = { 0.5f, 0.5f, 0.5f };
 	};
 }

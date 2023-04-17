@@ -26,5 +26,9 @@ namespace GalactoseEditor {
 
 		if (dragFloat("Far Clip", far, 0.1f, near + EPSILON, std::numeric_limits<float>().max()))
 			a_camera->setFarClip(far);
+
+		Vector4 color(a_camera->backgroundColor(), 1);
+		if (colorButton("Background Color", color))
+			a_camera->setBackgroundColor(color);
 	}
 }

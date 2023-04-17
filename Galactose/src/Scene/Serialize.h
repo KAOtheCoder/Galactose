@@ -47,4 +47,19 @@ namespace YAML {
 	};
 }
 
+namespace Galactose {
+	namespace Serialize {
+		template <typename T>
+		inline T getValue(const YAML::Node& a_node, const std::string& a_key, const T& a_default) {
+			const auto& node = a_node[a_key];
+			if (node)
+				return node.as<T>();
+			
+
+			std::cerr << "Invalid key: " << a_key << std::endl;
+			return a_default;
+		}
+	}
+}
+
 #undef GT_MATH_CONVERT
