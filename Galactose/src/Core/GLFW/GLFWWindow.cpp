@@ -49,10 +49,11 @@ namespace Galactose {
 
 	void GLFWWindow::update() {
 		if (m_glfwWindow) {
+			glfwMakeContextCurrent(m_glfwWindow);
+
 			for (const auto& layer : layers)
 				layer->onUpdate();
 
-			glfwMakeContextCurrent(m_glfwWindow); // current context might be changed by ImGui
 			glfwSwapBuffers(m_glfwWindow);
 			glfwPollEvents();
 		}
@@ -71,6 +72,7 @@ namespace Galactose {
 	}
 
 	void GLFWWindow::setVSync(const bool a_vsync) {
+		glfwMakeContextCurrent(m_glfwWindow);
 		glfwSwapInterval(a_vsync ? 1 : 0);
 		m_vsync = a_vsync;
 	}

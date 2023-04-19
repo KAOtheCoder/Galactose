@@ -4,11 +4,17 @@
 #include "Core/Events/Event.h"
 
 namespace Galactose {
-	std::shared_ptr<Window> Window::create(const std::string& a_title, const int32_t a_width, const int32_t a_height) {
-		std::shared_ptr<GLFWWindow> window(new GLFWWindow(a_title, a_width, a_height));
-		s_windows.push_back(window);
+	Window::Window() {
+		s_windows.insert(this);
+	}
 
-		return window;
+	Window::~Window() {
+		s_windows.erase(this);
+	}
+
+	std::shared_ptr<Window> Window::create(const std::string& a_title, const int32_t a_width, const int32_t a_height) {
+		// std::make_shared can't access private constructor
+		return std::shared_ptr<GLFWWindow>(new GLFWWindow(a_title, a_width, a_height));
 	}
 
 	bool Window::areAllWindowsClosed() {

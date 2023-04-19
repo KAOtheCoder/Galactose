@@ -3,7 +3,7 @@
 #include "Layer.h"
 
 #include <string>
-#include <vector>
+#include <unordered_set>
 
 namespace Galactose {
 	class Application;
@@ -17,7 +17,7 @@ namespace Galactose {
 		static Window* getCurrentContext();
 		static void setCurrentContext(Window* context);
 
-		virtual ~Window() = default;
+		virtual ~Window();
 
 		virtual std::string title() const = 0;
 		virtual int32_t width() const = 0;
@@ -37,9 +37,9 @@ namespace Galactose {
 		std::vector<std::shared_ptr<Layer>> layers;
 
 	protected:
-		inline static std::vector<std::shared_ptr<Window>> s_windows;
+		inline static std::unordered_set<Window*> s_windows;
 
-		Window() = default;
+		Window();
 
 	private:
 		friend class Application;
