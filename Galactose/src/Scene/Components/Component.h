@@ -3,17 +3,24 @@
 #include "Core/Global.h"
 #include "Scene/Entity.h"
 
-#define GT_COMPONENT(_C)\
+#define GT_COMPONENT_COMMON(_C)\
 public:\
 	GT_UNMOVABLE(_C)\
-	static Component* create(Entity* a_entity) { return a_entity->addComponent<_C>(); }\
+	std::string name() const override { return GT_STRINGIFY(_C); }\
+	void destroy() override { entity()->removeComponent<_C>(); }\
+
+#define GT_COMPONENT(_C)\
+GT_COMPONENT_COMMON(_C)\
+	static Galactose::Component* create(Galactose::Entity* a_entity) { return a_entity->addComponent<_C>(); }\
 	static std::string staticName() { return GT_STRINGIFY(_C); }\
 	static uint32_t staticType() { return s_meta.id; }\
-	std::string name() const override { return GT_STRINGIFY(_C); }\
 	uint32_t type() const override { return s_meta.id; }\
-	void destroy() override { entity()->removeComponent<_C>(); }\
 private:\
 	inline static Component::Meta s_meta{ GT_STRINGIFY(_C), entt::type_hash<_C>::value(), &_C::create };\
+
+#define GT_PRIVATE_COMPONENT(_C)\
+GT_COMPONENT_COMMON(_C)\
+	uint32_t type() const override { return entt::type_hash<_C>::value(); }\
 
 namespace YAML {
 	class Emitter;

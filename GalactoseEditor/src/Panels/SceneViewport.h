@@ -16,7 +16,7 @@ namespace GalactoseEditor {
 
 		Galactose::Camera* getCamera() const override;
 		void onFocusOut() override { m_rotate = false; }
-		void onEvent(const std::shared_ptr<Galactose::Event>& a_event);
+		void onEvent(const std::shared_ptr<Galactose::Event>& event) override;
 
 	private:
 		Galactose::Scene m_privateScene;

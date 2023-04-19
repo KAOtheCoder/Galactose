@@ -11,5 +11,6 @@ namespace GalactoseEditor {
 		{}
 
 		Galactose::Camera* getCamera() const override { return m_sceneData->scene()->mainCamera(); }
+		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override { m_sceneData->scene()->processEvent(a_event); }
 	};
 }

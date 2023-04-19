@@ -3,6 +3,7 @@
 #include "Components/Transform.h"
 #include "Components/SpriteRenderer.h"
 #include "Components/Camera.h"
+#include "Components/Script.h"
 #include "Renderer/Renderer.h"
 #include "Serialize.h"
 
@@ -71,6 +72,20 @@ namespace Galactose {
 		for (const auto entity : view) {
 			auto& spriteRenderer = view.get<SpriteRenderer>(entity);
 			renderer->drawSprite(spriteRenderer.getTransform()->localToWorldMatrix(), spriteRenderer.sprite);
+		}
+	}
+
+	void Scene::registerEventScript(Script* a_scrpit) {
+		// TO DO: check if onEvent overridden
+		m_eventScripts.insert(a_scrpit);
+	}
+
+	void Scene::processEvent(const std::shared_ptr<Event>& a_event) {
+		for (auto script : m_eventScripts) {
+			if (a_event->isHandled())
+				return;
+
+			script->onEvent(a_event);
 		}
 	}
 

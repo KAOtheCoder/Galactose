@@ -109,7 +109,8 @@ namespace GalactoseEditor {
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {
 		m_menuBar.onEvent(a_event);
 
-		if (Panel::focusedPanel() == &m_sceneViewport)
-			m_sceneViewport.onEvent(a_event);
+		auto panel = Panel::focusedPanel();
+		if (panel)
+			panel->onEvent(a_event);
 	}
 }

@@ -3,6 +3,11 @@
 #include <Math/Math.h>
 
 #include <string>
+#include <memory>
+
+namespace Galactose {
+	class Event;
+}
 
 namespace GalactoseEditor {
 	class Panel {
@@ -20,6 +25,7 @@ namespace GalactoseEditor {
 		void update();
 		virtual void onUpdate() {}
 		virtual void onFocusOut() {}
+		virtual void onEvent(const std::shared_ptr<Galactose::Event>& a_event) {}
 
 	private:
 		static Panel* s_focusedPanel;
