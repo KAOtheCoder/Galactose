@@ -16,6 +16,7 @@ namespace GalactoseEditor {
 		SceneHierarchy(const std::shared_ptr<EditorSceneData>& sceneData);
 
 		void onUpdate() override;
+		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
 
 	private:
 		void drawEntityNode(Galactose::Entity* entity);

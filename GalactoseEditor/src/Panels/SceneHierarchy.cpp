@@ -2,6 +2,8 @@
 #include "EditorSceneData.h"
 #include "Widgets/TrailingCollapsingHeader.h"
 
+#include <Core/Events/KeyEvent.h>
+
 #include <imgui.h>
 
 using namespace Galactose;
@@ -75,6 +77,19 @@ namespace GalactoseEditor {
 			if (opened) {
 				for (const auto entity : scene->rootEntities())
 					drawEntityNode(entity);
+			}
+		}
+	}
+
+	void SceneHierarchy::onEvent(const std::shared_ptr<Event>& a_event) {
+		if (a_event->type() == Event::KeyPress) {
+			auto keyEvent = static_cast<KeyPressEvent*>(a_event.get());
+			auto selectedEntity = m_sceneData->selectedEntity();
+
+			if (keyEvent->key() == KeyEvent::KeyDelete && !keyEvent->isRepeat() && selectedEntity) {
+				selectedEntity->destroy();
+				m_sceneData->setSelectedEntity(nullptr);
+				a_event->setHandled();
 			}
 		}
 	}

@@ -50,6 +50,8 @@ namespace GalactoseEditor {
 				transform->setRotation(Quaternion::fromEulerDegrees(transform->rotation().eulerDegrees() + (Vector3(move.y, move.x, 0) * speed)));
 			}
 			break;
+		default:
+			return;
 		}
 
 		a_event->setHandled();
