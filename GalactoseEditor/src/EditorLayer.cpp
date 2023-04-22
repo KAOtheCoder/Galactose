@@ -85,12 +85,13 @@ namespace GalactoseEditor {
 
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
+		m_sceneData->scene()->time().tick();
 		m_sceneHierarchy.update();
 		m_inspector.update();
 		m_sceneViewport.update();
 		m_gameViewport.update();
 
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

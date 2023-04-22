@@ -10,6 +10,7 @@ namespace Galactose {
 		Script() = default;
 
 		virtual void onEvent(const std::shared_ptr<Event>& a_event) {}
+		Time& time() const { return entity()->scene()->time(); }
 
 	protected:
 		void saveContent(YAML::Emitter& emitter) const override {}

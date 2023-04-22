@@ -1,5 +1,6 @@
 #include "SceneViewport.h"
 #include "CameraController.h"
+#include "EditorSceneData.h"
 
 #include <Scene/Components/Transform.h>
 #include <Scene/Components/Camera.h>
@@ -25,5 +26,10 @@ namespace GalactoseEditor {
 
 	void SceneViewport::onEvent(const std::shared_ptr<Event>& a_event) {
 		m_privateScene.processEvent(a_event);
+	}
+
+	void SceneViewport::onUpdate() {
+		m_privateScene.time().tick();
+		Viewport::onUpdate();
 	}
 }

@@ -14,7 +14,8 @@ namespace GalactoseEditor {
 		switch (a_event->type()) {
 		case Event::KeyPress: {
 			const auto key = static_cast<KeyEvent*>(a_event.get())->key();
-			const float speed = 0.05f;
+			auto delta = time().deltaTime();
+			const float speed = 10 * time().deltaTime();
 			Vector3 direction;
 
 			switch (key)
@@ -46,7 +47,7 @@ namespace GalactoseEditor {
 				const auto& cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
 				const auto& move = cursorPos - m_cursorPos;
 				m_cursorPos = cursorPos;
-				const float speed = 0.1f;
+				const float speed = 2 * time().deltaTime();
 				transform->setRotation(Quaternion::fromEulerDegrees(transform->rotation().eulerDegrees() + (Vector3(move.y, move.x, 0) * speed)));
 			}
 			break;

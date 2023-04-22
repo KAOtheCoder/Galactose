@@ -2,6 +2,7 @@
 
 #include "Core/Uuid.h"
 #include "Core/Global.h"
+#include "Core/Time.h"
 
 #include <entity/registry.hpp>
 
@@ -36,6 +37,8 @@ namespace Galactose {
 
 		void processEvent(const std::shared_ptr<Event>& event);
 
+		Time& time() { return m_time; }
+
 	private:
 		Entity* getEntity(const entt::entity id) const;
 		std::vector<Entity*> getEntities(const std::vector<entt::entity>& ids) const;
@@ -49,6 +52,7 @@ namespace Galactose {
 		Camera* m_mainCamera = nullptr;
 		// TO DO: sort scripts
 		std::set<Script*> m_eventScripts;
+		Time m_time;
 
 		friend class Entity;
 		friend class Component;
