@@ -18,6 +18,7 @@ namespace Galactose {
 		std::chrono::time_point<std::chrono::steady_clock> m_lastAwakening;
 		std::chrono::time_point<std::chrono::steady_clock> m_lastTick;
 		float m_delta = 0;
+		float m_maxDelta = 1;
 		float m_elapsedTime = 0;
 		bool m_running = false;
 	};

@@ -14,7 +14,6 @@ namespace GalactoseEditor {
 		switch (a_event->type()) {
 		case Event::KeyPress: {
 			const auto key = static_cast<KeyEvent*>(a_event.get())->key();
-			auto delta = time().deltaTime();
 			const float speed = 10 * time().deltaTime();
 			Vector3 direction;
 

@@ -11,6 +11,12 @@ namespace Galactose {
 			const auto previousTick = m_lastTick;
 			m_lastTick = std::chrono::steady_clock::now();
 			m_delta = std::chrono::duration<float>(m_lastTick - previousTick).count();
+
+			if (m_delta > m_maxDelta) {
+				m_delta = m_maxDelta;
+				m_elapsedTime += std::chrono::duration<float>(previousTick - m_lastAwakening).count() + m_maxDelta;
+				m_lastAwakening = m_lastTick;
+			}
 		}
 	}
 
