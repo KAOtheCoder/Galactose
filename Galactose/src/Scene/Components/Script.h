@@ -9,6 +9,7 @@ namespace Galactose {
 	public:
 		Script() = default;
 
+		virtual void update() {};
 		virtual void onEvent(const std::shared_ptr<Event>& a_event) {}
 		Time& time() const { return entity()->scene()->time(); }
 

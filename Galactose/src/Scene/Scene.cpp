@@ -75,18 +75,23 @@ namespace Galactose {
 		}
 	}
 
-	void Scene::registerEventScript(Script* a_scrpit) {
+	void Scene::registerScript(Script* a_scrpit) {
 		// TO DO: check if onEvent overridden
-		m_eventScripts.insert(a_scrpit);
+		m_scripts.insert(a_scrpit);
 	}
 
 	void Scene::processEvent(const std::shared_ptr<Event>& a_event) {
-		for (auto script : m_eventScripts) {
+		for (auto script : m_scripts) {
 			if (a_event->isHandled())
 				return;
 
 			script->onEvent(a_event);
 		}
+	}
+
+	void Scene::updateScripts() {
+		for (auto script : m_scripts)
+			script->update();
 	}
 
 	void Scene::save(const std::string& a_filePath) const {

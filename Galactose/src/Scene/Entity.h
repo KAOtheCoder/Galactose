@@ -58,7 +58,7 @@ namespace Galactose {
 			component->start();
 
 			if constexpr(std::is_base_of<Script, C>::value)
-				m_scene->registerEventScript(static_cast<Script*>(component));
+				m_scene->registerScript(static_cast<Script*>(component));
 
 			return component;
 		}

@@ -36,6 +36,7 @@ namespace Galactose {
 		void setMainCamera(Camera* camera);
 
 		void processEvent(const std::shared_ptr<Event>& event);
+		void updateScripts();
 
 		Time& time() { return m_time; }
 
@@ -43,7 +44,7 @@ namespace Galactose {
 		Entity* getEntity(const entt::entity id) const;
 		std::vector<Entity*> getEntities(const std::vector<entt::entity>& ids) const;
 		
-		void registerEventScript(Script* script);
+		void registerScript(Script* script);
 
 		entt::registry m_registry;
 		std::string m_name;
@@ -51,7 +52,7 @@ namespace Galactose {
 		std::unordered_map<Uuid, Entity*> m_entityMap;
 		Camera* m_mainCamera = nullptr;
 		// TO DO: sort scripts
-		std::set<Script*> m_eventScripts;
+		std::set<Script*> m_scripts;
 		Time m_time;
 
 		friend class Entity;

@@ -85,7 +85,11 @@ namespace GalactoseEditor {
 
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-		m_sceneData->scene()->time().tick();
+		auto scene = m_sceneData->scene();
+		GT_ASSERT(scene, "Scene is null");
+		scene->time().tick();
+		scene->updateScripts();
+
 		m_sceneHierarchy.update();
 		m_inspector.update();
 		m_sceneViewport.update();
