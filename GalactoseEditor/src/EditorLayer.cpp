@@ -8,10 +8,13 @@
 #include <Core/Application.h>
 
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
 #include <nfd.hpp>
+
+#include <filesystem>
 
 using namespace Galactose;
 
@@ -48,6 +51,9 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 
+		if (!std::filesystem::exists(io.IniFilename))
+			m_layout = Layout::Default;
+
 		const auto nfdResult = NFD_Init();
 		GT_ASSERT(nfdResult == NFD_OKAY, "Failed to initialze NFD");
 
@@ -66,6 +72,10 @@ namespace GalactoseEditor {
 			{ "Scene Hierarchy", { }, [&]() { m_sceneHierarchy.setVisible(true); } },
 			{ "Inspector", { }, [&]() { m_inspector.setVisible(true); } }
 		} });
+
+		m_menuBar.menus.push_back({ "Layouts", {
+			{ "Default", { }, [&]() { m_layout = Layout::Default; }}
+		} });
 	}
 
 	EditorLayer::~EditorLayer() {
@@ -81,9 +91,9 @@ namespace GalactoseEditor {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		m_menuBar.draw();
+		updateLayout();
 
-		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+		m_menuBar.draw();
 
 		auto scene = m_sceneData->scene();
 		GT_ASSERT(scene, "Scene is null");
@@ -95,14 +105,14 @@ namespace GalactoseEditor {
 		m_sceneViewport.update();
 		m_gameViewport.update();
 
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// Update and Render additional Platform Windows
 		// (Platform functions may change the current OpenGL context
-		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		GT_ASSERT(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable, "ImGui viewports not enabled.");
 		{
 			auto context = Window::getCurrentContext();
 			ImGui::UpdatePlatformWindows();
@@ -117,5 +127,25 @@ namespace GalactoseEditor {
 		auto panel = Panel::focusedPanel();
 		if (panel)
 			panel->onEvent(a_event);
+	}
+
+	void EditorLayer::updateLayout() {
+		auto dockSpaceId = ImGui::DockSpaceOverViewport();
+
+		if (m_layout == Layout::Default) {
+			ImGui::DockBuilderRemoveNode(dockSpaceId);
+			ImGui::DockBuilderAddNode(dockSpaceId, ImGuiDockNodeFlags_DockSpace);
+			ImGui::DockBuilderSetNodeSize(dockSpaceId, ImGui::GetMainViewport()->WorkSize);
+			const float LEFT_RIGHT_SIZE_RATIO = 0.2f;
+			const auto leftId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, LEFT_RIGHT_SIZE_RATIO, nullptr, &dockSpaceId);
+			const auto rightId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, LEFT_RIGHT_SIZE_RATIO * (1 / (1 - LEFT_RIGHT_SIZE_RATIO)), nullptr, &dockSpaceId);
+			ImGui::DockBuilderDockWindow("Scene Hierarchy", leftId);
+			ImGui::DockBuilderDockWindow("Inspector", rightId);
+			ImGui::DockBuilderDockWindow("Scene", dockSpaceId);
+			ImGui::DockBuilderDockWindow("Game", dockSpaceId);
+			ImGui::DockBuilderFinish(dockSpaceId);
+		}
+
+		m_layout = Layout::None;
 	}
 }

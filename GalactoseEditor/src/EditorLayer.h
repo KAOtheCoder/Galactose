@@ -24,11 +24,19 @@ namespace GalactoseEditor {
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
 
 	private:
+		enum Layout {
+			None,
+			Default
+		};
+
+		void updateLayout();
+
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		SceneViewport m_sceneViewport;
 		GameViewport m_gameViewport;
 		SceneHierarchy m_sceneHierarchy;
 		Inspector m_inspector;
 		MenuBar m_menuBar;
+		Layout m_layout = Layout::None;
 	};
 }
