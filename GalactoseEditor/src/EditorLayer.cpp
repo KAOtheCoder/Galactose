@@ -69,6 +69,7 @@ namespace GalactoseEditor {
 
 		m_menuBar.menus.push_back({ "Panels", {
 			{ "Scene", { }, [&]() { m_sceneViewport.setVisible(true); } },
+			{ "Game", { }, [&]() { m_gameViewport.setVisible(true); } },
 			{ "Scene Hierarchy", { }, [&]() { m_sceneHierarchy.setVisible(true); } },
 			{ "Inspector", { }, [&]() { m_inspector.setVisible(true); } }
 		} });
@@ -93,19 +94,21 @@ namespace GalactoseEditor {
 
 		updateLayout();
 
-		m_menuBar.draw();
-
-		auto scene = m_sceneData->scene();
-		GT_ASSERT(scene, "Scene is null");
-		scene->time().tick();
-		scene->updateScripts();
+		updateUpBar();
+		
+		if (m_sceneData->isRunning()) {
+			auto scene = m_sceneData->scene();
+			GT_ASSERT(scene, "Scene is null");
+			scene->time().tick();
+			scene->updateScripts();
+		}
 
 		m_sceneHierarchy.update();
 		m_inspector.update();
 		m_sceneViewport.update();
 		m_gameViewport.update();
 
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -135,17 +138,34 @@ namespace GalactoseEditor {
 		if (m_layout == Layout::Default) {
 			ImGui::DockBuilderRemoveNode(dockSpaceId);
 			ImGui::DockBuilderAddNode(dockSpaceId, ImGuiDockNodeFlags_DockSpace);
-			ImGui::DockBuilderSetNodeSize(dockSpaceId, ImGui::GetMainViewport()->WorkSize);
+
+			const auto& workSize = ImGui::GetMainViewport()->WorkSize;
+			ImGui::DockBuilderSetNodeSize(dockSpaceId, workSize);
+
 			const float LEFT_RIGHT_SIZE_RATIO = 0.2f;
 			const auto leftId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, LEFT_RIGHT_SIZE_RATIO, nullptr, &dockSpaceId);
 			const auto rightId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, LEFT_RIGHT_SIZE_RATIO * (1 / (1 - LEFT_RIGHT_SIZE_RATIO)), nullptr, &dockSpaceId);
-			ImGui::DockBuilderDockWindow("Scene Hierarchy", leftId);
-			ImGui::DockBuilderDockWindow("Inspector", rightId);
-			ImGui::DockBuilderDockWindow("Scene", dockSpaceId);
-			ImGui::DockBuilderDockWindow("Game", dockSpaceId);
+			
+			ImGui::DockBuilderDockWindow(m_sceneHierarchy.name().c_str(), leftId);
+			ImGui::DockBuilderDockWindow(m_inspector.name().c_str(), rightId);
+			ImGui::DockBuilderDockWindow(m_sceneViewport.name().c_str(), dockSpaceId);
+			ImGui::DockBuilderDockWindow(m_gameViewport.name().c_str(), dockSpaceId);
 			ImGui::DockBuilderFinish(dockSpaceId);
 		}
 
 		m_layout = Layout::None;
+	}
+
+	void EditorLayer::updateUpBar() {
+		// Inspired from ImGui::BeginMainMenuBar()
+		const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+		const float height = m_menuBar.height() + m_toolBar.height();
+
+		if (ImGui::BeginViewportSideBar("##UpBar", ImGui::GetMainViewport(), ImGuiDir_Up, height, windowFlags)) {
+			m_menuBar.update();
+			m_toolBar.update(m_sceneData);
+		}
+
+		ImGui::End();
 	}
 }

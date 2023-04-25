@@ -17,6 +17,7 @@ namespace GalactoseEditor {
 		Panel(const std::string& a_name);
 		virtual ~Panel();
 
+		std::string name() const { return m_name; }
 		void setVisible(const bool a_visible) { m_visible = a_visible; }
 
 		Galactose::Vector2 padding() const;

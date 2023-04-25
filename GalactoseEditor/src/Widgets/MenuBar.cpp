@@ -19,8 +19,12 @@ namespace GalactoseEditor {
 		return str;
 	}
 
-	void MenuBar::draw() {
-		if (ImGui::BeginMainMenuBar()) {
+	float MenuBar::height() const {
+		return ImGui::GetFrameHeight();
+	}
+
+	void MenuBar::update() {
+		if (ImGui::BeginMenuBar()) {
 			for (const auto& menu : menus) {
 				if (ImGui::BeginMenu(menu.label.c_str())) {
 					for (const auto& menuItem : menu.menuItems) {
@@ -34,7 +38,7 @@ namespace GalactoseEditor {
 				}
 			}
 
-			ImGui::EndMainMenuBar();
+			ImGui::EndMenuBar();
 		}
 	}
 

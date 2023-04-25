@@ -21,9 +21,10 @@ namespace GalactoseEditor {
 			std::vector<MenuItem> menuItems;
 		};
 
-		void draw();
+		void update();
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event);
 
+		float height() const;
 		std::vector<Menu> menus;
 
 	private:

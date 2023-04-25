@@ -51,4 +51,14 @@ namespace GalactoseEditor {
 		else
 			saveAndPrint();
 	}
+
+	void EditorSceneData::setRunning(const bool a_running) {
+		if (a_running == m_running)
+			return;
+
+		if (!a_running)
+			m_scene->time().suspend();
+
+		m_running = a_running;
+	}
 }

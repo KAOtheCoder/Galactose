@@ -21,11 +21,15 @@ namespace GalactoseEditor {
 		Galactose::Entity* selectedEntity() const { return m_selectedEntity; }
 		void setSelectedEntity(Galactose::Entity* a_entity) { m_selectedEntity = a_entity; }
 
+		bool isRunning() const { return m_running; }
+		void setRunning(const bool a_running);
+
 	private:
 		void saveAndPrint();
 
 		std::shared_ptr<Galactose::Scene> m_scene;
 		std::string m_filePath;
 		Galactose::Entity* m_selectedEntity = nullptr;
+		bool m_running = false;
 	};
 }
