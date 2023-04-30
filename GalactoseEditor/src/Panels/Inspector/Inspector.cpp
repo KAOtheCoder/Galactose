@@ -210,7 +210,7 @@ namespace GalactoseEditor {
 			ImGui::TableNextRow();
 			ImGui::TableSetColumnIndex(0);
 
-			auto input_text = a_path.empty() ? a_emptyText : std::filesystem::path(a_path).stem().generic_string();
+			std::string input_text = a_path.empty() ? a_emptyText : std::filesystem::path(a_path).stem().generic_string();
 			const auto& input_label = std::string("##") + a_label;
 			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 			ImGui::InputText(input_label.c_str(), input_text.data(), input_text.size(), ImGuiInputTextFlags_ReadOnly);
@@ -274,7 +274,7 @@ namespace GalactoseEditor {
 		const auto nameSize = a_name.size();
 		readable.reserve(nameSize);
 
-		for (int i = 1; i < nameSize; ++i) {
+		for (size_t i = 1; i < nameSize; ++i) {
 			const auto c = a_name[i];
 			if (std::isupper(c) && std::islower(a_name[i - 1]))
 				readable.push_back(' ');

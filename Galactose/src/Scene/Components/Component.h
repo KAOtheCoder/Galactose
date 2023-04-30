@@ -3,24 +3,24 @@
 #include "Core/Global.h"
 #include "Scene/Entity.h"
 
-#define GT_COMPONENT_COMMON(_C)\
+#define GT_COMPONENT_COMMON(C)\
 public:\
-	GT_UNMOVABLE(_C)\
-	std::string name() const override { return GT_STRINGIFY(_C); }\
-	void destroy() override { entity()->removeComponent<_C>(); }\
+	GT_UNMOVABLE(C)\
+	std::string name() const override { return GT_STRINGIFY(C); }\
+	void destroy() override { entity()->removeComponent<C>(); }\
 
-#define GT_COMPONENT(_C)\
-GT_COMPONENT_COMMON(_C)\
-	static Galactose::Component* create(Galactose::Entity* a_entity) { return a_entity->addComponent<_C>(); }\
-	static std::string staticName() { return GT_STRINGIFY(_C); }\
+#define GT_COMPONENT(C)\
+GT_COMPONENT_COMMON(C)\
+	static Galactose::Component* create(Galactose::Entity* a_entity) { return a_entity->addComponent<C>(); }\
+	static std::string staticName() { return GT_STRINGIFY(C); }\
 	static uint32_t staticType() { return s_meta.id; }\
 	uint32_t type() const override { return s_meta.id; }\
 private:\
-	inline static Component::Meta s_meta{ GT_STRINGIFY(_C), entt::type_hash<_C>::value(), &_C::create };\
+	inline static Component::Meta s_meta{ GT_STRINGIFY(C), entt::type_hash<C>::value(), &C::create };\
 
-#define GT_PRIVATE_COMPONENT(_C)\
-GT_COMPONENT_COMMON(_C)\
-	uint32_t type() const override { return entt::type_hash<_C>::value(); }\
+#define GT_PRIVATE_COMPONENT(C)\
+GT_COMPONENT_COMMON(C)\
+	uint32_t type() const override { return entt::type_hash<C>::value(); }\
 
 namespace YAML {
 	class Emitter;
