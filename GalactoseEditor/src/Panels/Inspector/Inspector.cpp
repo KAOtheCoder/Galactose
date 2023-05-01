@@ -5,6 +5,7 @@
 #include <Core/Global.h>
 #include <Renderer/Texture.h>
 #include <Scene/Components/Transform.h>
+#include <Scene/Components/Script.h>
 #include <Scene/Components/Camera.h>
 #include <Scene/Components/SpriteRenderer.h>
 
@@ -58,14 +59,24 @@ namespace GalactoseEditor {
 					if (type != transformId && ImGui::Selectable(info.name.c_str(), false, (entity->*info.has)() ? ImGuiSelectableFlags_Disabled : 0))
 						(*info.create)(entity);
 
+				if (ImGui::Selectable("TestScript", false))
+					entity->addComponent<TestScript>();
+
 				ImGui::EndPopup();
 			}
 
 			ImGui::EndTable();
 		}
 
-		for (auto component : entity->components())
-			drawComponent(component);
+		const auto& components = entity->components();
+		const auto componentCount = components.size();
+		const auto nonScriptCount = componentCount - entity->scriptCount();
+		
+		for (size_t i = 0; i < nonScriptCount; ++i)
+			drawComponent(components[i]);
+
+		for (auto i = nonScriptCount; i < componentCount; ++i)
+			drawScript(static_cast<Script*>(components[i]));
 
 		ImGui::Separator();
 
@@ -242,28 +253,80 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
+	bool Inspector::drawComponentHeader(Component* a_component, const char* a_title) {
+		bool remove = false;
+		bool opened = TrailingCollapsingHeader::draw(a_title, "-", remove);
+
+		if (remove)
+			m_removeComponent = a_component;
+
+		return opened;
+	}
+
 	void Inspector::drawComponent(Component* a_component) {
 		const auto type = a_component->type();
 		auto iter = m_componentInfos.find(type);
 		GT_ASSERT(iter != m_componentInfos.end(), "Component '" + a_component->name() + "' not binded.");
 		const auto& info = iter->second;
 
-		bool opened = false;
-		if (type == Transform::staticType()) {
-			opened = ImGui::CollapsingHeader(info.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth);
-		}
-		else {
-			bool remove = false;
-			opened = TrailingCollapsingHeader::draw(info.name.c_str(), "-", remove);
-
-			if (remove) {
-				m_removeComponent = a_component;
-				return;
-			}
-		}
+		const bool opened = type == Transform::staticType()
+			? ImGui::CollapsingHeader(info.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth)
+			: drawComponentHeader(a_component, info.name.c_str());
 
 		if (opened && ImGui::BeginTable(info.name.c_str(), 2, ImGuiTableFlags_SizingStretchProp)) {
 			(this->*info.draw)(a_component);
+			ImGui::EndTable();
+		}
+	}
+
+	void Inspector::drawScript(Script* a_script) {
+		if (drawComponentHeader(a_script, a_script->name().c_str()) && ImGui::BeginTable(a_script->name().c_str(), 2, ImGuiTableFlags_SizingStretchProp)) {
+			bool disabled = false;
+
+			for (const auto& [name, property] : a_script->properties()) {	
+				const bool readOnly = property->isReadOnly();
+
+				if (readOnly != disabled) {
+					disabled = readOnly;
+
+					if (disabled)
+						ImGui::BeginDisabled();
+					else
+						ImGui::EndDisabled();
+				}
+
+				switch (property->type()) {
+				case DataType::Float: {
+					auto accessibleProperty = static_cast<AccessibleProperty<float>*>(property);
+					auto value = accessibleProperty->get();
+					if (dragFloat(name.c_str(), value))
+						accessibleProperty->set(value);
+
+					break;
+				}
+				case DataType::Vector2: {
+					auto accessibleProperty = static_cast<AccessibleProperty<Vector2>*>(property);
+					auto value = accessibleProperty->get();
+					if (dragVector(name.c_str(), 2, value.data()))
+						accessibleProperty->set(value);
+
+					break;
+				}
+				case DataType::Vector3: {
+					auto accessibleProperty = static_cast<AccessibleProperty<Vector3>*>(property);
+					auto value = accessibleProperty->get();
+					if (dragVector(name.c_str(), 3, value.data()))
+						accessibleProperty->set(value);
+
+					break;
+				}
+				// TODO: Vector4
+				}
+			}
+
+			if (disabled)
+				ImGui::EndDisabled();
+
 			ImGui::EndTable();
 		}
 	}

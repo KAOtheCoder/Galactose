@@ -5,9 +5,9 @@
 #include <Core/Events/Event.h>
 #include <Core/Property.h>
 
-#define GT_SCRIPT(S)\
-GT_COMPONENT(S)\
-	using ScriptType = S;\
+#define GT_SCRIPT(a_script)\
+GT_COMPONENT(a_script)\
+	using _ScriptType = a_script;\
 
 namespace Galactose {
 	class Script : public Component {
@@ -17,6 +17,8 @@ namespace Galactose {
 		virtual void update() {};
 		virtual void onEvent(const std::shared_ptr<Event>& a_event) {}
 		Time& time() const { return entity()->scene()->time(); }
+
+		const std::unordered_map<std::string, PropertyBase*>& properties() const { return m_properties; }
 
 	protected:
 		void saveContent(YAML::Emitter& emitter) const override {}
@@ -28,27 +30,28 @@ namespace Galactose {
 		friend class PropertyBase;
 	};
 
-	//class TestScript : public Script {
-	//	GT_SCRIPT(TestScript);
+	class TestScript : public Script {
+		GT_SCRIPT(TestScript);
 
-	//public:
-	//	TestScript() :
-	//		GT_INIT_PROPERTY(readOnlyA),
-	//		/*readOnlyGetA("readOnlyAGet", this),
-	//		getMA("getMA", this),
-	//		mSetA("mSetA", this),*/
-	//		GT_INIT_PROPERTY(getSetA)
-	//	{}
+	public:
+		TestScript() :
+			m_a(3),
+			GT_INIT_PROPERTY(readOnlyA),
+			/*readOnlyGetA("readOnlyAGet", this),
+			getMA("getMA", this),
+			mSetA("mSetA", this),*/
+			GT_INIT_PROPERTY(getSetA)
+		{}
 
-	//	float m_a;
+		float m_a;
 
-	//	float getA() { return m_a; }
-	//	float getAC() const { return m_a; }
-	//	void setA(const float& a_a) { m_a = a_a; }
-	//	GT_READONLY_PROPERTY(float, readOnlyA, m_a);
-	//	/*ReadOnlyProperty<TestScript, float, &getA> readOnlyGetA;
-	//	Property<TestScript, float, &getA, &TestScript::m_a> getMA;
-	//	Property<TestScript, float, &TestScript::m_a, &setA> mSetA;*/
-	//	GT_PROPERTY(float, getSetA, getAC, setA);
-	//};
+		float get2A() const { return 2 * m_a; }
+		float getAC() const { return m_a; }
+		void setA(const float& a_a) { m_a = a_a; }
+		GT_READONLY_PROPERTY(float, readOnlyA, get2A);
+		/*ReadOnlyProperty<TestScript, float, &getA> readOnlyGetA;
+		Property<TestScript, float, &getA, &TestScript::m_a> getMA;
+		Property<TestScript, float, &TestScript::m_a, &setA> mSetA;*/
+		GT_PROPERTY(float, getSetA, m_a, setA);
+	};
 }

@@ -12,9 +12,6 @@ namespace GalactoseEditor {
 			ImGui::SameLine(ImGui::GetWindowWidth() - (ImGui::GetStyle().WindowPadding.x * 0.5f) - frameHeight);
 			a_clicked = ImGui::Button(a_buttonLabel, { frameHeight, frameHeight });
 
-			if (a_clicked)
-				std::cout << "wooooo" << std::endl;
-
 			return opened;
 		}
 	}

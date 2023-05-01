@@ -1,10 +1,9 @@
 #pragma once
 
+#include "Core/DataType.h"
 #include "Renderer/VertexArray.h"
 
 namespace Galactose {
-	enum class DataType;
-
 	class OpenGLVertexArray : public VertexArray {
 	public:
 		OpenGLVertexArray();
@@ -17,7 +16,7 @@ namespace Galactose {
 		void setIndexBuffer(const std::shared_ptr<IndexBuffer>& a_buffer) override;
 
 	private:
-		static unsigned int toGLType(const DataType type);
+		static unsigned int toGLType(const DataType::Type type);
 
 		uint32_t m_rendererId;
 		uint32_t m_attributeIndex = 0;

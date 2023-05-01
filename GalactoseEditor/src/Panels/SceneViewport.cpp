@@ -21,7 +21,6 @@ namespace GalactoseEditor {
 
 		m_cameraEntity->addComponent<Camera>();
 		m_cameraEntity->addComponent<CameraController>();
-		m_cameraEntity->addComponent<TestScript>();
 	}
 
 	Camera* SceneViewport::getCamera() const { return m_cameraEntity->getComponent<Camera>(); }

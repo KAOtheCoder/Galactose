@@ -1,11 +1,10 @@
 #include "OpenGLVertexArray.h"
-#include "Core/DataType.h"
 #include "Core/Global.h"
 
 #include <glad/glad.h>
 
 namespace Galactose {
-	unsigned int OpenGLVertexArray::toGLType(const DataType type) {
+	unsigned int OpenGLVertexArray::toGLType(const DataType::Type type) {
 		switch (type) {
 		case DataType::Float: return GL_FLOAT;
 		default: GT_ASSERT(false, "Cannot convert " GT_STRINGIFY(DataType) "(" + std::to_string(int(type)) + ") to GLenum type");

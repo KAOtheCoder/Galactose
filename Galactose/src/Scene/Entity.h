@@ -54,11 +54,16 @@ namespace Galactose {
 
 			auto component = &(m_scene->m_registry.emplace<C>(m_entityId));
 			static_cast<Component*>(component)->m_entity = this;
-			m_components.push_back(component);
 			component->start();
 
-			if constexpr(std::is_base_of<Script, C>::value)
+			if constexpr (std::is_base_of_v<Script, C>) {
 				m_scene->registerScript(static_cast<Script*>(component));
+				m_components.push_back(component);
+				++m_scriptCount;
+			}
+			else {
+				m_components.insert(m_components.begin() + (m_components.size() - m_scriptCount), component);
+			}
 
 			return component;
 		}
@@ -86,6 +91,7 @@ namespace Galactose {
 		Transform* getTransform() const;
 
 		const std::vector<Component*>& components() const { return m_components; }
+		size_t scriptCount() const { return m_scriptCount; }
 
 		void save(YAML::Emitter& out) const;
 		bool load(const YAML::Node& node);
@@ -105,5 +111,6 @@ namespace Galactose {
 		Entity* m_parent = nullptr;
 		std::vector<Entity*> m_children;
 		std::vector<Component*> m_components;
+		size_t m_scriptCount = 0;
 	};
 }

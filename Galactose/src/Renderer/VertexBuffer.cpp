@@ -1,6 +1,5 @@
 #include "VertexBuffer.h"
 #include "Core/Global.h"
-#include "Core/DataType.h"
 #include "Renderer/OpenGL/OpenGLVertexBuffer.h"
 
 namespace Galactose {
@@ -8,13 +7,13 @@ namespace Galactose {
 		return std::make_shared<OpenGLVertexBuffer>(a_data, a_count, a_layout);
 	}
 
-	VertexBuffer::Layout::Attribute::Attribute(const std::string& a_name, const DataType a_type) :
+	VertexBuffer::Layout::Attribute::Attribute(const std::string& a_name, const DataType::Type a_type) :
 		m_name(a_name),
 		m_type(a_type),
 		m_offset(0)
 	{}
 
-	const DataTypeInfo& VertexBuffer::Layout::Attribute::typeInfo() const { return DataTypeInfo::info(m_type); }
+	const DataType& VertexBuffer::Layout::Attribute::typeInfo() const { return DataType::info(m_type); }
 
 	VertexBuffer::Layout::Layout(std::initializer_list<Attribute> elements) :
 		m_elements(elements),

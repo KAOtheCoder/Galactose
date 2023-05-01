@@ -1,26 +1,25 @@
 #pragma once
 
+#include "Core/DataType.h"
+
 #include <string>
 #include <vector>
 #include <memory>
 
 namespace Galactose {
-	enum class DataType;
-	class DataTypeInfo;
-
 	class VertexBuffer {
 	public:
 		class Layout {
 		public:
 			class Attribute {
 			public:
-				Attribute(const std::string& name, const DataType type);
+				Attribute(const std::string& name, const DataType::Type type);
 
-				const DataTypeInfo& typeInfo() const;
+				const DataType& typeInfo() const;
 				size_t offset() const { return m_offset; }
 
 			private:
-				DataType m_type;
+				DataType::Type m_type;
 				std::string m_name;
 				int32_t m_offset;
 

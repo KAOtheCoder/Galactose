@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Core/DataType.h"
+
 #include <type_traits>
 
-#define GT_PROPERTY(_type, _name, _get, _set) Galactose::Property<ScriptType, _type, &ScriptType::_get, &ScriptType::_set> _name;
-#define GT_READONLY_PROPERTY(_type, _name, _get) Galactose::ReadOnlyProperty<ScriptType, _type, &ScriptType::_get> _name;
-#define GT_INIT_PROPERTY(_name) _name(this, GT_STRINGIFY(_name))
+#define GT_PROPERTY(a_type, a_name, a_get, a_set) Galactose::Property<_ScriptType, a_type, &_ScriptType::a_get, &_ScriptType::a_set> a_name;
+#define GT_READONLY_PROPERTY(a_type, a_name, a_get) Galactose::ReadOnlyProperty<_ScriptType, a_type, &_ScriptType::a_get> a_name;
+#define GT_INIT_PROPERTY(a_name) a_name(this, GT_STRINGIFY(a_name))
 
 namespace Galactose {
 	class Script;
@@ -14,6 +16,7 @@ namespace Galactose {
 		PropertyBase() = default;
 
 		virtual bool isReadOnly() const { return true; }
+		virtual DataType::Type type() const = 0;
 
 	protected:
 		void registerProperty(Script* a_script, const char* a_name);
@@ -23,6 +26,8 @@ namespace Galactose {
 	class AccessibleProperty : public PropertyBase {
 	public:
 		using PropertyBase::PropertyBase;
+
+		DataType::Type type() const override { return DataType::toType<T>(); }
 
 		virtual T get() = 0;
 		virtual void set(const T& value) {}

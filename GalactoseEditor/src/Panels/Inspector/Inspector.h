@@ -42,7 +42,9 @@ namespace GalactoseEditor {
 		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
 		bool iconButton(const char* icon);
 
+		bool drawComponentHeader(Galactose::Component* component, const char* a_title);
 		void drawComponent(Galactose::Component* component);
+		void drawScript(Galactose::Script* script);
 
 		template <class C>
 		C* getSelectedComponent() const { return m_sceneData->selectedEntity()->getComponent<C>(); }
