@@ -10,7 +10,9 @@ namespace GalactoseEditor {
 				| ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap);
 			const auto frameHeight = ImGui::GetFrameHeight();
 			ImGui::SameLine(ImGui::GetWindowWidth() - (ImGui::GetStyle().WindowPadding.x * 0.5f) - frameHeight);
+			ImGui::PushID(a_label);
 			a_clicked = ImGui::Button(a_buttonLabel, { frameHeight, frameHeight });
+			ImGui::PopID();
 
 			return opened;
 		}
