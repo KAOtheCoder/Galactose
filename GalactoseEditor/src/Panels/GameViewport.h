@@ -6,7 +6,7 @@
 namespace GalactoseEditor {
 	class GameViewport : public Viewport {
 	public:
-		GameViewport::GameViewport(const std::shared_ptr<EditorSceneData>& a_sceneData) :
+		GameViewport(const std::shared_ptr<EditorSceneData>& a_sceneData) :
 			Viewport("Game", a_sceneData)
 		{}
 

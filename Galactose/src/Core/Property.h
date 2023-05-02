@@ -40,16 +40,17 @@ namespace Galactose {
 			m_object(a_object)
 		{
 			if constexpr (std::is_base_of_v<Script, O>)
-				registerProperty(a_object, a_name);
+				this->registerProperty(a_object, a_name);
 		}
 
 		operator T() {
-			if constexpr (std::is_member_object_pointer_v<decltype(_Get)>)
+			if constexpr (std::is_member_object_pointer_v<decltype(_Get)>) {
 				return m_object->*_Get;
-			else if constexpr (std::is_member_function_pointer_v<decltype(_Get)>)
+			}
+			else {
+				static_assert(std::is_member_function_pointer_v<decltype(_Get)>, "Getter is neighter member object or member function.");
 				return (m_object->*_Get)();
-			else
-				static_assert(false, "Getter is neighter member object or member function.");
+			}
 		}
 
 		T get() override { return this->operator T(); }
@@ -64,12 +65,13 @@ namespace Galactose {
 		using ReadOnlyProperty<O, T, _Get>::ReadOnlyProperty;
 
 		void operator=(const T& a_value) {
-			if constexpr (std::is_member_object_pointer_v<decltype(_Set)>)
-				m_object->*_Set = a_value;
-			else if constexpr (std::is_member_function_pointer_v<decltype(_Set)>)
-				(m_object->*_Set)(a_value);
-			else
-				static_assert(false, "Setter is neighter member object or member function.");
+			if constexpr (std::is_member_object_pointer_v<decltype(_Set)>) {
+				this->m_object->*_Set = a_value;
+			}
+			else {
+				static_assert(std::is_member_function_pointer_v<decltype(_Set)>, "Setter is neighter member object or member function.");
+				(this->m_object->*_Set)(a_value);
+			}
 		}
 
 		void set(const T& a_value) override { this->operator=(a_value); }

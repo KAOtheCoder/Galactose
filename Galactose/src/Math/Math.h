@@ -15,6 +15,7 @@ namespace Galactose {
 		class GlmExtend : public T {
 		public:
 			using T::T;
+			GlmExtend(const T& a_base) { T::operator=(a_base); }
 			std::string toString() const { return glm::to_string(base()); }
 			const float* data() const { return glm::value_ptr(base()); }
 			float* data() { return const_cast<float*>(glm::value_ptr(base())); }

@@ -11,7 +11,7 @@ namespace GalactoseEditor {
 
 	class ToolBar {
 	public:
-		static char* id() { return "##ToolBar"; }
+		static const char* id() { return "##ToolBar"; }
 
 		ToolBar();
 
