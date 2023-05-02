@@ -59,10 +59,10 @@ namespace Galactose {
 			if constexpr (std::is_base_of_v<Script, C>) {
 				m_scene->registerScript(static_cast<Script*>(component));
 				m_components.push_back(component);
-				++m_scriptCount;
 			}
 			else {
-				m_components.insert(m_components.begin() + (m_components.size() - m_scriptCount), component);
+				m_components.insert(m_components.begin() + m_scriptOffset, component);
+				++m_scriptOffset;
 			}
 
 			return component;
@@ -70,7 +70,7 @@ namespace Galactose {
 
 		template <class C>
 		C* getComponent() const {
-			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
+			static_assert(std::is_base_of_v<Component, C>, "Type must inherit from Component.");
 
 			return m_scene->m_registry.try_get<C>(m_entityId);
 		}
@@ -78,9 +78,13 @@ namespace Galactose {
 		template <class C>
 		bool removeComponent() {
 			if (m_scene->m_registry.remove<C>(m_entityId) > 0) {
-				const int componentIndex = findComponent(entt::type_hash<C>::value());
+				constexpr bool isScript = std::is_base_of_v<Script, C>;
+				const int componentIndex = findComponent(entt::type_hash<C>::value(), isScript);
 				GT_ASSERT(componentIndex >= 0, "Component not found.");
 				m_components.erase(m_components.begin() + componentIndex);
+
+				if constexpr (!isScript)
+					--m_scriptOffset;
 
 				return true;
 			}
@@ -91,7 +95,7 @@ namespace Galactose {
 		Transform* getTransform() const;
 
 		const std::vector<Component*>& components() const { return m_components; }
-		size_t scriptCount() const { return m_scriptCount; }
+		size_t scriptOffset() const { return m_scriptOffset; }
 
 		void save(YAML::Emitter& out) const;
 		bool load(const YAML::Node& node);
@@ -101,7 +105,7 @@ namespace Galactose {
 
 		Component* addComponent(const std::string& name);
 		Component* getComponent(const uint32_t id) const;
-		int findComponent(const uint32_t id) const;
+		int findComponent(const uint32_t id, const bool script) const;
 		void removeFromSiblings() const;
 
 		Scene* m_scene = nullptr;
@@ -111,6 +115,6 @@ namespace Galactose {
 		Entity* m_parent = nullptr;
 		std::vector<Entity*> m_children;
 		std::vector<Component*> m_components;
-		size_t m_scriptCount = 0;
+		size_t m_scriptOffset = 0;
 	};
 }

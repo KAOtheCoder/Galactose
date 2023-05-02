@@ -3,7 +3,7 @@
 #include <Scene/Components/Script.h>
 
 namespace Galactose {
-	void PropertyBase::registerProperty(Script* a_script, const char* a_name) {
-		a_script->m_properties[a_name] = this;
+	void PropertyBase::registerProperty(Script* a_script) {
+		a_script->m_properties.push_back(this);
 	}
 }

@@ -4,9 +4,9 @@
 
 #include <type_traits>
 
-#define GT_PROPERTY(a_type, a_name, a_get, a_set) Galactose::Property<_ScriptType, a_type, &_ScriptType::a_get, &_ScriptType::a_set> a_name;
-#define GT_READONLY_PROPERTY(a_type, a_name, a_get) Galactose::ReadOnlyProperty<_ScriptType, a_type, &_ScriptType::a_get> a_name;
-#define GT_INIT_PROPERTY(a_name) a_name(this, GT_STRINGIFY(a_name))
+#define GT_PROPERTY(a_type, a_name, a_get, a_set) Galactose::Property<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set> a_name;
+#define GT_READONLY_PROPERTY(a_type, a_name, a_get) Galactose::ReadOnlyProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get> a_name;
+#define GT_INIT_PROPERTY(a_name) a_name(this)
 
 namespace Galactose {
 	class Script;
@@ -17,9 +17,10 @@ namespace Galactose {
 
 		virtual bool isReadOnly() const { return true; }
 		virtual DataType::Type type() const = 0;
+		virtual std::string name() const = 0;
 
 	protected:
-		void registerProperty(Script* a_script, const char* a_name);
+		void registerProperty(Script* a_script);
 	};
 
 	template <typename T>
@@ -33,15 +34,17 @@ namespace Galactose {
 		virtual void set(const T& value) {}
 	};
 
-	template <typename O, typename T, auto _Get>
+	template <typename O, typename T, auto _Name, auto _Get>
 	class ReadOnlyProperty : public AccessibleProperty<T> {
 	public:
-		ReadOnlyProperty(O* a_object, const char* a_name) :
+		ReadOnlyProperty(O* a_object) :
 			m_object(a_object)
 		{
 			if constexpr (std::is_base_of_v<Script, O>)
-				this->registerProperty(a_object, a_name);
+				this->registerProperty(a_object);
 		}
+
+		std::string name() const { return _Name(); }
 
 		operator T() {
 			if constexpr (std::is_member_object_pointer_v<decltype(_Get)>) {
@@ -59,10 +62,10 @@ namespace Galactose {
 		O* m_object = nullptr;
 	};
 
-	template <typename O, typename T, auto _Get, auto _Set>
-	class Property : public ReadOnlyProperty<O, T, _Get> {
+	template <typename O, typename T, auto _Name, auto _Get, auto _Set>
+	class Property : public ReadOnlyProperty<O, T, _Name, _Get> {
 	public:
-		using ReadOnlyProperty<O, T, _Get>::ReadOnlyProperty;
+		using ReadOnlyProperty<O, T, _Name, _Get>::ReadOnlyProperty;
 
 		void operator=(const T& a_value) {
 			if constexpr (std::is_member_object_pointer_v<decltype(_Set)>) {

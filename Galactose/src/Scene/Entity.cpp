@@ -132,13 +132,12 @@ namespace Galactose {
 		return nullptr;
 	}
 
-	int Entity::findComponent(const uint32_t a_id) const {
-		const auto componentsSize = m_components.size();
-		for (int i = 0; i < componentsSize; ++i)
+	int Entity::findComponent(const uint32_t a_id, const bool a_script) const {
+		const auto end = a_script ? m_components.size() : m_scriptOffset;
+		for (int i = a_script ? (int)m_scriptOffset : 0; i < end; ++i)
 			if (m_components[i]->type() == a_id)
 				return i;
-
+		
 		return -1;
 	}
-
 }

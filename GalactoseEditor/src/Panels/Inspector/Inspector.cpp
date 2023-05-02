@@ -70,12 +70,12 @@ namespace GalactoseEditor {
 
 		const auto& components = entity->components();
 		const auto componentCount = components.size();
-		const auto nonScriptCount = componentCount - entity->scriptCount();
+		const auto scriptOffset = entity->scriptOffset();
 		
-		for (size_t i = 0; i < nonScriptCount; ++i)
+		for (size_t i = 0; i < scriptOffset; ++i)
 			drawComponent(components[i]);
 
-		for (auto i = nonScriptCount; i < componentCount; ++i)
+		for (auto i = scriptOffset; i < componentCount; ++i)
 			drawScript(static_cast<Script*>(components[i]));
 
 		ImGui::Separator();
@@ -283,7 +283,7 @@ namespace GalactoseEditor {
 		if (drawComponentHeader(a_script, a_script->name().c_str()) && ImGui::BeginTable(a_script->name().c_str(), 2, ImGuiTableFlags_SizingStretchProp)) {
 			bool disabled = false;
 
-			for (const auto& [name, property] : a_script->properties()) {	
+			for (auto property : a_script->properties()) {	
 				const bool readOnly = property->isReadOnly();
 
 				if (readOnly != disabled) {
@@ -299,7 +299,7 @@ namespace GalactoseEditor {
 				case DataType::Float: {
 					auto accessibleProperty = static_cast<AccessibleProperty<float>*>(property);
 					auto value = accessibleProperty->get();
-					if (dragFloat(name.c_str(), value))
+					if (dragFloat(property->name().c_str(), value))
 						accessibleProperty->set(value);
 
 					break;
@@ -307,7 +307,7 @@ namespace GalactoseEditor {
 				case DataType::Vector2: {
 					auto accessibleProperty = static_cast<AccessibleProperty<Vector2>*>(property);
 					auto value = accessibleProperty->get();
-					if (dragVector(name.c_str(), 2, value.data()))
+					if (dragVector(property->name().c_str(), 2, value.data()))
 						accessibleProperty->set(value);
 
 					break;
@@ -315,7 +315,7 @@ namespace GalactoseEditor {
 				case DataType::Vector3: {
 					auto accessibleProperty = static_cast<AccessibleProperty<Vector3>*>(property);
 					auto value = accessibleProperty->get();
-					if (dragVector(name.c_str(), 3, value.data()))
+					if (dragVector(property->name().c_str(), 3, value.data()))
 						accessibleProperty->set(value);
 
 					break;

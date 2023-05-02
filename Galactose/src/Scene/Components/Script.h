@@ -18,14 +18,14 @@ namespace Galactose {
 		virtual void onEvent(const std::shared_ptr<Event>& a_event) {}
 		Time& time() const { return entity()->scene()->time(); }
 
-		const std::unordered_map<std::string, PropertyBase*>& properties() const { return m_properties; }
+		const std::vector<PropertyBase*>& properties() const { return m_properties; }
 
 	protected:
 		void saveContent(YAML::Emitter& emitter) const override {}
 		bool loadContent(const YAML::Node& node) override { return true; }
 
 	private:
-		std::unordered_map<std::string, PropertyBase*> m_properties;
+		std::vector<PropertyBase*> m_properties;
 
 		friend class PropertyBase;
 	};
