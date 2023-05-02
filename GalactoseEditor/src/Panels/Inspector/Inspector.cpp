@@ -59,9 +59,6 @@ namespace GalactoseEditor {
 					if (type != transformId && ImGui::Selectable(info.name.c_str(), false, (entity->*info.has)() ? ImGuiSelectableFlags_Disabled : 0))
 						(*info.create)(entity);
 
-				if (ImGui::Selectable("TestScript", false))
-					entity->addComponent<TestScript>();
-
 				ImGui::EndPopup();
 			}
 

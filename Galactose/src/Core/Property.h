@@ -6,7 +6,6 @@
 
 #define GT_PROPERTY(a_type, a_name, a_get, a_set) Galactose::Property<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set> a_name;
 #define GT_READONLY_PROPERTY(a_type, a_name, a_get) Galactose::ReadOnlyProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get> a_name;
-#define GT_INIT_PROPERTY(a_name) a_name(this)
 
 namespace Galactose {
 	class Script;

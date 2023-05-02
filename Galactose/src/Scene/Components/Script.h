@@ -29,29 +29,4 @@ namespace Galactose {
 
 		friend class PropertyBase;
 	};
-
-	class TestScript : public Script {
-		GT_SCRIPT(TestScript);
-
-	public:
-		TestScript() :
-			m_a(3),
-			GT_INIT_PROPERTY(readOnlyA),
-			/*readOnlyGetA("readOnlyAGet", this),
-			getMA("getMA", this),
-			mSetA("mSetA", this),*/
-			GT_INIT_PROPERTY(getSetA)
-		{}
-
-		float m_a;
-
-		float get2A() const { return 2 * m_a; }
-		float getAC() const { return m_a; }
-		void setA(const float& a_a) { m_a = a_a; }
-		GT_READONLY_PROPERTY(float, readOnlyA, get2A);
-		/*ReadOnlyProperty<TestScript, float, &getA> readOnlyGetA;
-		Property<TestScript, float, &getA, &TestScript::m_a> getMA;
-		Property<TestScript, float, &TestScript::m_a, &setA> mSetA;*/
-		GT_PROPERTY(float, getSetA, m_a, setA);
-	};
 }
