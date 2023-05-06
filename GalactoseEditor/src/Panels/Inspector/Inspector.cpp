@@ -315,8 +315,15 @@ namespace GalactoseEditor {
 				case DataType::Float: {
 					auto accessibleProperty = static_cast<AccessibleProperty<float>*>(property);
 					auto value = accessibleProperty->get();
-					if (dragFloat(name, value))
-						accessibleProperty->set(value);
+					
+					if (property->hasLimits()) {
+						if (dragFloat(name, value, accessibleProperty->speed(), accessibleProperty->min(), accessibleProperty->max()))
+							accessibleProperty->set(value);
+					}
+					else {
+						if (dragFloat(name, value))
+							accessibleProperty->set(value);
+					}
 
 					break;
 				}
