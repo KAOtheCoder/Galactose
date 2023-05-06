@@ -5,7 +5,7 @@
 
 namespace Galactose {
     const std::array<DataType, size_t(DataType::NumTypes)> DataType::s_types = {
-        DataType(DataType::Unknown, 0),
+        DataType(DataType::Void, 0),
         DataType(DataType::Bool, sizeof(bool)),
         DataType(DataType::Float, sizeof(float)),
         { DataType::Vector2, 2, DataType::Float },

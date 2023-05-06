@@ -8,7 +8,7 @@ namespace Galactose {
     class DataType {
     public:
         enum Type {
-            Unknown,
+            Void,
             Bool,
             Float,
             Vector2,
