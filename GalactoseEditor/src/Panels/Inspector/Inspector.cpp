@@ -161,6 +161,14 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
+	bool Inspector::checkBox(const char* a_label, bool& a_value) {
+		drawLabel(a_label);
+
+		ImGui::TableSetColumnIndex(1);
+		const auto& label = std::string("##") + a_label;
+		return ImGui::Checkbox(label.c_str(), &a_value);
+	}
+
 	bool Inspector::dragFloat(const char* a_label, float& a_value, const float a_speed, const float a_min, const float a_max) {
 		drawLabel(a_label);
 
@@ -292,11 +300,22 @@ namespace GalactoseEditor {
 						ImGui::EndDisabled();
 				}
 
+				const auto& nameString = property->name();
+				const auto name = nameString.c_str();
+
 				switch (property->type()) {
+				case DataType::Bool: {
+					auto accessibleProperty = static_cast<AccessibleProperty<bool>*>(property);
+					auto value = accessibleProperty->get();
+					if (checkBox(name, value))
+						accessibleProperty->set(value);
+
+					break;
+				}
 				case DataType::Float: {
 					auto accessibleProperty = static_cast<AccessibleProperty<float>*>(property);
 					auto value = accessibleProperty->get();
-					if (dragFloat(property->name().c_str(), value))
+					if (dragFloat(name, value))
 						accessibleProperty->set(value);
 
 					break;
@@ -304,7 +323,7 @@ namespace GalactoseEditor {
 				case DataType::Vector2: {
 					auto accessibleProperty = static_cast<AccessibleProperty<Vector2>*>(property);
 					auto value = accessibleProperty->get();
-					if (dragVector(property->name().c_str(), 2, value.data()))
+					if (dragVector(name, 2, value.data()))
 						accessibleProperty->set(value);
 
 					break;
@@ -312,7 +331,7 @@ namespace GalactoseEditor {
 				case DataType::Vector3: {
 					auto accessibleProperty = static_cast<AccessibleProperty<Vector3>*>(property);
 					auto value = accessibleProperty->get();
-					if (dragVector(property->name().c_str(), 3, value.data()))
+					if (dragVector(name, 3, value.data()))
 						accessibleProperty->set(value);
 
 					break;

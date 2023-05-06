@@ -9,6 +9,7 @@ namespace Galactose {
     public:
         enum Type {
             Unknown,
+            Bool,
             Float,
             Vector2,
             Vector3,
@@ -21,17 +22,11 @@ namespace Galactose {
         template <typename T>
         static Type toType() { return DataType::Unknown; }
 
-        template <>
-        static Type toType<float>() { return DataType::Float; }
-
-        template <>
-        static Type toType<Galactose::Vector2>() { return DataType::Vector2; }
-
-        template <>
-        static Type toType<Galactose::Vector3>() { return DataType::Vector3; }
-
-        template <>
-        static Type toType<Galactose::Vector4>() { return DataType::Vector4; }
+        template <> static Type toType<bool>() { return DataType::Bool; }
+        template <> static Type toType<float>() { return DataType::Float; }
+        template <> static Type toType<Galactose::Vector2>() { return DataType::Vector2; }
+        template <> static Type toType<Galactose::Vector3>() { return DataType::Vector3; }
+        template <> static Type toType<Galactose::Vector4>() { return DataType::Vector4; }
 
         const Type type;
         const int32_t byteSize;
