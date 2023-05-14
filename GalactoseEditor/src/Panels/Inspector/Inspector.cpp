@@ -97,24 +97,17 @@ namespace GalactoseEditor {
 		ImGui::Text(a_label);
 	}
 
-	bool Inspector::dragVector3Axis(const int a_axis, float& a_value) {
-		const float AXIS_INTENSITY = 0.6f;
-		const float INTENSITY = 0.1f;
-		const float ALPHA = 1.0f;
-		const Vector3 HOVER_COLOR = { 0.1f, 0.1f, 0.1f};
-
-		Vector3 color(INTENSITY, INTENSITY, INTENSITY);
-		color[a_axis] = AXIS_INTENSITY;
-		Vector3 hoverColor = color + HOVER_COLOR;
-		const ImVec4 buttonColor(color.x, color.y, color.z, ALPHA);
+	bool Inspector::dragVectorAxis(const int a_axis, float& a_value, const Galactose::Vector4& color, const Galactose::Vector4& hoverColor) {
+		const ImVec4 buttonColor(color.x, color.y, color.z, color.a);
 		ImGui::PushStyleColor(ImGuiCol_Button, buttonColor);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { hoverColor.x, hoverColor.y, hoverColor.z, ALPHA });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { hoverColor.x, hoverColor.y, hoverColor.z, hoverColor.a });
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, buttonColor);
 
+		const auto labels = "XYZW";
 		const int column = 2 * a_axis;
 		ImGui::TableSetColumnIndex(column);
 
-		const std::string label(1, 'X' + a_axis);
+		const std::string label(1, labels[a_axis]);
 		const bool clicked = ImGui::Button(label.c_str());
 
 		ImGui::PopStyleColor(3);
@@ -128,7 +121,7 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
-	bool Inspector::dragVector(const char* a_label, const int a_axisCount, float* a_value) {
+	bool Inspector::dragVector(const char* a_label, const int a_axisCount, float* a_value, const bool colored) {
 		drawLabel(a_label);
 
 		ImGui::TableSetColumnIndex(1);
@@ -141,8 +134,23 @@ namespace GalactoseEditor {
 			ImGui::TableNextRow();
 
 			bool changed = false;
-			for (int i = 0; i < a_axisCount; ++i)
-				changed = dragVector3Axis(i, a_value[i]) || changed;
+			
+			for (int i = 0; i < a_axisCount; ++i) {
+				if (colored && i < 3) {
+					const float AXIS_INTENSITY = 0.6f;
+					const float INTENSITY = 0.1f;
+					const float ALPHA = 1.0f;
+					const Vector4 HOVER_COLOR = { 0.1f, 0.1f, 0.1f, 0.f };
+					Vector4 color(INTENSITY, INTENSITY, INTENSITY, ALPHA);
+					color[i] = AXIS_INTENSITY;
+					const auto& hoverColor = color + HOVER_COLOR;
+
+					changed = dragVectorAxis(i, a_value[i], color, hoverColor) || changed;
+				}
+				else {
+					changed = dragVectorAxis(i, a_value[i]) || changed;
+				}
+			}
 
 			ImGui::EndTable();
 
@@ -300,14 +308,11 @@ namespace GalactoseEditor {
 						ImGui::EndDisabled();
 				}
 
-				const auto& nameString = property->name();
-				const auto name = nameString.c_str();
-
 				switch (property->type()) {
 				case DataType::Bool: {
 					auto accessibleProperty = static_cast<AccessibleProperty<bool>*>(property);
 					auto value = accessibleProperty->get();
-					if (checkBox(name, value))
+					if (checkBox(property->name().c_str(), value))
 						accessibleProperty->set(value);
 
 					break;
@@ -317,33 +322,25 @@ namespace GalactoseEditor {
 					auto value = accessibleProperty->get();
 					
 					if (property->hasLimits()) {
-						if (dragFloat(name, value, accessibleProperty->speed(), accessibleProperty->min(), accessibleProperty->max()))
+						if (dragFloat(property->name().c_str(), value, accessibleProperty->speed(), accessibleProperty->min(), accessibleProperty->max()))
 							accessibleProperty->set(value);
 					}
 					else {
-						if (dragFloat(name, value))
+						if (dragFloat(property->name().c_str(), value))
 							accessibleProperty->set(value);
 					}
 
 					break;
 				}
-				case DataType::Vector2: {
-					auto accessibleProperty = static_cast<AccessibleProperty<Vector2>*>(property);
-					auto value = accessibleProperty->get();
-					if (dragVector(name, 2, value.data()))
-						accessibleProperty->set(value);
-
+				case DataType::Vector2:
+					drawVectorProperty<Vector2>(property);
 					break;
-				}
-				case DataType::Vector3: {
-					auto accessibleProperty = static_cast<AccessibleProperty<Vector3>*>(property);
-					auto value = accessibleProperty->get();
-					if (dragVector(name, 3, value.data()))
-						accessibleProperty->set(value);
-
+				case DataType::Vector3:
+					drawVectorProperty<Vector3>(property);
 					break;
-				}
-				// TODO: Vector4
+				case DataType::Vector4:
+					drawVectorProperty<Vector4>(property);
+					break;
 				}
 			}
 
