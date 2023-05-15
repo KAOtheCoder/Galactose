@@ -17,6 +17,8 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
+	class EditorSceneData;
+
 	class Inspector : public Panel {
 	public:
 		Inspector(const std::shared_ptr<EditorSceneData>& sceneData);
@@ -42,12 +44,7 @@ namespace GalactoseEditor {
 		static void openPopup(const char* label);
 		
 		template <typename T>
-		static void drawVectorProperty(Galactose::PropertyBase* property) {
-			auto accessibleProperty = static_cast<Galactose::AccessibleProperty<T>*>(property);
-			auto value = accessibleProperty->get();
-			if (dragVector(property->name().c_str(), value.length(), value.data()))
-				accessibleProperty->set(value);
-		}
+		static void drawVectorProperty(Galactose::PropertyBase* property);
 
 		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
 		bool iconButton(const char* icon);
@@ -57,25 +54,13 @@ namespace GalactoseEditor {
 		void drawScript(Galactose::Script* script);
 
 		template <class C>
-		C* getSelectedComponent() const { return m_sceneData->selectedEntity()->getComponent<C>(); }
-
-		template <class C>
-		void bindComponent() { 
-			m_componentInfos[C::staticType()] = { 
-				toReadableName(C::staticName()), 
-				&Inspector::drawComponentContentHelper<C>,
-				&Galactose::Entity::hasComponent<C>,
-				&C::create
-			}; 
-		}
+		void bindComponent();
 
 		template <class C>
 		void drawComponentContent(C* component);
 
 		template <class C>
-		void drawComponentContentHelper(Galactose::Component* a_component) {
-			drawComponentContent<C>(static_cast<C*>(a_component));
-		}
+		void drawComponentContentHelper(Galactose::Component* a_component);
 
 		std::shared_ptr<EditorSceneData> m_sceneData;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;

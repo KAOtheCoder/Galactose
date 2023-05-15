@@ -31,6 +31,21 @@ namespace GalactoseEditor {
 		bindComponent<SpriteRenderer>();
 	}
 
+	template <class C>
+	void Inspector::drawComponentContentHelper(Component* a_component) {
+		drawComponentContent<C>(static_cast<C*>(a_component));
+	}
+
+	template <class C>
+	void Inspector::bindComponent() {
+		m_componentInfos[C::staticType()] = {
+			toReadableName(C::staticName()),
+			&Inspector::drawComponentContentHelper<C>,
+			&Entity::hasComponent<C>,
+			&C::create
+		};
+	}
+
 	void Inspector::onUpdate() {
 		auto entity = m_sceneData->selectedEntity();
 
@@ -290,6 +305,15 @@ namespace GalactoseEditor {
 			(this->*info.draw)(a_component);
 			ImGui::EndTable();
 		}
+	}
+
+	template <typename T>
+	void Inspector::drawVectorProperty(PropertyBase* property) {
+		auto accessibleProperty = static_cast<AccessibleProperty<T>*>(property);
+		auto value = accessibleProperty->get();
+
+		if (dragVector(property->name().c_str(), value.length(), value.data()))
+			accessibleProperty->set(value);
 	}
 
 	void Inspector::drawScript(Script* a_script) {
