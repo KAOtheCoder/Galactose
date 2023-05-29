@@ -17,3 +17,6 @@
 [submodule "Galactose/vendor/yaml-cpp/yaml-cpp"]
 	path = Galactose/vendor/yaml-cpp/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "GalactoseEditor/vendor/ImGuizmo/ImGuizmo"]
+	path = GalactoseEditor/vendor/ImGuizmo/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git

@@ -27,6 +27,7 @@ namespace Galactose {
 
 		Vector3 lossyScale() const;
 
+		Matrix4x4 localMatrix() const;
 		Matrix4x4 localToWorldMatrix() const;
 		Matrix4x4 worldToLocalMatrix() const { return localToWorldMatrix().affineInverse(); }
 
@@ -42,9 +43,6 @@ namespace Galactose {
 		bool loadContent(const YAML::Node& node) override;
 
 	private:
-		static void decomposeAffine(const Matrix4x4& transform, Vector3& position, Quaternion& rotation, Vector3& scale);
-
-		Matrix4x4 localMatrix() const;
 		void updateLocalToWorldMatrix() const;
 
 		Vector3 m_localPosition = { 0, 0, 0 };

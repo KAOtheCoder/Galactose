@@ -15,14 +15,12 @@ namespace GalactoseEditor {
 		SceneViewport(const std::shared_ptr<EditorSceneData>& sceneData);
 
 		Galactose::Camera* getCamera() const override;
-		void onFocusOut() override { m_rotate = false; }
 		void onEvent(const std::shared_ptr<Galactose::Event>& event) override;
 		void onUpdate() override;
 
 	private:
 		Galactose::Scene m_privateScene;
 		Galactose::Entity* m_cameraEntity = nullptr;
-		bool m_rotate = false;
-		Galactose::Vector2 m_cursorPos;
+		bool m_usingManipulator = false;
 	};
 }

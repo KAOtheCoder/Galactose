@@ -25,7 +25,9 @@ namespace Galactose {
 		float farClip() const { return m_farClip; }
 		void setFarClip(const float a_farClip) { m_farClip = a_farClip; }
 
-		Matrix4x4 viewProjectionMatrix() const;
+		Matrix4x4 viewMatrix() const;
+		Matrix4x4 projectionMatrix() const;
+		Matrix4x4 viewProjectionMatrix() const { return projectionMatrix() * viewMatrix(); }
 
 		Vector3 backgroundColor() const { return m_backgroundColor; }
 		void setBackgroundColor(const Vector3& a_color) { m_backgroundColor = a_color; }

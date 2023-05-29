@@ -25,6 +25,7 @@ project "GalactoseEditor"
 		"%{wks.location}/Galactose/vendor/GLFW/GLFW/include",
 		"src",
 		"vendor/ImGui/ImGui",
+		"vendor/ImGuizmo/ImGuizmo",
 		"vendor/NativeFileDialogExtended/NativeFileDialogExtended/src/include"
 	}
 
@@ -32,6 +33,7 @@ project "GalactoseEditor"
 	{
 		"Galactose",
 		"ImGui",
+		"ImGuizmo",
 		"NativeFileDialogExtended"
 	}
 
@@ -55,6 +57,7 @@ project "GalactoseEditor"
 
 	group "Dependencies"
 		include "GalactoseEditor/vendor/ImGui"
+		include "GalactoseEditor/vendor/ImGuizmo"
 		include "GalactoseEditor/vendor/NativeFileDialogExtended"
 	group ""
 	

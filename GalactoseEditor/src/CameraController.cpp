@@ -42,6 +42,7 @@ namespace GalactoseEditor {
 		case Event::MouseRelease: m_rotate = false;
 			break;
 		case Event::MouseMove:
+			// TODO: Check if mouse button is pressed instead
 			if (m_rotate) {
 				const auto& cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
 				const auto& move = cursorPos - m_cursorPos;

@@ -15,12 +15,14 @@ namespace Galactose {
 			scene->setMainCamera(this);
 	}
 
-	Matrix4x4 Camera::viewProjectionMatrix() const {
+	Matrix4x4 Camera::viewMatrix() const {
 		auto transform = getTransform();
 		const auto& eye = transform->position();
-		const auto& view = glm::lookAt(eye, eye - transform->forward(), transform->up());
-		const auto& projection = glm::perspective(Math::degreesToRadians(m_fov), m_aspectRatio, m_nearClip, m_farClip);
-		return projection * view;
+		return glm::lookAt(eye, eye - transform->forward(), transform->up());
+	}
+
+	Matrix4x4 Camera::projectionMatrix() const {
+		return glm::perspective(Math::degreesToRadians(m_fov), m_aspectRatio, m_nearClip, m_farClip);
 	}
 
 	void Camera::saveContent(YAML::Emitter& a_out) const {

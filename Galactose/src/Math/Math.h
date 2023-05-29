@@ -47,6 +47,8 @@ namespace Galactose {
 		friend class Quaternion;
 	};
 
+	class Quaternion;
+
 	class Matrix4x4 : public internal::GlmExtend<glm::mat4> {
 	public:
 		using GlmExtend<glm::mat4>::GlmExtend;
@@ -54,7 +56,9 @@ namespace Galactose {
 		static Matrix4x4 translate(const Vector3& a_translation) { return glm::translate(a_translation); }
 		static Matrix4x4 scale(const Vector3& a_scale) { return glm::scale(a_scale); }
 
+		Vector4 column(const int index) const { return operator[](index); }
 		Matrix4x4 affineInverse() const { return glm::affineInverse(base()); }
+		void decomposeAffine(Vector3* position = nullptr, Quaternion* rotation = nullptr, Vector3* scale = nullptr) const;
 	};
 
 	class Quaternion : public internal::GlmExtend<glm::quat> {
