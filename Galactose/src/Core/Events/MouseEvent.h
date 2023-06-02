@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Event.h"
+#include "InputEvent.h"
 #include "Math/Math.h"
 
 namespace Galactose {

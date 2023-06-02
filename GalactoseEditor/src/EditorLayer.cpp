@@ -6,6 +6,7 @@
 #include <Scene/Entity.h>
 #include <Scene/Components/SpriteRenderer.h>
 #include <Core/Application.h>
+#include <Core/Window.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>

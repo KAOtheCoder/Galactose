@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Layer.h"
+#include "Events/MouseEvent.h"
 
 #include <string>
 #include <unordered_set>
@@ -29,6 +30,8 @@ namespace Galactose {
 
 		virtual void update() = 0;
 		virtual void close() = 0;
+
+		virtual bool isMouseButtonPressed(const MouseEvent::Button button) const = 0;
 
 		virtual void* nativeWindow() const = 0;
 

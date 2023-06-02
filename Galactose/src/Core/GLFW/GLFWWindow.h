@@ -21,6 +21,8 @@ namespace Galactose {
 		bool vsync() const override { return m_vsync; }
 		void setVSync(const bool a_vsync) override;
 
+		bool isMouseButtonPressed(const MouseEvent::Button button) const override;
+
 		void* nativeWindow() const override { return m_glfwWindow; }
 
 	private:

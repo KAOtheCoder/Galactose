@@ -2,6 +2,8 @@
 
 #include "InputEvent.h"
 
+#include <string>
+
 namespace Galactose {
 	class KeyEvent : public InputEvent {
 	public:

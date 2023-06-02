@@ -77,6 +77,10 @@ namespace Galactose {
 		m_vsync = a_vsync;
 	}
 
+	bool GLFWWindow::isMouseButtonPressed(const MouseEvent::Button button) const {
+		return glfwGetMouseButton(m_glfwWindow, button) == GLFW_PRESS;
+	}
+
 	std::shared_ptr<Window> GLFWWindow::toWindow(GLFWwindow* a_window) {
 		return static_cast<GLFWWindow*>(glfwGetWindowUserPointer(a_window))->shared_from_this();
 	}
