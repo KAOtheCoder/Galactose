@@ -1,5 +1,5 @@
 #include "EditorLayer.h"
-#include "EditorSceneData.h"
+#include "EditorContext.h"
 
 #include <Core/Events/KeyEvent.h>
 #include <Core/Events/MouseEvent.h>
@@ -21,11 +21,11 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer(Window* a_window) :
-		m_sceneData(std::make_shared<EditorSceneData>()),
-		m_sceneViewport(m_sceneData),
-		m_gameViewport(m_sceneData),
-		m_sceneHierarchy(m_sceneData),
-		m_inspector(m_sceneData)
+		m_sceneContext(std::make_shared<EditorContext>()),
+		m_sceneViewport(m_sceneContext),
+		m_gameViewport(m_sceneContext),
+		m_sceneHierarchy(m_sceneContext),
+		m_inspector(m_sceneContext)
 	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -59,11 +59,11 @@ namespace GalactoseEditor {
 		GT_ASSERT(nfdResult == NFD_OKAY, "Failed to initialze NFD");
 
 		m_menuBar.menus.push_back({ "File", {  
-			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_sceneData->newScene(); } },
-			{ "Open Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyO }, [&]() { m_sceneData->openScene(); } },
+			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_sceneContext->newScene(); } },
+			{ "Open Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyO }, [&]() { m_sceneContext->openScene(); } },
 			{ }, // Separator
-			{ "Save", { KeyEvent::KeyLeftControl, KeyEvent::KeyS }, [&]() { m_sceneData->save(); } },
-			{ "Save As", { KeyEvent::KeyLeftControl, KeyEvent::KeyLeftShift, KeyEvent::KeyS }, [&]() { m_sceneData->saveAs(); } },
+			{ "Save", { KeyEvent::KeyLeftControl, KeyEvent::KeyS }, [&]() { m_sceneContext->save(); } },
+			{ "Save As", { KeyEvent::KeyLeftControl, KeyEvent::KeyLeftShift, KeyEvent::KeyS }, [&]() { m_sceneContext->saveAs(); } },
 			{ },
 			{ "Exit", { KeyEvent::KeyLeftAlt, KeyEvent::KeyF4 }, [&]() { Application::instance()->exit(); } }
 		} });
@@ -97,8 +97,8 @@ namespace GalactoseEditor {
 
 		updateUpBar();
 		
-		if (m_sceneData->isRunning()) {
-			auto scene = m_sceneData->scene();
+		if (m_sceneContext->isRunning()) {
+			auto scene = m_sceneContext->scene();
 			GT_ASSERT(scene, "Scene is null");
 			scene->time().tick();
 			scene->updateScripts();
@@ -164,7 +164,7 @@ namespace GalactoseEditor {
 
 		if (ImGui::BeginViewportSideBar("##UpBar", ImGui::GetMainViewport(), ImGuiDir_Up, height, windowFlags)) {
 			m_menuBar.update();
-			m_toolBar.update(m_sceneData);
+			m_toolBar.update(m_sceneContext);
 		}
 
 		ImGui::End();

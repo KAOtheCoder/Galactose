@@ -14,7 +14,7 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
-	class EditorSceneData;
+	class EditorContext;
 
 	class EditorLayer : public Galactose::Layer {
 	public:
@@ -33,7 +33,7 @@ namespace GalactoseEditor {
 		void updateLayout();
 		void updateUpBar();
 
-		std::shared_ptr<EditorSceneData> m_sceneData;
+		std::shared_ptr<EditorContext> m_sceneContext;
 		SceneViewport m_sceneViewport;
 		GameViewport m_gameViewport;
 		SceneHierarchy m_sceneHierarchy;

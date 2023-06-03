@@ -1,6 +1,6 @@
 #include "SceneViewport.h"
 #include "CameraController.h"
-#include "EditorSceneData.h"
+#include "EditorContext.h"
 
 #include <Scene/Components/Transform.h>
 #include <Scene/Components/Camera.h>
@@ -13,8 +13,8 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	SceneViewport::SceneViewport(const std::shared_ptr<EditorSceneData>& a_sceneData) :
-		Viewport("Scene", a_sceneData),
+	SceneViewport::SceneViewport(const std::shared_ptr<EditorContext>& a_sceneContext) :
+		Viewport("Scene", a_sceneContext),
 		m_privateScene("EditorPrivate"),
 		m_cameraEntity(Entity::create(&m_privateScene))
 	{
@@ -40,7 +40,7 @@ namespace GalactoseEditor {
 
 		m_usingManipulator = false;
 
-		const auto selectedEntity = m_sceneData->selectedEntity();
+		const auto selectedEntity = m_sceneContext->selectedEntity();
 		if (selectedEntity) {
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();

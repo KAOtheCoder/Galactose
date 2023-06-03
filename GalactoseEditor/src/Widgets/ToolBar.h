@@ -7,7 +7,7 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
-	class EditorSceneData;
+	class EditorContext;
 
 	class ToolBar {
 	public:
@@ -15,7 +15,7 @@ namespace GalactoseEditor {
 
 		ToolBar();
 
-		void update(const std::shared_ptr<EditorSceneData>& sceneData);
+		void update(const std::shared_ptr<EditorContext>& sceneContext);
 		
 		float height() const;
 

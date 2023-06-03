@@ -1,5 +1,5 @@
 #include "Viewport.h"
-#include "EditorSceneData.h"
+#include "EditorContext.h"
 
 #include <Renderer/Framebuffer.h>
 #include <Scene/Components/Camera.h>
@@ -9,21 +9,21 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	Viewport::Viewport(const std::string& a_title, const std::shared_ptr<EditorSceneData>& a_sceneData) :
+	Viewport::Viewport(const std::string& a_title, const std::shared_ptr<EditorContext>& a_sceneContext) :
 		Panel(a_title),
-		m_sceneData(a_sceneData),
+		m_sceneContext(a_sceneContext),
 		m_framebuffer(Framebuffer::create(1, 1, { Texture::RGBA8, Texture::Depth24Stencil8 }))
 	{
 		setPadding({ 0, 0 });
 	}
 
 	void Viewport::onUpdate() {
-		const auto& scene = m_sceneData->scene();
+		const auto& scene = m_sceneContext->scene();
 		if (scene) {
 			const auto& viewportSize = ImGui::GetContentRegionAvail();
 
 			if (viewportSize.x >= 1 && viewportSize.y >= 1) {
-				auto scene = m_sceneData->scene();
+				auto scene = m_sceneContext->scene();
 				if (scene) {
 					m_framebuffer->resize(int32_t(viewportSize.x), int32_t(viewportSize.y));
 

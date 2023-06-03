@@ -1,4 +1,4 @@
-#include "EditorSceneData.h"
+#include "EditorContext.h"
 
 #include <Core/Global.h>
 
@@ -7,18 +7,18 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	void EditorSceneData::saveAndPrint() {
+	void EditorContext::saveAndPrint() {
 		m_scene->save(m_filePath);
 		std::cout << "Scene saved to '" << m_filePath << "'." << std::endl;
 	}
 
-	void EditorSceneData::newScene() {
+	void EditorContext::newScene() {
 		m_scene = std::make_shared<Scene>("Untitled");
 		m_filePath.clear();
 		m_selectedEntity = nullptr;
 	}
 
-	void EditorSceneData::openScene() {
+	void EditorContext::openScene() {
 		nfdchar_t* path;
 		nfdfilteritem_t filter = { "Scene", "yaml" };
 		const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
@@ -33,7 +33,7 @@ namespace GalactoseEditor {
 		}
 	}
 
-	void EditorSceneData::saveAs() {
+	void EditorContext::saveAs() {
 		nfdchar_t* path;
 		nfdfilteritem_t filter = { "Scene", "yaml" };
 		const auto result = NFD_SaveDialog(&path, &filter, 1, nullptr, m_scene->name().c_str());
@@ -45,14 +45,14 @@ namespace GalactoseEditor {
 		}
 	}
 
-	void EditorSceneData::save() {
+	void EditorContext::save() {
 		if (m_filePath.empty())
 			saveAs();
 		else
 			saveAndPrint();
 	}
 
-	void EditorSceneData::setRunning(const bool a_running) {
+	void EditorContext::setRunning(const bool a_running) {
 		if (a_running == m_running)
 			return;
 

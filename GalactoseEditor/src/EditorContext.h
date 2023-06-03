@@ -4,9 +4,9 @@
 #include <Scene/Entity.h>
 
 namespace GalactoseEditor {
-	class EditorSceneData {
+	class EditorContext {
 	public:
-		EditorSceneData() :
+		EditorContext() :
 			m_scene(std::make_shared<Galactose::Scene>("Untitled"))
 		{}
 

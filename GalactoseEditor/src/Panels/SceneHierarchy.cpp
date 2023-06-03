@@ -1,5 +1,5 @@
 #include "SceneHierarchy.h"
-#include "EditorSceneData.h"
+#include "EditorContext.h"
 #include "Widgets/TrailingCollapsingHeader.h"
 
 #include <Core/Events/KeyEvent.h>
@@ -9,9 +9,9 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	SceneHierarchy::SceneHierarchy(const std::shared_ptr<EditorSceneData>& a_sceneData) :
+	SceneHierarchy::SceneHierarchy(const std::shared_ptr<EditorContext>& a_sceneContext) :
 		Panel("Scene Hierarchy"),
-		m_sceneData(a_sceneData)
+		m_sceneContext(a_sceneContext)
 	{}
 
 	void SceneHierarchy::drawEntityNode(Entity* a_entity) {
@@ -23,7 +23,7 @@ namespace GalactoseEditor {
 		if (children.empty())
 			flags |= ImGuiTreeNodeFlags_Leaf;
 
-		bool selected = m_sceneData->selectedEntity() == a_entity;
+		bool selected = m_sceneContext->selectedEntity() == a_entity;
 		
 		if (selected)
 			flags |= ImGuiTreeNodeFlags_Selected;
@@ -31,7 +31,7 @@ namespace GalactoseEditor {
 		bool opened = ImGui::TreeNodeEx(a_entity, flags, a_entity->name().c_str());
 
 		if (ImGui::IsItemClicked()) {
-			m_sceneData->setSelectedEntity(a_entity);
+			m_sceneContext->setSelectedEntity(a_entity);
 			selected = true;
 		}
 		
@@ -43,7 +43,7 @@ namespace GalactoseEditor {
 				a_entity->destroy();
 
 				if (selected)
-					m_sceneData->setSelectedEntity(nullptr);
+					m_sceneContext->setSelectedEntity(nullptr);
 
 				if (opened) {
 					ImGui::TreePop();
@@ -61,10 +61,10 @@ namespace GalactoseEditor {
 	}
 
 	void SceneHierarchy::onUpdate() {
-		const auto& scene = m_sceneData->scene();
+		const auto& scene = m_sceneContext->scene();
 		if (scene) {
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
-				m_sceneData->setSelectedEntity(nullptr);
+				m_sceneContext->setSelectedEntity(nullptr);
 
 			const auto& sceneName = scene->name();
 			const auto safeSceneName = sceneName.empty() ? "Untitled" : sceneName.c_str();
@@ -84,11 +84,11 @@ namespace GalactoseEditor {
 	void SceneHierarchy::onEvent(const std::shared_ptr<Event>& a_event) {
 		if (a_event->type() == Event::KeyPress) {
 			auto keyEvent = static_cast<KeyPressEvent*>(a_event.get());
-			auto selectedEntity = m_sceneData->selectedEntity();
+			auto selectedEntity = m_sceneContext->selectedEntity();
 
 			if (keyEvent->key() == KeyEvent::KeyDelete && !keyEvent->isRepeat() && selectedEntity) {
 				selectedEntity->destroy();
-				m_sceneData->setSelectedEntity(nullptr);
+				m_sceneContext->setSelectedEntity(nullptr);
 				a_event->setHandled();
 			}
 		}

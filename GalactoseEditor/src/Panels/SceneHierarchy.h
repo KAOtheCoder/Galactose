@@ -9,11 +9,11 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
-	class EditorSceneData;
+	class EditorContext;
 
 	class SceneHierarchy : public Panel {
 	public:
-		SceneHierarchy(const std::shared_ptr<EditorSceneData>& sceneData);
+		SceneHierarchy(const std::shared_ptr<EditorContext>& sceneContext);
 
 		void onUpdate() override;
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
@@ -21,6 +21,6 @@ namespace GalactoseEditor {
 	private:
 		void drawEntityNode(Galactose::Entity* entity);
 
-		std::shared_ptr<EditorSceneData> m_sceneData;
+		std::shared_ptr<EditorContext> m_sceneContext;
 	};
 }

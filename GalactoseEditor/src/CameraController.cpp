@@ -37,18 +37,27 @@ namespace GalactoseEditor {
 			transform->setPosition(transform->position() + (direction * speed));
 			break;
 		}
+
 		case Event::MouseMove: {
 			const auto mouseEvent = static_cast<MouseEvent*>(a_event.get());
 
-			if (mouseEvent->window()->isMouseButtonPressed(MouseEvent::Left)) {
+			if (m_rotate && mouseEvent->window()->isMouseButtonPressed(MouseEvent::Left)) {
 				const auto& cursorPos = mouseEvent->cursorPosition();
 				const auto& move = cursorPos - m_cursorPos;
 				const float speed = 2 * time().deltaTime();
 				transform->setRotation(Quaternion::fromEulerDegrees(transform->rotation().eulerDegrees() + (Vector3(move.y, move.x, 0) * speed)));
 			}
+
+			m_cursorPos = mouseEvent->cursorPosition();
 		}
+
 		case Event::MousePress:
+			m_rotate = true;
+			m_cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
+			break;
+
 		case Event::MouseRelease:
+			m_rotate = false;
 			m_cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
 			break;
 

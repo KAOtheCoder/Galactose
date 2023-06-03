@@ -13,6 +13,7 @@ namespace GalactoseEditor {
 		void onEvent(const std::shared_ptr<Galactose::Event>& event) override;
 
 	private:
+		bool m_rotate = false;
 		Galactose::Vector2 m_cursorPos;
 	};
 }

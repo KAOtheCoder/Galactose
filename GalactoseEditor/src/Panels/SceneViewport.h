@@ -12,7 +12,7 @@ namespace Galactose {
 namespace GalactoseEditor {
 	class SceneViewport : public Viewport {
 	public:
-		SceneViewport(const std::shared_ptr<EditorSceneData>& sceneData);
+		SceneViewport(const std::shared_ptr<EditorContext>& sceneContext);
 
 		Galactose::Camera* getCamera() const override;
 		void onEvent(const std::shared_ptr<Galactose::Event>& event) override;

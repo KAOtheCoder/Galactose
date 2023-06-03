@@ -1,5 +1,5 @@
 #include "ToolBar.h"
-#include "EditorSceneData.h"
+#include "EditorContext.h"
 
 #include <Renderer/Texture.h>
 
@@ -17,14 +17,14 @@ namespace GalactoseEditor {
 		return (2.f * ImGui::GetFontSize()) + (2 * (ImGui::GetStyle().FramePadding.y + ImGui::GetStyle().WindowPadding.y));
 	}
 
-	void ToolBar::update(const std::shared_ptr<EditorSceneData>& a_sceneData) {
+	void ToolBar::update(const std::shared_ptr<EditorContext>& a_sceneContext) {
 		const float buttonSize = 2.f * ImGui::GetFontSize();
 		ImGui::SetCursorPosX((ImGui::GetWindowSize().x - buttonSize - ImGui::GetStyle().FramePadding.x) / 2);
 
-		const bool running = a_sceneData->isRunning();
+		const bool running = a_sceneContext->isRunning();
 		const auto& icon = running ? m_pauseIcon : m_playIcon;
 		
 		if (ImGui::ImageButton("##Play", (void*)(intptr_t)icon->rendererId(), {buttonSize, buttonSize}, {0, 1}, {1, 0}))
-			a_sceneData->setRunning(!running);
+			a_sceneContext->setRunning(!running);
 	}
 }

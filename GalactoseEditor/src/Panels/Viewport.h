@@ -10,17 +10,17 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
-	class EditorSceneData;
+	class EditorContext;
 
 	class Viewport : public Panel {
 	public:
-		Viewport(const std::string& title, const std::shared_ptr<EditorSceneData>& sceneData);
+		Viewport(const std::string& title, const std::shared_ptr<EditorContext>& sceneContext);
 
 		virtual Galactose::Camera* getCamera() const = 0;
 		void onUpdate() override;
 
 	protected:
-		std::shared_ptr<EditorSceneData> m_sceneData;
+		std::shared_ptr<EditorContext> m_sceneContext;
 		std::shared_ptr<Galactose::Framebuffer> m_framebuffer;
 	};
 }
