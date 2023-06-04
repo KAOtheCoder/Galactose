@@ -23,8 +23,8 @@ namespace GalactoseEditor {
 		Panel("Inspector"),
 		m_sceneContext(a_sceneContext)
 	{
-		m_icons.emplace("clear", Galactose::Texture::create("assets/textures/clear.png"));
-		m_icons.emplace("folder", Galactose::Texture::create("assets/textures/folder.png"));
+		m_icons.emplace("Clear", Galactose::Texture::create("assets/textures/Clear.png"));
+		m_icons.emplace("Folder", Galactose::Texture::create("assets/textures/Folder.png"));
 
 		bindComponent<Transform>();
 		bindComponent<Camera>();
@@ -257,13 +257,13 @@ namespace GalactoseEditor {
 
 			ImGui::TableSetColumnIndex(1);
 			
-			if (iconButton("clear") && !a_path.empty()) {
+			if (iconButton("Clear") && !a_path.empty()) {
 				a_path = "";
 				changed = true;
 			}
 
 			ImGui::TableSetColumnIndex(2);
-			if (iconButton("folder")) {
+			if (iconButton("Folder")) {
 				nfdchar_t* path;
 				nfdfilteritem_t filter = { "Texture", "png" };
 				const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);

@@ -3,6 +3,9 @@
 #include <Scene/Scene.h>
 #include <Scene/Entity.h>
 
+#include <imgui.h>
+#include <ImGuizmo.h>
+
 namespace GalactoseEditor {
 	class EditorContext {
 	public:
@@ -12,7 +15,7 @@ namespace GalactoseEditor {
 
 		std::shared_ptr<Galactose::Scene> scene() const { return m_scene; }
 
-		std::string filePath() const { return m_filePath; }
+		std::string sceneFilePath() const { return m_sceneFilePath; }
 		void newScene();
 		void openScene();
 		void save();
@@ -24,12 +27,16 @@ namespace GalactoseEditor {
 		bool isRunning() const { return m_running; }
 		void setRunning(const bool a_running);
 
+		ImGuizmo::OPERATION manipulatorOperation() const { return m_manipulatorOperation; }
+		void setManipulatorOperation(const ImGuizmo::OPERATION a_operation) { m_manipulatorOperation = a_operation; }
+
 	private:
 		void saveAndPrint();
 
-		std::shared_ptr<Galactose::Scene> m_scene;
-		std::string m_filePath;
-		Galactose::Entity* m_selectedEntity = nullptr;
 		bool m_running = false;
+		std::shared_ptr<Galactose::Scene> m_scene;
+		std::string m_sceneFilePath;
+		Galactose::Entity* m_selectedEntity = nullptr;
+		ImGuizmo::OPERATION m_manipulatorOperation = ImGuizmo::TRANSLATE;
 	};
 }

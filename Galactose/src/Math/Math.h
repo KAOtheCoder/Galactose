@@ -31,7 +31,8 @@ namespace Galactose {
 
 			using GlmExtend<glm::vec<L, float>>::GlmExtend;
 
-			Vector<L> normalized() const { return glm::normalize(*this); }
+			Vector<L> normalized() const { return glm::normalize(this->base()); }
+			float magnitude() const { return glm::length(this->base()); }
 		};
 	}
 

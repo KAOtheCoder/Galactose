@@ -109,7 +109,7 @@ namespace GalactoseEditor {
 		m_sceneViewport.update();
 		m_gameViewport.update();
 
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

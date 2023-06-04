@@ -8,13 +8,13 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	void EditorContext::saveAndPrint() {
-		m_scene->save(m_filePath);
-		std::cout << "Scene saved to '" << m_filePath << "'." << std::endl;
+		m_scene->save(m_sceneFilePath);
+		std::cout << "Scene saved to '" << m_sceneFilePath << "'." << std::endl;
 	}
 
 	void EditorContext::newScene() {
 		m_scene = std::make_shared<Scene>("Untitled");
-		m_filePath.clear();
+		m_sceneFilePath.clear();
 		m_selectedEntity = nullptr;
 	}
 
@@ -27,9 +27,9 @@ namespace GalactoseEditor {
 		auto scene = std::make_shared<Scene>();
 		if (result == NFD_OKAY && scene->load(path)) {
 			m_scene = scene;
-			m_filePath = path;
+			m_sceneFilePath = path;
 			m_selectedEntity = nullptr;
-			std::cout << "Scene '" << m_filePath << "' loaded." << std::endl;
+			std::cout << "Scene '" << m_sceneFilePath << "' loaded." << std::endl;
 		}
 	}
 
@@ -40,13 +40,13 @@ namespace GalactoseEditor {
 		GT_ASSERT(result != NFD_ERROR, NFD_GetError());
 
 		if (result == NFD_OKAY) {
-			m_filePath = path;
+			m_sceneFilePath = path;
 			saveAndPrint();
 		}
 	}
 
 	void EditorContext::save() {
-		if (m_filePath.empty())
+		if (m_sceneFilePath.empty())
 			saveAs();
 		else
 			saveAndPrint();

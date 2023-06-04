@@ -8,8 +8,6 @@
 
 #include <imgui.h>
 
-#include <ImGuizmo.h>
-
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -55,7 +53,7 @@ namespace GalactoseEditor {
 				const auto& projection = editorCamera->projectionMatrix();
 				auto transform = selectedEntity->getTransform();
 				auto matrix = transform->localMatrix();
-				const auto operation = ImGuizmo::TRANSLATE;
+				const auto operation = m_sceneContext->manipulatorOperation();
 
 				if (ImGuizmo::Manipulate(view.data(), projection.data(), operation, ImGuizmo::LOCAL, matrix.data())) {
 					switch (operation) {
@@ -72,6 +70,7 @@ namespace GalactoseEditor {
 						break;
 					}
 					case ImGuizmo::SCALE: {
+						// TODO: fix scale gizmo
 						Vector3 scale;
 						matrix.decomposeAffine(nullptr, nullptr, &scale);
 						transform->setLocalScale(scale);

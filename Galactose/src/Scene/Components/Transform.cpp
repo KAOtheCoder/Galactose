@@ -20,12 +20,7 @@ namespace Galactose {
 
 		if (parent) {
 			m_worldMatrix = parent->localToWorldMatrix() * localMatrix();
-
 			m_worldMatrix.decomposeAffine(&m_position, &m_rotation, &m_scale);
-
-			m_position = m_worldMatrix[3];
-			m_rotation = parent->m_rotation * m_localRotation;
-			m_scale = parent->m_worldMatrix * Vector4(1, 1, 1, 1) - parent->m_worldMatrix * Vector4(0, 0, 0, 1);
 		}
 		else {
 			m_worldMatrix = localMatrix();

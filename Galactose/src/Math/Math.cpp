@@ -1,7 +1,5 @@
 #include "Math.h"
 
-#include <glm/gtc/matrix_access.hpp>
-
 namespace Galactose {
 	// Inspired from cglm::glm_decompose
 	void Matrix4x4::decomposeAffine(Vector3* a_position, Quaternion* a_rotation, Vector3* a_scale) const {
@@ -11,10 +9,10 @@ namespace Galactose {
 		if (!a_rotation && !a_scale)
 			return;
 
-		Vector3 scale(column(0).length(), column(1).length(), column(2).length());
+		Vector3 scale(column(0).magnitude(), column(1).magnitude(), column(2).magnitude());
 
 		Matrix4x4 rotation(*this); // we only need 3x3 matrix, maybe change that later
-		//rotation[3] = { 0, 0, 0, 1 };
+		rotation[3] = { 0, 0, 0, 1 };
 
 		for (int i = 0; i < 3; ++i) // avoid divide by zero
 			rotation[i] /= scale[i] == 0 ? glm::epsilon<float>() : scale[i];
