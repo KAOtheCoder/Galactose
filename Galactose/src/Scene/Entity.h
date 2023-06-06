@@ -14,7 +14,7 @@ namespace Galactose {
 	class Component;
 	class Transform;
 
-	class Entity final : public SceneObject {
+	class GT_API Entity final : public SceneObject {
 	public:
 		static Entity* create(Scene* scene, const Uuid& id = Uuid::create());
 		static Entity* create(Entity* parent, const Uuid& id = Uuid::create());

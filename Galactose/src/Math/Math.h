@@ -2,6 +2,8 @@
 
 #define GLM_FORCE_CTOR_INIT
 
+#include "Core/Global.h"
+
 #include <glm/glm.hpp>
 #include "glm/gtx/string_cast.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -50,7 +52,7 @@ namespace Galactose {
 
 	class Quaternion;
 
-	class Matrix4x4 : public internal::GlmExtend<glm::mat4> {
+	class GT_API Matrix4x4 : public internal::GlmExtend<glm::mat4> {
 	public:
 		using GlmExtend<glm::mat4>::GlmExtend;
 

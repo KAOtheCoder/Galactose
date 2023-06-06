@@ -14,7 +14,7 @@ namespace Galactose {
 	class Event;
 	class Script;
 
-	class Scene {
+	class GT_API Scene {
 	public:
 		Scene(const std::string& name = "");
 		virtual ~Scene();

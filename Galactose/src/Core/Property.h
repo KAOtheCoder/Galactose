@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Global.h"
 #include "Core/DataType.h"
 
 #include <type_traits>
@@ -12,7 +13,7 @@
 namespace Galactose {
 	class Script;
 
-	class PropertyBase {
+	class GT_API PropertyBase {
 	public:
 		PropertyBase() = default;
 

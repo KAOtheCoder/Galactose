@@ -1,12 +1,13 @@
 project "Galactose"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
+	implibdir ("bin/" .. outputdir .. "/%{prj.name}")
+	
 	files
 	{
 		"src/**.h",
@@ -20,7 +21,9 @@ project "Galactose"
 
 	defines
 	{
+		"GT_DYNAMIC_BUILD",
 		"GLFW_INCLUDE_NONE",
+		"GLFW_DLL",
 		"YAML_CPP_STATIC_DEFINE"
 	}
 

@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 
 namespace Galactose {
-	class MouseEvent : public InputEvent {
+	class GT_API MouseEvent : public InputEvent {
 	public:
 		enum Button {
 			Left,

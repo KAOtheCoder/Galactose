@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Core/Global.h"
+
 #include <memory>
 #include <string>
 
 namespace Galactose {
-	class Texture {
+	class GT_API Texture {
 	public:
 		enum Format {
 			RGB8,

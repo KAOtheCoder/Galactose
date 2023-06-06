@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Global.h"
+
 #include <vector>
 #include <string>
 #include <memory>
@@ -7,7 +9,7 @@
 namespace Galactose {
 	class Event;
 
-	class Application
+	class GT_API Application
 	{
 	public:
 		static Application* instance() { return s_instance; }

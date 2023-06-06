@@ -33,7 +33,7 @@ namespace GalactoseEditor {
 		void updateLayout();
 		void updateUpBar();
 
-		std::shared_ptr<EditorContext> m_sceneContext;
+		std::shared_ptr<EditorContext> m_editorContext;
 		SceneViewport m_sceneViewport;
 		GameViewport m_gameViewport;
 		SceneHierarchy m_sceneHierarchy;

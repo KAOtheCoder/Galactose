@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace Galactose {
-	class Framebuffer {
+	class GT_API Framebuffer {
 	public:
 		static std::shared_ptr<Framebuffer> create(
 			const int32_t width, 

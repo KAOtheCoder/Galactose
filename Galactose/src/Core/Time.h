@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Core/Global.h"
+
 #include <chrono>
 
 namespace Galactose {
-	class Time {
+	class GT_API Time {
 	public:
 		void tick();
 		void suspend();

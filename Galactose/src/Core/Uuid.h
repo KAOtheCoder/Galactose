@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Core/Global.h"
+
 #include <unordered_set>
 #include <string>
 
 namespace Galactose {
-	class Uuid {
+	class GT_API Uuid {
 	public:
 		static Uuid create();
 		static Uuid fromHex(const std::string& hex);
@@ -26,7 +28,7 @@ namespace Galactose {
 }
 
 template<>
-struct std::hash<Galactose::Uuid> {
+struct GT_API std::hash<Galactose::Uuid> {
 	std::size_t operator()(Galactose::Uuid const& uuid) const noexcept {
 		return std::hash<uint64_t>{}(uuid.m_id);
 	}

@@ -32,14 +32,25 @@ project "GalactoseEditor"
 	links
 	{
 		"Galactose",
+		"GLFW",
 		"ImGui",
 		"ImGuizmo",
 		"NativeFileDialogExtended"
 	}
-
+	
+	defines {
+		"GLFW_DLL"
+	}
+	
 	filter "system:windows"
 		defines "GT_WINDOWS"
 		systemversion "latest"
+		postbuildcommands { 
+			("{echo} postbuild"),
+			("{copy} %{wks.location}/Galactose/bin/" .. outputdir .. "/Galactose/*.dll %{cfg.targetdir}"),
+			("{copy} %{wks.location}/Galactose/vendor/GLFW/bin/" .. outputdir .. "/GLFW/*.dll %{cfg.targetdir}")
+		}
+		cleanextensions { ".dll", ".pdb" }
 
 	filter "system:linux"
 		defines "GT_LINUX"
@@ -49,6 +60,10 @@ project "GalactoseEditor"
 		defines "GT_DEBUG"
 		runtime "Debug"
 		symbols "On"
+		postbuildcommands { 
+			("{copy} %{wks.location}/Galactose/bin/" .. outputdir .. "/Galactose/*.pdb %{cfg.targetdir}"),
+			("{copy} %{wks.location}/Galactose/vendor/GLFW/bin/" .. outputdir .. "/GLFW/*.pdb %{cfg.targetdir}")
+		}
 
 	filter "configurations:Release"
 		defines "GT_RELEASE"

@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Core/Global.h"
+
 #include <memory>
 
 namespace Galactose {
 	class Event;
 
-	class Layer {
+	class GT_API Layer {
 	public:
 		Layer() = default;
 		virtual ~Layer() = default;

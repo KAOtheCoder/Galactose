@@ -1,10 +1,11 @@
 project "GLFW"
-	kind "StaticLib"
+	kind "SharedLib"
 	language "C"
 	staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	implibdir ("bin/" .. outputdir .. "/%{prj.name}")
 
 	files
 	{
@@ -28,6 +29,10 @@ project "GLFW"
 		"GLFW/src/null_monitor.c",
 		"GLFW/src/null_window.c",
 		"GLFW/src/null_joystick.c"
+	}
+	
+	defines {
+		"_GLFW_BUILD_DLL"
 	}
 	
 	filter "system:linux"

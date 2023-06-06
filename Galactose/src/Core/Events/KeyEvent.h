@@ -5,7 +5,7 @@
 #include <string>
 
 namespace Galactose {
-	class KeyEvent : public InputEvent {
+	class GT_API KeyEvent : public InputEvent {
 	public:
 		enum Key {
 			// Printable keys

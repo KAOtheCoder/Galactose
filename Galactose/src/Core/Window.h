@@ -9,7 +9,7 @@
 namespace Galactose {
 	class Application;
 
-	class Window : public std::enable_shared_from_this<Window>
+	class GT_API Window : public std::enable_shared_from_this<Window>
 	{
 	public:
 		static std::shared_ptr<Window> create(const std::string& a_title, const int32_t a_width, const int32_t a_height);

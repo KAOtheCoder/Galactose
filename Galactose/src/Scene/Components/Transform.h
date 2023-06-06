@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 
 namespace Galactose {
-	class Transform final : public Component {
+	class GT_API Transform final : public Component {
 		GT_COMPONENT(Transform)
 	
 	public:

@@ -2,15 +2,15 @@
 
 #include "Component.h"
 
-#include <Core/Events/Event.h>
-#include <Core/Property.h>
+#include "Core/Events/Event.h"
+#include "Core/Property.h"
 
 #define GT_SCRIPT(a_script)\
 GT_COMPONENT(a_script)\
 	using _ScriptType = a_script;\
 
 namespace Galactose {
-	class Script : public Component {
+	class GT_API Script : public Component {
 	public:
 		Script() = default;
 

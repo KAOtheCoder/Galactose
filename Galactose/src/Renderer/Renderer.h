@@ -9,7 +9,7 @@ namespace Galactose {
 	class Shader;
 	class Camera;
 
-	class Renderer {
+	class GT_API Renderer {
 	public:
 		static std::shared_ptr<Renderer> create(const std::shared_ptr<Window>& a_window);
 		static std::shared_ptr<Renderer> renderer(const int32_t a_id = 0) { return s_renderers[a_id]; }
