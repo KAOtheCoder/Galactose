@@ -4,43 +4,43 @@
 #include "Math/Math.h"
 
 namespace Galactose {
-	class GT_API Transform final : public Component {
+	class Transform final : public Component {
 		GT_COMPONENT(Transform)
 	
 	public:
 		Transform() = default;
 
 		Vector3 localPosition() const { return m_localPosition; };
-		void setLocalPosition(const Vector3& position);
+		GT_API void setLocalPosition(const Vector3& position);
 
 		Quaternion localRotation() const { return m_localRotation; }
-		void setLocalRotation(const Quaternion& rotation);
+		GT_API void setLocalRotation(const Quaternion& rotation);
 
 		Vector3 localScale() const { return m_localScale; }
-		void setLocalScale(const Vector3& scale);
+		GT_API void setLocalScale(const Vector3& scale);
 
-		Vector3 position() const;
-		void setPosition(const Vector3& position);
+		GT_API Vector3 position() const;
+		GT_API void setPosition(const Vector3& position);
 
-		Quaternion rotation() const;
-		void setRotation(const Quaternion& rotation);
+		GT_API Quaternion rotation() const;
+		GT_API void setRotation(const Quaternion& rotation);
 
 		Vector3 lossyScale() const;
 
-		Matrix4x4 localMatrix() const;
+		GT_API Matrix4x4 localMatrix() const;
 		Matrix4x4 localToWorldMatrix() const;
 		Matrix4x4 worldToLocalMatrix() const { return localToWorldMatrix().affineInverse(); }
 
-		Vector3 right() const;
-		Vector3 up() const;
-		Vector3 forward() const;
+		GT_API Vector3 right() const;
+		GT_API Vector3 up() const;
+		GT_API Vector3 forward() const;
 
 		Vector3 transformPoint(const Vector3& point) const;
 		Vector3 transformVector(const Vector3& vector) const;
 
 	protected:
-		void saveContent(YAML::Emitter& out) const override;
-		bool loadContent(const YAML::Node& node) override;
+		GT_API void saveContent(YAML::Emitter& out) const override;
+		GT_API bool loadContent(const YAML::Node& node) override;
 
 	private:
 		void updateLocalToWorldMatrix() const;

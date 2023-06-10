@@ -43,7 +43,7 @@ namespace Galactose {
 
 	protected:
 		struct Meta {
-			Meta(const std::string& name, const uint32_t id, Component*(*creator)(Entity*));
+			GT_API Meta(const std::string& name, const uint32_t id, Component*(*creator)(Entity*));
 
 			static Meta* meta(const std::string& name);
 			inline static std::unordered_map<std::string, Meta*> s_metas;
@@ -52,9 +52,9 @@ namespace Galactose {
 			Component*(*creator)(Entity*);
 		};
 
-		virtual void start() {}
-		virtual void saveContent(YAML::Emitter& out) const = 0;
-		virtual bool loadContent(const YAML::Node& node) = 0;
+		GT_API virtual void start() {}
+		GT_API virtual void saveContent(YAML::Emitter& out) const = 0;
+		GT_API virtual bool loadContent(const YAML::Node& node) = 0;
 
 	private:
 		Entity* m_entity = nullptr;

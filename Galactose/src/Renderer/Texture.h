@@ -6,7 +6,7 @@
 #include <string>
 
 namespace Galactose {
-	class GT_API Texture {
+	class Texture {
 	public:
 		enum Format {
 			RGB8,
@@ -15,7 +15,7 @@ namespace Galactose {
 			Depth24Stencil8
 		};
 
-		static std::shared_ptr<Texture> create(const std::string& filePath);
+		GT_API static std::shared_ptr<Texture> create(const std::string& filePath);
 		static std::shared_ptr<Texture> create(const int32_t width, const int32_t height, const Format format = RGBA8);
 
 		virtual ~Texture() = default;

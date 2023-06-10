@@ -4,7 +4,7 @@
 #include "Renderer/Sprite.h"
 
 namespace Galactose {
-	class GT_API SpriteRenderer final : public Component {
+	class SpriteRenderer final : public Component {
 		GT_COMPONENT(SpriteRenderer)
 
 	public:
@@ -13,7 +13,7 @@ namespace Galactose {
 		Sprite sprite;
 
 	protected:
-		void saveContent(YAML::Emitter& emitter) const override;
-		bool loadContent(const YAML::Node& node) override;
+		GT_API void saveContent(YAML::Emitter& emitter) const override;
+		GT_API bool loadContent(const YAML::Node& node) override;
 	};
 }

@@ -5,10 +5,10 @@
 #include <chrono>
 
 namespace Galactose {
-	class GT_API Time {
+	class Time {
 	public:
-		void tick();
-		void suspend();
+		GT_API void tick();
+		GT_API void suspend();
 		void reset();
 
 		float deltaTime() const { return m_delta; }

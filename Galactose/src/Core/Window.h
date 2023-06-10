@@ -9,14 +9,14 @@
 namespace Galactose {
 	class Application;
 
-	class GT_API Window : public std::enable_shared_from_this<Window>
+	class Window : public std::enable_shared_from_this<Window>
 	{
 	public:
-		static std::shared_ptr<Window> create(const std::string& a_title, const int32_t a_width, const int32_t a_height);
+		GT_API static std::shared_ptr<Window> create(const std::string& a_title, const int32_t a_width, const int32_t a_height);
 		static bool areAllWindowsClosed();
 
-		static Window* getCurrentContext();
-		static void setCurrentContext(Window* context);
+		GT_API static Window* getCurrentContext();
+		GT_API static void setCurrentContext(Window* context);
 
 		virtual ~Window();
 

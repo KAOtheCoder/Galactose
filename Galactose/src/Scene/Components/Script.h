@@ -10,7 +10,7 @@ GT_COMPONENT(a_script)\
 	using _ScriptType = a_script;\
 
 namespace Galactose {
-	class GT_API Script : public Component {
+	class Script : public Component {
 	public:
 		Script() = default;
 

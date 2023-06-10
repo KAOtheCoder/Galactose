@@ -14,9 +14,9 @@ namespace Galactose {
 	class Component;
 	class Transform;
 
-	class GT_API Entity final : public SceneObject {
+	class Entity final : public SceneObject {
 	public:
-		static Entity* create(Scene* scene, const Uuid& id = Uuid::create());
+		GT_API static Entity* create(Scene* scene, const Uuid& id = Uuid::create());
 		static Entity* create(Entity* parent, const Uuid& id = Uuid::create());
 
 		GT_UNMOVABLE(Entity);
@@ -25,7 +25,7 @@ namespace Galactose {
 		Entity(const Uuid& id = Uuid::create());
 		~Entity() override;
 
-		void destroy();
+		GT_API void destroy();
 
 		Uuid uuid() const { return m_uuid; }
 
@@ -92,7 +92,7 @@ namespace Galactose {
 			return false;
 		}
 
-		Transform* getTransform() const;
+		GT_API Transform* getTransform() const;
 
 		const std::vector<Component*>& components() const { return m_components; }
 		size_t scriptOffset() const { return m_scriptOffset; }
@@ -105,7 +105,7 @@ namespace Galactose {
 
 		Component* addComponent(const std::string& name);
 		Component* getComponent(const uint32_t id) const;
-		int findComponent(const uint32_t id, const bool script) const;
+		GT_API int findComponent(const uint32_t id, const bool script) const;
 		void removeFromSiblings() const;
 
 		Scene* m_scene = nullptr;

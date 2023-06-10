@@ -7,7 +7,7 @@
 namespace Galactose {
 	class Event;
 
-	class GT_API Layer {
+	class Layer {
 	public:
 		Layer() = default;
 		virtual ~Layer() = default;

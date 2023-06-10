@@ -6,9 +6,9 @@
 #include <string>
 
 namespace Galactose {
-	class GT_API Uuid {
+	class Uuid {
 	public:
-		static Uuid create();
+		GT_API static Uuid create();
 		static Uuid fromHex(const std::string& hex);
 
 		Uuid(const uint64_t a_id = 0);

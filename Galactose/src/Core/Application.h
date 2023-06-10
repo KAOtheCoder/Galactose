@@ -9,20 +9,20 @@
 namespace Galactose {
 	class Event;
 
-	class GT_API Application
+	class Application
 	{
 	public:
 		static Application* instance() { return s_instance; }
 
-		Application(const std::string& a_name, int a_argc, char** a_argv);
+		GT_API Application(const std::string& a_name, int a_argc, char** a_argv);
 		Application(const std::string& a_name, const std::vector<std::string>& a_args);
 		virtual ~Application() = default;
 
 		std::string name() const { return m_name; }
 		std::vector<std::string> arguments() const { return m_args; }
 
-		int exec();
-		void exit(const int a_exitCode = 0);
+		GT_API int exec();
+		GT_API void exit(const int a_exitCode = 0);
 
 		void postEvent(const std::shared_ptr<Event>& a_event) { m_eventQueue.push_back(a_event); }
 

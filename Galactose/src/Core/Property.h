@@ -13,10 +13,8 @@
 namespace Galactose {
 	class Script;
 
-	class GT_API PropertyBase {
+	class PropertyBase {
 	public:
-		PropertyBase() = default;
-
 		virtual bool isReadOnly() const { return true; }
 		virtual DataType::Type type() const = 0;
 		virtual std::string name() const = 0;
