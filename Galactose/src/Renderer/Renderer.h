@@ -12,7 +12,7 @@ namespace Galactose {
 	class Renderer {
 	public:
 		GT_API static std::shared_ptr<Renderer> create(const std::shared_ptr<Window>& a_window);
-		static std::shared_ptr<Renderer> renderer(const int32_t a_id = 0) { return s_renderers[a_id]; }
+		static std::shared_ptr<Renderer> renderer(const int32_t id = 0);
 
 		int32_t id() const { return m_id; }
 

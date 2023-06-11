@@ -18,6 +18,8 @@ namespace Galactose {
 		return renderer;
 	}
 
+	std::shared_ptr<Renderer> Renderer::renderer(const int32_t a_id) { return s_renderers[a_id]; }
+
 	Renderer::Renderer(const std::shared_ptr<Window>& a_window) :
 		m_window(a_window)
 	{}
