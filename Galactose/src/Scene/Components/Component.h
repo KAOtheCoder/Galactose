@@ -8,19 +8,20 @@ public:\
 	GT_UNMOVABLE(C)\
 	std::string name() const override { return GT_STRINGIFY(C); }\
 	void destroy() override { entity()->removeComponent<C>(); }\
+	static uint32_t staticType() { return entt::type_hash<C>::value(); }\
+	uint32_t type() const override { return C::staticType(); }\
 
 #define GT_COMPONENT(C)\
-GT_COMPONENT_COMMON(C)\
+public:\
+	GT_UNMOVABLE(C)\
+	std::string name() const override { return GT_STRINGIFY(C); }\
+	void destroy() override { entity()->removeComponent<C>(); }\
+	static uint32_t staticType() { return entt::type_hash<C>::value(); }\
+	uint32_t type() const override { return C::staticType(); }\
 	static Galactose::Component* create(Galactose::Entity* a_entity) { return a_entity->addComponent<C>(); }\
 	static std::string staticName() { return GT_STRINGIFY(C); }\
-	static uint32_t staticType() { return s_meta.id; }\
-	uint32_t type() const override { return s_meta.id; }\
 private:\
-	inline static Component::Meta s_meta{ GT_STRINGIFY(C), entt::type_hash<C>::value(), &C::create };\
-
-#define GT_PRIVATE_COMPONENT(C)\
-GT_COMPONENT_COMMON(C)\
-	uint32_t type() const override { return entt::type_hash<C>::value(); }\
+	inline static Component::Meta<C> s_meta;\
 
 namespace YAML {
 	class Emitter;
@@ -42,14 +43,29 @@ namespace Galactose {
 		bool load(const YAML::Node& node);
 
 	protected:
-		struct Meta {
-			GT_API Meta(const std::string& name, const uint32_t id, Component*(*creator)(Entity*));
-
-			static Meta* meta(const std::string& name);
-			inline static std::unordered_map<std::string, Meta*> s_metas;
+		class MetaBase {
+		public:
+			static MetaBase* meta(const std::string& name);
 			
-			const uint32_t id;
-			Component*(*creator)(Entity*);
+			virtual std::string name() const = 0;
+			virtual uint32_t type() const = 0;
+			virtual Component* create(Galactose::Entity* a_entity) = 0;
+
+		protected:
+			GT_API void insert();
+
+			inline static std::unordered_map<std::string, MetaBase*> s_metasByName;
+			inline static std::unordered_map<uint32_t, MetaBase*> s_metasByType;
+		};
+
+		template <class C>
+		class Meta : public MetaBase {
+		public:
+			Meta() { insert(); }
+
+			std::string name() const override { return C::staticName(); }
+			uint32_t type() const override { return C::staticType(); }
+			Component* create(Galactose::Entity* a_entity) override { return C::create(a_entity); }
 		};
 
 		GT_API virtual void start() {}

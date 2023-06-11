@@ -7,8 +7,8 @@
 
 #define GT_PROPERTY(a_type, a_name, a_get, a_set) Galactose::Property<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set> a_name;
 #define GT_READONLY_PROPERTY(a_type, a_name, a_get) Galactose::ReadOnlyProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get> a_name;
-#define GT_PROPERTY_SPEED(a_type, a_name, a_get, a_set, a_speed) Galactose::LimitedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed> a_name;
-#define GT_LIMITED_PROPERTY(a_type, a_name, a_get, a_set, a_speed, a_min, a_max) Galactose::LimitedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed, a_min, a_max> a_name;
+#define GT_PROPERTY_SPEED(a_type, a_name, a_get, a_set, a_speed) Galactose::BoundedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed> a_name;
+#define GT_LIMITED_PROPERTY(a_type, a_name, a_get, a_set, a_speed, a_min, a_max) Galactose::BoundedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed, a_min, a_max> a_name;
 
 namespace Galactose {
 	class Script;
@@ -89,7 +89,7 @@ namespace Galactose {
 	};
 
 	template <typename O, typename T, auto _Name, auto _Get, auto _Set, T _Speed = 0, T _Min = 0, T _Max = 0, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-	class LimitedProperty : public Property<O, T, _Name, _Get, _Set> {
+	class BoundedProperty : public Property<O, T, _Name, _Get, _Set> {
 	public:
 		using Property<O, T, _Name, _Get, _Set>::Property;
 

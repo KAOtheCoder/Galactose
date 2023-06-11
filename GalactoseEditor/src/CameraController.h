@@ -5,7 +5,7 @@
 
 namespace GalactoseEditor {
 	class CameraController : public Galactose::Script {
-		GT_PRIVATE_COMPONENT(GalactoseEditor::CameraController)
+		GT_COMPONENT(GalactoseEditor::CameraController)
 
 	public:
 		CameraController() = default;

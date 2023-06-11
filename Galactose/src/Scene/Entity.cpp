@@ -109,7 +109,7 @@ namespace Galactose {
 
 		for (const auto& componentWrapperNode : entityNode["components"]) {
 			const auto& componentName = componentWrapperNode.begin()->first.as<std::string>();
-			auto component = getComponent(Component::Meta::meta(componentName)->id);
+			auto component = getComponent(Component::MetaBase::meta(componentName)->type());
 
 			if (!component)
 				component = addComponent(componentName);
@@ -121,7 +121,7 @@ namespace Galactose {
 	}
 
 	Component* Entity::addComponent(const std::string& a_name) {
-		return Component::Meta::meta(a_name)->creator(this);
+		return Component::MetaBase::meta(a_name)->create(this);
 	}
 
 	Component* Entity::getComponent(const uint32_t a_id) const {

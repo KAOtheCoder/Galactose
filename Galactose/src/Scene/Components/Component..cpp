@@ -4,17 +4,20 @@
 #include <yaml-cpp/yaml.h>
 
 namespace Galactose {
-	Component::Meta::Meta(const std::string& a_name, const uint32_t a_id, Component* (*a_creator)(Entity*)) :
-		id(a_id),
-		creator(a_creator)
-	{
-		GT_ASSERT(s_metas.find(a_name) == s_metas.end(), "Component name '" + a_name + "' is not unique.");
-		s_metas[a_name] = this;
+	void Component::MetaBase::insert() {
+		const auto typeValue = type();
+		if (s_metasByType.find(typeValue) != s_metasByType.end())
+			return; // already inserted
+
+		const auto& nameValue = name();
+		GT_ASSERT(s_metasByName.find(nameValue) == s_metasByName.end(), "Component name '" + nameValue + "' is not unique.");
+		s_metasByName.emplace(nameValue, this);
+		s_metasByType.emplace(typeValue, this);
 	}
 
-	Component::Meta* Component::Meta::meta(const std::string& a_name) {
-		const auto& iter = Component::Meta::s_metas.find(a_name);
-		GT_ASSERT(iter != Component::Meta::s_metas.end(), "No such component '" + a_name + "' exist.");
+	Component::MetaBase* Component::MetaBase::meta(const std::string& a_name) {
+		const auto& iter = s_metasByName.find(a_name);
+		GT_ASSERT(iter != s_metasByName.end(), "No such component '" + a_name + "' exist.");
 		return iter->second;
 	}
 
