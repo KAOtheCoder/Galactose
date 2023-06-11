@@ -1,9 +1,9 @@
 #include "CameraController.h"
 
-#include <Core/Events/KeyEvent.h>
-#include <Core/Events/MouseEvent.h>
-#include <Core/Window.h>
-#include <Scene/Components/Transform.h>
+#include <Galactose/Core/Events/KeyEvent.h>
+#include <Galactose/Core/Events/MouseEvent.h>
+#include <Galactose/Core/Window.h>
+#include <Galactose/Scene/Components/Transform.h>
 
 using namespace Galactose;
 

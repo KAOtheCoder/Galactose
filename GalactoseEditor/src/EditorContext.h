@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Scene/Scene.h>
-#include <Scene/Entity.h>
+#include <Galactose/Scene/Scene.h>
+#include <Galactose/Scene/Entity.h>
 
 #include <imgui.h>
 #include <ImGuizmo.h>

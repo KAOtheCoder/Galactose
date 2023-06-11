@@ -1,8 +1,8 @@
 #include "EditorLayer.h"
 
-#include <Core/Application.h>
-#include <Core/Window.h>
-#include <Renderer/Renderer.h>
+#include <Galactose/Core/Application.h>
+#include <Galactose/Core/Window.h>
+#include <Galactose/Renderer/Renderer.h>
 
 int main(int argc, char** argv) {
 	Galactose::Application app("Galactose", argc, argv);

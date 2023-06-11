@@ -1,6 +1,6 @@
 #include "Inspector.h"
 
-#include <Scene/Components/Camera.h>
+#include <Galactose/Scene/Components/Camera.h>
 
 #include <imgui.h>
 

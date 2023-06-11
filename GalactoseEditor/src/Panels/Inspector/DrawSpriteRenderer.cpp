@@ -1,7 +1,7 @@
 #include "Inspector.h"
 
-#include <Scene/Components/SpriteRenderer.h>
-#include <Renderer/Texture.h>
+#include <Galactose/Scene/Components/SpriteRenderer.h>
+#include <Galactose/Renderer/Texture.h>
 
 #include <imgui.h>
 

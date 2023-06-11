@@ -2,7 +2,7 @@
 #include "EditorContext.h"
 #include "Widgets/TrailingCollapsingHeader.h"
 
-#include <Core/Events/KeyEvent.h>
+#include <Galactose/Core/Events/KeyEvent.h>
 
 #include <imgui.h>
 

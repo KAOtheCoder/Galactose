@@ -1,7 +1,7 @@
 #include "ToolBar.h"
 #include "EditorContext.h"
 
-#include <Renderer/Texture.h>
+#include <Galactose/Renderer/Texture.h>
 
 using namespace Galactose;
 

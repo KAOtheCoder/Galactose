@@ -1,6 +1,6 @@
 #include "EditorContext.h"
 
-#include <Core/Global.h>
+#include <Galactose/Core/Global.h>
 
 #include <nfd.hpp>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Events/KeyEvent.h"
+#include "Galactose/Core/Events/KeyEvent.h"
 
 #include <functional>
 #include <set>

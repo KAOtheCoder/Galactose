@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Scene/Components/Script.h>
-#include <Math/Math.h>
+#include <Galactose/Scene/Components/Script.h>
+#include <Galactose/Math/Math.h>
 
 namespace GalactoseEditor {
 	class CameraController : public Galactose::Script {

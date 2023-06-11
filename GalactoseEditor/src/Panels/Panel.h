@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Math/Math.h>
+#include <Galactose/Math/Math.h>
 
 #include <string>
 #include <memory>

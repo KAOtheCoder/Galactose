@@ -6,8 +6,8 @@
 #include <memory>
 #include <unordered_map>
 
-#include <Math/Math.h>
-#include <Core/Property.h>
+#include <Galactose/Math/Math.h>
+#include <Galactose/Core/Property.h>
 
 namespace Galactose {
 	class Texture;

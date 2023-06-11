@@ -2,12 +2,12 @@
 #include "Widgets/InputString.h"
 #include "Widgets/TrailingCollapsingHeader.h"
 
-#include <Core/Global.h>
-#include <Renderer/Texture.h>
-#include <Scene/Components/Transform.h>
-#include <Scene/Components/Script.h>
-#include <Scene/Components/Camera.h>
-#include <Scene/Components/SpriteRenderer.h>
+#include <Galactose/Core/Global.h>
+#include <Galactose/Renderer/Texture.h>
+#include <Galactose/Scene/Components/Transform.h>
+#include <Galactose/Scene/Components/Script.h>
+#include <Galactose/Scene/Components/Camera.h>
+#include <Galactose/Scene/Components/SpriteRenderer.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>

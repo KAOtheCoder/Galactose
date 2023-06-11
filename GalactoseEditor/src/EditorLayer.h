@@ -7,7 +7,7 @@
 #include "Widgets/MenuBar.h"
 #include "Widgets/ToolBar.h"
 
-#include <Core/Layer.h>
+#include <Galactose/Core/Layer.h>
 
 namespace Galactose {
 	class Window;

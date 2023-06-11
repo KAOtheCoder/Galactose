@@ -2,7 +2,7 @@
 
 #include "Viewport.h"
 
-#include <Scene/Scene.h>
+#include <Galactose/Scene/Scene.h>
 
 namespace Galactose {
 	class Entity;

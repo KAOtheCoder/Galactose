@@ -1,8 +1,8 @@
 #include "Viewport.h"
 #include "EditorContext.h"
 
-#include <Renderer/Framebuffer.h>
-#include <Scene/Components/Camera.h>
+#include <Galactose/Renderer/Framebuffer.h>
+#include <Galactose/Scene/Components/Camera.h>
 
 #include <imgui.h>
 

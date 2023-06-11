@@ -2,9 +2,9 @@
 #include "CameraController.h"
 #include "EditorContext.h"
 
-#include <Scene/Components/Transform.h>
-#include <Scene/Components/Camera.h>
-#include <Core/Property.h>
+#include <Galactose/Scene/Components/Transform.h>
+#include <Galactose/Scene/Components/Camera.h>
+#include <Galactose/Core/Property.h>
 
 #include <imgui.h>
 

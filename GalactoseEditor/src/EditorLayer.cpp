@@ -1,12 +1,12 @@
 #include "EditorLayer.h"
 #include "EditorContext.h"
 
-#include <Core/Events/KeyEvent.h>
-#include <Core/Events/MouseEvent.h>
-#include <Scene/Entity.h>
-#include <Scene/Components/SpriteRenderer.h>
-#include <Core/Application.h>
-#include <Core/Window.h>
+#include <Galactose/Core/Events/KeyEvent.h>
+#include <Galactose/Core/Events/MouseEvent.h>
+#include <Galactose/Scene/Entity.h>
+#include <Galactose/Scene/Components/SpriteRenderer.h>
+#include <Galactose/Core/Application.h>
+#include <Galactose/Core/Window.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>

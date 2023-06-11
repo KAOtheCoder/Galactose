@@ -1,6 +1,6 @@
 #include "Inspector.h"
 
-#include <Scene/Components/Transform.h>
+#include <Galactose/Scene/Components/Transform.h>
 
 #include <imgui.h>
 
