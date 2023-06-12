@@ -4,6 +4,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
+#include <fstream>
 
 #define GT_MATH_CONVERT(_T)\
 	template<>\
@@ -62,7 +63,10 @@ namespace Galactose {
 		m_emitter(std::make_shared<YAML::Emitter>())
 	{}
 
-	const char* OutSerializer::c_str() const { return m_emitter->c_str(); }
+	void OutSerializer::save(const std::string& a_filePath) {
+		std::ofstream fileStream(a_filePath);
+		fileStream << m_emitter->c_str();
+	}
 
 	OutSerializer& OutSerializer::operator<<(const Manip a_rhs) {
 		*m_emitter << static_cast<YAML::EMITTER_MANIP>(a_rhs);

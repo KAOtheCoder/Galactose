@@ -79,7 +79,7 @@ namespace Galactose {
 
 		GT_API OutSerializer();
 
-		GT_API const char* c_str() const;
+		GT_API void save(const std::string& filePath);
 
 		template<typename T, typename = std::enable_if_t<std::is_pointer_v<T>>>
 		OutSerializer& operator<<(const T a_rhs) { return a_rhs ? *this << (*a_rhs) : *this << TildeNull; }

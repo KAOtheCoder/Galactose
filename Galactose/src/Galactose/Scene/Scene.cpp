@@ -104,8 +104,7 @@ namespace Galactose {
 		
 		out << OutSerializer::EndSeq << YAML::EndMap;
 
-		std::ofstream fileStream(a_filePath);
-		fileStream << out.c_str();
+		out.save(a_filePath);
 	}
 
 	bool Scene::load(const std::string& a_filePath) {

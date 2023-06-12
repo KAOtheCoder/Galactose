@@ -31,7 +31,6 @@ namespace GalactoseEditor {
 
 		out << OutSerializer::EndSeq << OutSerializer::EndMap;
 
-		std::ofstream fileStream(m_filePath);
-		fileStream << out.c_str();
+		out.save(m_filePath.string());
 	}
 }
