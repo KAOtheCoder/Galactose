@@ -33,7 +33,7 @@ namespace Galactose {
 		void setBackgroundColor(const Vector3& a_color) { m_backgroundColor = a_color; }
 
 	protected:
-		GT_API void saveContent(YAML::Emitter& emitter) const override;
+		GT_API void saveContent(OutSerializer& emitter) const override;
 		GT_API bool loadContent(const YAML::Node& node) override;
 
 	private:

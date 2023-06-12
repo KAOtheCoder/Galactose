@@ -3,6 +3,7 @@
 #include "Components/Transform.h"
 #include "Galactose/Core/Global.h"
 #include "Galactose/Scene/Serialize.h"
+#include "OutSerializer.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -84,22 +85,20 @@ namespace Galactose {
 		m_parent = a_parent;
 	}
 
-	void Entity::save(YAML::Emitter& a_emitter) const {
-		const auto& parentNode = m_parent
-			? YAML::convert<Uuid>::encode(m_parent->m_uuid)
-			: YAML::Node(YAML::NodeType::Null);
+	void Entity::save(OutSerializer& a_out) const {
+		const auto parentUuid = m_parent ? &m_parent->m_uuid : nullptr;
 
-		a_emitter << YAML::BeginMap 
-			<< YAML::Key << GT_STRINGIFY(Entity) << YAML::Value << YAML::BeginMap
-			<< YAML::Key << "uuid" << YAML::Value << m_uuid
-			<< YAML::Key << "parent" << YAML::Value << parentNode
-			<< YAML::Key << "name" << YAML::Value << m_name
-			<< YAML::Key << "components" << YAML::Value << YAML::BeginSeq;
+		a_out << OutSerializer::BeginMap
+			<< OutSerializer::Key << GT_STRINGIFY(Entity) << OutSerializer::Value << OutSerializer::BeginMap
+			<< OutSerializer::Key << "uuid" << OutSerializer::Value << m_uuid
+			<< OutSerializer::Key << "parent" << OutSerializer::Value << parentUuid
+			<< OutSerializer::Key << "name" << OutSerializer::Value << m_name
+			<< OutSerializer::Key << "components" << OutSerializer::Value << OutSerializer::BeginSeq;
 
 		for (const auto component : components())
-			component->save(a_emitter);
+			component->save(a_out);
 
-		a_emitter << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
+		a_out << OutSerializer::EndSeq << OutSerializer::EndMap << OutSerializer::EndMap;
 	}
 
 	bool Entity::load(const YAML::Node& a_node) {

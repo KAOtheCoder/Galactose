@@ -23,12 +23,9 @@ public:\
 private:\
 	inline static Component::Meta<C> s_meta;\
 
-namespace YAML {
-	class Emitter;
-}
-
 namespace Galactose {
 	class Transform;
+	class OutSerializer;
 
 	class Component : public SceneObject {
 	public:
@@ -39,7 +36,7 @@ namespace Galactose {
 		virtual uint32_t type() const = 0;
 		virtual void destroy() = 0;
 
-		void save(YAML::Emitter& out) const;
+		void save(OutSerializer& out) const;
 		bool load(const YAML::Node& node);
 
 	protected:
@@ -69,7 +66,7 @@ namespace Galactose {
 		};
 
 		GT_API virtual void start() {}
-		GT_API virtual void saveContent(YAML::Emitter& out) const = 0;
+		GT_API virtual void saveContent(OutSerializer& out) const = 0;
 		GT_API virtual bool loadContent(const YAML::Node& node) = 0;
 
 	private:

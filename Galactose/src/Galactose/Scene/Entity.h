@@ -5,7 +5,6 @@
 #include "Galactose/Core/Global.h"
 
 namespace YAML {
-	class Emitter;
 	class Node;
 }
 
@@ -13,6 +12,7 @@ namespace Galactose {
 	class Scene;
 	class Component;
 	class Transform;
+	class OutSerializer;
 
 	class Entity final : public SceneObject {
 	public:
@@ -97,7 +97,7 @@ namespace Galactose {
 		const std::vector<Component*>& components() const { return m_components; }
 		size_t scriptOffset() const { return m_scriptOffset; }
 
-		void save(YAML::Emitter& out) const;
+		void save(OutSerializer& out) const;
 		bool load(const YAML::Node& node);
 
 	private:

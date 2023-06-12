@@ -21,7 +21,7 @@ namespace Galactose {
 		const std::vector<PropertyBase*>& properties() const { return m_properties; }
 
 	protected:
-		void saveContent(YAML::Emitter& emitter) const override {}
+		void saveContent(OutSerializer& emitter) const override {}
 		bool loadContent(const YAML::Node& node) override { return true; }
 
 	private:

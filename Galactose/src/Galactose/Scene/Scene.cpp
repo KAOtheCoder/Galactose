@@ -6,8 +6,7 @@
 #include "Components/Script.h"
 #include "Galactose/Renderer/Renderer.h"
 #include "Serialize.h"
-
-#include <yaml-cpp/yaml.h>
+#include "OutSerializer.h"
 
 #include <fstream>
 #include <iostream>
@@ -95,17 +94,18 @@ namespace Galactose {
 	}
 
 	void Scene::save(const std::string& a_filePath) const {
-		YAML::Emitter emitter;
-		emitter << YAML::BeginMap
-			<< YAML::Key << "name" << YAML::Value << m_name
-			<< YAML::Key << "entities" << YAML::Value << YAML::BeginSeq;
+		//YAML::Emitter out;
+		OutSerializer out;
+		out << OutSerializer::BeginMap
+			<< OutSerializer::Key << "name" << OutSerializer::Value << m_name
+			<< OutSerializer::Key << "entities" << OutSerializer::Value << OutSerializer::BeginSeq;
 		
-		m_registry.each([&](const auto a_id) { getEntity(a_id)->save(emitter); });
+		m_registry.each([&](const auto a_id) { getEntity(a_id)->save(out); });
 		
-		emitter << YAML::EndSeq << YAML::EndMap;
+		out << OutSerializer::EndSeq << YAML::EndMap;
 
 		std::ofstream fileStream(a_filePath);
-		fileStream << emitter.c_str();
+		fileStream << out.c_str();
 	}
 
 	bool Scene::load(const std::string& a_filePath) {

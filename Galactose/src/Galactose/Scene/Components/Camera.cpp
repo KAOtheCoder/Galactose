@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "Galactose/Scene/Serialize.h"
+#include "Galactose/Scene/OutSerializer.h"
 
 namespace Galactose {
 	Camera::~Camera() {
@@ -25,11 +26,11 @@ namespace Galactose {
 		return glm::perspective(Math::degreesToRadians(m_fov), m_aspectRatio, m_nearClip, m_farClip);
 	}
 
-	void Camera::saveContent(YAML::Emitter& a_out) const {
-		a_out << YAML::Key << "fov" << YAML::Value << m_fov
-			<< YAML::Key << "nearClip" << YAML::Value << m_nearClip
-			<< YAML::Key << "farClip" << YAML::Value << m_farClip
-			<< YAML::Key << "backgroundColor" << YAML::Value << m_backgroundColor;
+	void Camera::saveContent(OutSerializer& a_out) const {
+		a_out << OutSerializer::Key << "fov" << OutSerializer::Value << m_fov
+			<< OutSerializer::Key << "nearClip" << OutSerializer::Value << m_nearClip
+			<< OutSerializer::Key << "farClip" << OutSerializer::Value << m_farClip
+			<< OutSerializer::Key << "backgroundColor" << OutSerializer::Value << m_backgroundColor;
 	}
 
 	bool Camera::loadContent(const YAML::Node& a_node) {

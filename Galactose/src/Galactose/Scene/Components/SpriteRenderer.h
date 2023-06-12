@@ -13,7 +13,7 @@ namespace Galactose {
 		Sprite sprite;
 
 	protected:
-		GT_API void saveContent(YAML::Emitter& emitter) const override;
+		GT_API void saveContent(OutSerializer& emitter) const override;
 		GT_API bool loadContent(const YAML::Node& node) override;
 	};
 }

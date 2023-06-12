@@ -1,5 +1,6 @@
 #include "Transform.h"
 #include "Galactose/Scene/Serialize.h"
+#include "Galactose/Scene/OutSerializer.h"
 
 namespace Galactose {
 	Matrix4x4 Transform::localMatrix() const {
@@ -105,10 +106,10 @@ namespace Galactose {
 		return transformPoint(vector) - transformPoint({ 0, 0, 0 });
 	}
 
-	void Transform::saveContent(YAML::Emitter& a_out) const {
-		a_out << YAML::Key << "localPosition" << YAML::Value << m_localPosition
-			<< YAML::Key << "localRotation" << YAML::Value << m_localRotation
-			<< YAML::Key << "localScale" << YAML::Value << m_localScale;
+	void Transform::saveContent(OutSerializer& a_out) const {
+		a_out << OutSerializer::Key << "localPosition" << OutSerializer::Value << m_localPosition
+			<< OutSerializer::Key << "localRotation" << OutSerializer::Value << m_localRotation
+			<< OutSerializer::Key << "localScale" << OutSerializer::Value << m_localScale;
 	}
 
 	bool Transform::loadContent(const YAML::Node& a_node) {

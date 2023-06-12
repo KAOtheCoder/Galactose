@@ -1,5 +1,6 @@
 #include "Component.h"
 #include "Galactose/Scene/Scene.h"
+#include "Galactose/Scene/OutSerializer.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -21,11 +22,11 @@ namespace Galactose {
 		return iter->second;
 	}
 
-	void Component::save(YAML::Emitter& a_out) const {
-		a_out << YAML::BeginMap
-			<< YAML::Key << name() << YAML::Value << YAML::BeginMap;
+	void Component::save(OutSerializer& a_out) const {
+		a_out << OutSerializer::BeginMap
+			<< OutSerializer::Key << name() << OutSerializer::Value << OutSerializer::BeginMap;
 		saveContent(a_out);
-		a_out << YAML::EndMap << YAML::EndMap;
+		a_out << OutSerializer::EndMap << OutSerializer::EndMap;
 	}
 
 	bool Component::load(const YAML::Node& a_node) {

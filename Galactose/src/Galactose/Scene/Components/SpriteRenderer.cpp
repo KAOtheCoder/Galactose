@@ -1,17 +1,22 @@
 #include "SpriteRenderer.h"
 #include "Galactose/Scene/Serialize.h"
+#include "Galactose/Scene/OutSerializer.h"
 #include "Galactose/Renderer/Texture.h"
 
 namespace Galactose {
-	void SpriteRenderer::saveContent(YAML::Emitter& a_out) const {
-		const auto& texture = sprite.texture()
-			? YAML::convert<std::string>::encode(sprite.texture()->filePath()) 
-			: YAML::Node(YAML::NodeType::Null);
+	void SpriteRenderer::saveContent(OutSerializer& a_out) const {
+		std::string texture_path;
+		std::string* texture = nullptr;
 
-		a_out << YAML::Key << "texture" << YAML::Value << texture
-			<< YAML::Key << "color" << YAML::Value << sprite.color()
-			<< YAML::Key << "pivot" << YAML::Value << sprite.pivot()
-			<< YAML::Key << "size" << YAML::Value << sprite.size();
+		if (sprite.texture()) {
+			texture_path = sprite.texture()->filePath();
+			texture = &texture_path;
+		}
+
+		a_out << OutSerializer::Key << "texture" << OutSerializer::Value << texture
+			<< OutSerializer::Key << "color" << OutSerializer::Value << sprite.color()
+			<< OutSerializer::Key << "pivot" << OutSerializer::Value << sprite.pivot()
+			<< OutSerializer::Key << "size" << OutSerializer::Value << sprite.size();
 	}
 
 	bool SpriteRenderer::loadContent(const YAML::Node& a_node) {

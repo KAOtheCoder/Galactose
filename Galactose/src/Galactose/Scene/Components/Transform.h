@@ -39,7 +39,7 @@ namespace Galactose {
 		Vector3 transformVector(const Vector3& vector) const;
 
 	protected:
-		GT_API void saveContent(YAML::Emitter& out) const override;
+		GT_API void saveContent(OutSerializer& out) const override;
 		GT_API bool loadContent(const YAML::Node& node) override;
 
 	private:

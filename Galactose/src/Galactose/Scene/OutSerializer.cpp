@@ -1,6 +1,4 @@
-#pragma once
-
-#include "Galactose/Math/Math.h"
+#include "OutSerializer.h"
 #include "Galactose/Core/Uuid.h"
 
 #include <yaml-cpp/yaml.h>
@@ -60,18 +58,54 @@ namespace YAML {
 }
 
 namespace Galactose {
-	namespace Serialize {
-		template <typename T>
-		inline T getValue(const YAML::Node& a_node, const std::string& a_key, const T& a_default) {
-			const auto& node = a_node[a_key];
-			if (node)
-				return node.as<T>();
-			
+	OutSerializer::OutSerializer() :
+		m_emitter(std::make_shared<YAML::Emitter>())
+	{}
 
-			std::cerr << "Invalid key: " << a_key << std::endl;
-			return a_default;
-		}
+	const char* OutSerializer::c_str() const { return m_emitter->c_str(); }
+
+	OutSerializer& OutSerializer::operator<<(const Manip a_rhs) {
+		*m_emitter << static_cast<YAML::EMITTER_MANIP>(a_rhs);
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const Uuid& a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const float a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const std::string& a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const std::filesystem::path& a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const Vector2& a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const Vector3& a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const Vector4& a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
+	}
+
+	OutSerializer& OutSerializer::operator<<(const Quaternion& a_rhs) {
+		*m_emitter << a_rhs;
+		return *this;
 	}
 }
-
-#undef GT_MATH_CONVERT
