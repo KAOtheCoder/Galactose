@@ -2,9 +2,8 @@
 #include "Scene.h"
 #include "Components/Transform.h"
 #include "Galactose/Core/Global.h"
-#include "Galactose/Scene/Serialize.h"
-#include "OutSerializer.h"
-#include "NodeSerializer.h"
+#include "Galactose/Serialization/OutSerializer.h"
+#include "Galactose/Serialization/NodeSerializer.h"
 
 namespace Galactose {
 	Entity* Entity::createOrphan(Scene* a_scene, const Uuid& a_uuid) {

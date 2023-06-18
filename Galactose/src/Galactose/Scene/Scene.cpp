@@ -5,8 +5,8 @@
 #include "Components/Camera.h"
 #include "Components/Script.h"
 #include "Galactose/Renderer/Renderer.h"
-#include "OutSerializer.h"
-#include "NodeSerializer.h"
+#include "Galactose/Serialization/OutSerializer.h"
+#include "Galactose/Serialization/NodeSerializer.h"
 
 #include <fstream>
 #include <iostream>
