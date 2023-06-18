@@ -37,7 +37,7 @@ namespace Galactose {
 		virtual void destroy() = 0;
 
 		void save(OutSerializer& out) const;
-		bool load(const YAML::Node& node);
+		bool load(const NodeSerializer& node);
 
 	protected:
 		class MetaBase {
@@ -67,7 +67,7 @@ namespace Galactose {
 
 		GT_API virtual void start() {}
 		GT_API virtual void saveContent(OutSerializer& out) const = 0;
-		GT_API virtual bool loadContent(const YAML::Node& node) = 0;
+		GT_API virtual bool loadContent(const NodeSerializer& node) = 0;
 
 	private:
 		Entity* m_entity = nullptr;

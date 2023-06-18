@@ -40,7 +40,7 @@ namespace Galactose {
 
 	protected:
 		GT_API void saveContent(OutSerializer& out) const override;
-		GT_API bool loadContent(const YAML::Node& node) override;
+		GT_API bool loadContent(const NodeSerializer& node) override;
 
 	private:
 		void updateLocalToWorldMatrix() const;

@@ -1,6 +1,6 @@
 #include "Transform.h"
-#include "Galactose/Scene/Serialize.h"
-#include "Galactose/Scene/OutSerializer.h"
+#include "Galactose/Serialization/OutSerializer.h"
+#include "Galactose/Serialization/NodeSerializer.h"
 
 namespace Galactose {
 	Matrix4x4 Transform::localMatrix() const {
@@ -112,10 +112,10 @@ namespace Galactose {
 			<< OutSerializer::Key << "localScale" << OutSerializer::Value << m_localScale;
 	}
 
-	bool Transform::loadContent(const YAML::Node& a_node) {
-		m_localPosition = a_node["localPosition"].as<Vector3>(m_localPosition);
-		m_localRotation = a_node["localRotation"].as<Quaternion>(m_localRotation);
-		m_localScale = a_node["localScale"].as<Vector3>(m_localScale);
+	bool Transform::loadContent(const NodeSerializer& a_node) {
+		m_localPosition = a_node["localPosition"].as(m_localPosition);
+		m_localRotation = a_node["localRotation"].as(m_localRotation);
+		m_localScale = a_node["localScale"].as(m_localScale);
 		m_dirty = true;
 
 		return true;

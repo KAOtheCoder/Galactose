@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "Transform.h"
-#include "Galactose/Scene/Serialize.h"
-#include "Galactose/Scene/OutSerializer.h"
+#include "Galactose/Serialization/OutSerializer.h"
+#include "Galactose/Serialization/NodeSerializer.h"
 
 namespace Galactose {
 	Camera::~Camera() {
@@ -33,11 +33,11 @@ namespace Galactose {
 			<< OutSerializer::Key << "backgroundColor" << OutSerializer::Value << m_backgroundColor;
 	}
 
-	bool Camera::loadContent(const YAML::Node& a_node) {
-		setFOV(a_node["fov"].as<float>(m_fov));
-		setNearClip(a_node["nearClip"].as<float>(m_nearClip));
-		setFarClip(a_node["farClip"].as<float>(m_farClip));
-		setBackgroundColor(a_node["backgroundColor"].as<Vector3>(m_backgroundColor));
+	bool Camera::loadContent(const NodeSerializer& a_node) {
+		setFOV(a_node["fov"].as(m_fov));
+		setNearClip(a_node["nearClip"].as(m_nearClip));
+		setFarClip(a_node["farClip"].as(m_farClip));
+		setBackgroundColor(a_node["backgroundColor"].as(m_backgroundColor));
 		return true;
 	}
 }

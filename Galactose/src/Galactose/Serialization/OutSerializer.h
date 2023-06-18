@@ -18,6 +18,10 @@ namespace Galactose {
 
 	class OutSerializer {
 	public:
+		enum _Null {
+			Null
+		};
+
 		enum Manip {
 			// general manipulators
 			Auto,
@@ -78,17 +82,26 @@ namespace Galactose {
 		};
 
 		GT_API OutSerializer();
+		OutSerializer(const OutSerializer&) = delete;
+		OutSerializer& operator=(const OutSerializer&) = delete;
 
 		GT_API void save(const std::string& filePath);
 
-		template<typename T, typename = std::enable_if_t<std::is_pointer_v<T>>>
-		OutSerializer& operator<<(const T a_rhs) { return a_rhs ? *this << (*a_rhs) : *this << TildeNull; }
+		// don't mess with string literals. remove type checks when you overload for them.
+		template<typename T, typename = std::enable_if_t<std::is_pointer_v<T> 
+			&& !std::is_same_v<T, const wchar_t*>
+			&& !std::is_same_v<T, const char16_t*>
+			&& !std::is_same_v<T, const char32_t*>
+		>>
+		OutSerializer& operator<<(const T a_rhs) { return a_rhs ? *this << (*a_rhs) : *this << Null; }
 
+		OutSerializer& operator<<(const _Null rhs);
 		GT_API OutSerializer& operator<<(const Manip rhs);
-		GT_API OutSerializer& operator<<(const float rhs);
-		OutSerializer& operator<<(const std::string& rhs);
-		OutSerializer& operator<<(const Uuid& rhs);
+		GT_API OutSerializer& operator<<(const float& rhs);
+		OutSerializer& operator<<(const char* a_rhs) { return *this << std::string(a_rhs); }
+		GT_API OutSerializer& operator<<(const std::string& rhs);
 		GT_API OutSerializer& operator<<(const std::filesystem::path& rhs);
+		OutSerializer& operator<<(const Uuid& rhs);
 		OutSerializer& operator<<(const Vector2& rhs);
 		OutSerializer& operator<<(const Vector3& rhs);
 		OutSerializer& operator<<(const Vector4& rhs);

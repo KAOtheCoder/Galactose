@@ -1,6 +1,7 @@
 #include "Component.h"
 #include "Galactose/Scene/Scene.h"
-#include "Galactose/Scene/OutSerializer.h"
+#include "Galactose/Serialization/OutSerializer.h"
+#include "Galactose/Serialization/NodeSerializer.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -29,10 +30,10 @@ namespace Galactose {
 		a_out << OutSerializer::EndMap << OutSerializer::EndMap;
 	}
 
-	bool Component::load(const YAML::Node& a_node) {
+	bool Component::load(const NodeSerializer& a_node) {
 		const auto& contentNode = a_node[name()];
 
-		if (contentNode.IsMap())
+		if (contentNode.isMap())
 			return loadContent(contentNode);
 
 		return false;

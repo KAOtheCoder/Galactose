@@ -4,8 +4,7 @@
 #include "Galactose/Core/Global.h"
 #include "Galactose/Scene/Serialize.h"
 #include "OutSerializer.h"
-
-#include <yaml-cpp/yaml.h>
+#include "NodeSerializer.h"
 
 namespace Galactose {
 	Entity* Entity::createOrphan(Scene* a_scene, const Uuid& a_uuid) {
@@ -101,14 +100,14 @@ namespace Galactose {
 		a_out << OutSerializer::EndSeq << OutSerializer::EndMap << OutSerializer::EndMap;
 	}
 
-	bool Entity::load(const YAML::Node& a_node) {
+	bool Entity::load(const NodeSerializer& a_node) {
 		const auto& entityNode = a_node["Entity"];
 		m_name = entityNode["name"].as<std::string>();
 		const auto& parentNode = entityNode["parent"];
-		setParent(parentNode.IsNull() ? nullptr : m_scene->getEntity(parentNode.as<Uuid>()));
+		setParent(parentNode.isNull() ? nullptr : m_scene->getEntity(parentNode.as<Uuid>()));
 
 		for (const auto& componentWrapperNode : entityNode["components"]) {
-			const auto& componentName = componentWrapperNode.begin()->first.as<std::string>();
+			const auto& componentName = componentWrapperNode.begin().key().as<std::string>();
 			auto component = getComponent(Component::MetaBase::meta(componentName)->type());
 
 			if (!component)

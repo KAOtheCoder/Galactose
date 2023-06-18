@@ -4,15 +4,12 @@
 #include "Galactose/Core/Uuid.h"
 #include "Galactose/Core/Global.h"
 
-namespace YAML {
-	class Node;
-}
-
 namespace Galactose {
 	class Scene;
 	class Component;
 	class Transform;
 	class OutSerializer;
+	class NodeSerializer;
 
 	class Entity final : public SceneObject {
 	public:
@@ -98,7 +95,7 @@ namespace Galactose {
 		size_t scriptOffset() const { return m_scriptOffset; }
 
 		void save(OutSerializer& out) const;
-		bool load(const YAML::Node& node);
+		bool load(const NodeSerializer& node);
 
 	private:
 		static Entity* createOrphan(Scene* scene, const Uuid& id = Uuid::create());

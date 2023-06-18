@@ -5,8 +5,8 @@
 #include "Components/Camera.h"
 #include "Components/Script.h"
 #include "Galactose/Renderer/Renderer.h"
-#include "Serialize.h"
 #include "OutSerializer.h"
+#include "NodeSerializer.h"
 
 #include <fstream>
 #include <iostream>
@@ -94,7 +94,6 @@ namespace Galactose {
 	}
 
 	void Scene::save(const std::string& a_filePath) const {
-		//YAML::Emitter out;
 		OutSerializer out;
 		out << OutSerializer::BeginMap
 			<< OutSerializer::Key << "name" << OutSerializer::Value << m_name
@@ -102,34 +101,29 @@ namespace Galactose {
 		
 		m_registry.each([&](const auto a_id) { getEntity(a_id)->save(out); });
 		
-		out << OutSerializer::EndSeq << YAML::EndMap;
+		out << OutSerializer::EndSeq << OutSerializer::EndMap;
 
 		out.save(a_filePath);
 	}
 
 	bool Scene::load(const std::string& a_filePath) {
-		try
-		{
-			const auto& node = YAML::LoadFile(a_filePath);
-
-			const auto& entitiesNode = node["entities"];
-
-			for (const auto& entityWrapperNode : entitiesNode) {
-				const auto& entityNode = entityWrapperNode["Entity"];
-				const auto& uuid = entityNode["uuid"].as<Uuid>();
-				Entity::create(this, uuid);
-			}
-
-			for (const auto& entityWrapperNode : entitiesNode) {
-				const auto& entityNode = entityWrapperNode["Entity"];
-				const auto& uuid = entityNode["uuid"].as<Uuid>();
-				m_entityMap[uuid]->load(entityWrapperNode);
-			}
-		}
-		catch (const YAML::Exception& x)
-		{
-			std::cerr << "Failed to load file '" << a_filePath << "': " << x.what() << std::endl;
+		const auto& node = NodeSerializer::loadFile(a_filePath);
+		if (node.isNull())
 			return false;
+
+		m_name = node["name"].as<std::string>();
+		const auto& entitiesNode = node["entities"];
+
+		for (const auto& entityWrapperNode : entitiesNode) {
+			const auto& entityNode = entityWrapperNode["Entity"];
+			const auto& uuid = entityNode["uuid"].as<Uuid>();
+			Entity::create(this, uuid);
+		}
+
+		for (const auto& entityWrapperNode : entitiesNode) {
+			const auto& entityNode = entityWrapperNode["Entity"];
+			const auto& uuid = entityNode["uuid"].as<Uuid>();
+			m_entityMap[uuid]->load(entityWrapperNode);
 		}
 
 		return true;

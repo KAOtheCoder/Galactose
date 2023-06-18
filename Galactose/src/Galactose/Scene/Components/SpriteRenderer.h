@@ -14,6 +14,6 @@ namespace Galactose {
 
 	protected:
 		GT_API void saveContent(OutSerializer& emitter) const override;
-		GT_API bool loadContent(const YAML::Node& node) override;
+		GT_API bool loadContent(const NodeSerializer& node) override;
 	};
 }

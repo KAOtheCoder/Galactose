@@ -1,6 +1,6 @@
 #include "Project.h"
 
-#include <Galactose/Scene/OutSerializer.h>
+#include <Galactose/Serialization/OutSerializer.h>
 
 #include <fstream>
 
