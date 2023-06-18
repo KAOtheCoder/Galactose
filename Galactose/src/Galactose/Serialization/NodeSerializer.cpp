@@ -87,9 +87,10 @@ namespace Galactose {
 		return NodeSerializer::Iterator(std::make_shared<YAML::iterator>(m_node->end()));
 	}
 
-	GT_AS_IMP(std::string)
-	GT_AS_IMP(Uuid)
 	GT_AS_IMP(float)
+	GT_AS_IMP(std::string)
+	GT_AS_IMP(std::filesystem::path)
+	GT_AS_IMP(Uuid)
 	GT_AS_IMP(Vector2)
 	GT_AS_IMP(Vector3)
 	GT_AS_IMP(Vector4)

@@ -1,6 +1,7 @@
 #include "Project.h"
 
 #include <Galactose/Serialization/OutSerializer.h>
+#include <Galactose/Serialization/NodeSerializer.h>
 
 #include <fstream>
 
@@ -10,8 +11,19 @@ namespace GalactoseEditor {
 	Project::Project(const std::filesystem::path& a_filePath) :
 		m_filePath(a_filePath)
 	{
-		if (std::filesystem::exists(a_filePath))
-			;//load
+		if (std::filesystem::exists(a_filePath)) {
+			const auto& node = NodeSerializer::loadFile(a_filePath.string());
+			if (node.isNull())
+				return;
+
+			m_startScene = node["startScene"].as<std::string>();
+
+			for (const auto& sceneNode : node["scenes"])
+				scenes.insert(sceneNode.as<std::filesystem::path>());
+
+			for (const auto& scriptNode : node["scripts"])
+				scenes.insert(scriptNode.as<std::filesystem::path>());
+		}
 	}
 
 	void Project::save() {

@@ -38,13 +38,13 @@ namespace Galactose {
 
 		template <class C>
 		bool hasComponent() const { 
-			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
+			static_assert(std::is_base_of_v<Component, C>, "Type must inherit from Component.");
 			return m_scene->m_registry.any_of<C>(m_entityId); 
 		}
 
 		template <class C>
 		C* addComponent() {
-			static_assert(std::is_base_of<Component, C>::value, "Type must inherit from Component.");
+			static_assert(std::is_base_of_v<Component, C>, "Type must inherit from Component.");
 
 			if (hasComponent<C>())
 				return nullptr;
