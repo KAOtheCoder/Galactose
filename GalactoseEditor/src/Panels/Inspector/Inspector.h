@@ -7,13 +7,15 @@
 #include <unordered_map>
 
 #include <Galactose/Math/Math.h>
-#include <Galactose/Core/Property.h>
 
 namespace Galactose {
+	class PropertyBase;
 	class Texture;
+	class Component;
 	class Transform;
 	class SpriteRenderer;
 	class Camera;
+	class Script;
 }
 
 namespace GalactoseEditor {

@@ -269,7 +269,7 @@ namespace GalactoseEditor {
 				const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
 				GT_ASSERT(result != NFD_ERROR, NFD_GetError());
 				
-				if (result == NFD_OKAY) {
+				if (result == NFD_OKAY && a_path != path) {
 					a_path = path;
 					changed = true;
 				}

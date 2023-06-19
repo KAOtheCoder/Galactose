@@ -14,8 +14,14 @@ namespace GalactoseEditor {
 
 		const auto& texture = sprite.texture();
 		std::string textureFilePath = texture ? texture->filePath() : "";
-		if (drawFileInput("Texture", textureFilePath, "Default"))
-			sprite.setTexture(textureFilePath.empty() ? nullptr : Texture::create(textureFilePath));
+		if (drawFileInput("Texture", textureFilePath, "Default")) {
+			if (textureFilePath.empty())
+				sprite.setTexture(nullptr);
+			else {
+				sprite.setTexture(Texture::create(textureFilePath));
+				sprite.autoResize();
+			}
+		}
 
 		auto color = sprite.color();
 		if (colorButton("Color", color))

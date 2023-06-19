@@ -3,6 +3,8 @@
 
 #include <Galactose/Renderer/Texture.h>
 
+#include <array>
+
 using namespace Galactose;
 
 namespace GalactoseEditor {

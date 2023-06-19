@@ -28,7 +28,7 @@ namespace Galactose {
 		Vector2 size() const { return m_size; }
 		void setSize(const Vector2& a_size) { m_size = a_size; }
 
-		void autoResize();
+		GT_API void autoResize();
 
 	private:
 		std::shared_ptr<Texture> m_texture;

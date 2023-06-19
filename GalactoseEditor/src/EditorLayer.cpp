@@ -20,8 +20,8 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	EditorLayer::EditorLayer(Window* a_window) :
-		m_editorContext(std::make_shared<EditorContext>()),
+	EditorLayer::EditorLayer(Window* a_window, const std::string& a_projectFilePath) :
+		m_editorContext(std::make_shared<EditorContext>(a_projectFilePath)),
 		m_sceneViewport(m_editorContext),
 		m_gameViewport(m_editorContext),
 		m_sceneHierarchy(m_editorContext),
@@ -62,8 +62,10 @@ namespace GalactoseEditor {
 			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_editorContext->newScene(); } },
 			{ "Open Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyO }, [&]() { m_editorContext->openScene(); } },
 			{ }, // Separator
-			{ "Save", { KeyEvent::KeyLeftControl, KeyEvent::KeyS }, [&]() { m_editorContext->save(); } },
-			{ "Save As", { KeyEvent::KeyLeftControl, KeyEvent::KeyLeftShift, KeyEvent::KeyS }, [&]() { m_editorContext->saveAs(); } },
+			{ "Save Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyS }, [&]() { m_editorContext->saveScene(); } },
+			{ "Save Scene As", { KeyEvent::KeyLeftControl, KeyEvent::KeyLeftShift, KeyEvent::KeyS }, [&]() { m_editorContext->saveSceneAs(); } },
+			{ },
+			{ "Save Project", {}, [&]() { m_editorContext->saveProject(); } },
 			{ },
 			{ "Exit", { KeyEvent::KeyLeftAlt, KeyEvent::KeyF4 }, [&]() { Application::instance()->exit(); } }
 		} });
@@ -77,6 +79,10 @@ namespace GalactoseEditor {
 
 		m_menuBar.menus.push_back({ "Layouts", {
 			{ "Default", { }, [&]() { m_layout = Layout::Default; }}
+		} });
+
+		m_menuBar.menus.push_back({ "Script", {
+			{ "Add Script", { }, [&]() { m_editorContext->addScript(); }}
 		} });
 	}
 

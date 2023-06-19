@@ -1,25 +1,31 @@
 #pragma once
 
-#include <Galactose/Scene/Scene.h>
-#include <Galactose/Scene/Entity.h>
+#include "Project.h"
 
 #include <imgui.h>
 #include <ImGuizmo.h>
 
+namespace Galactose {
+	class Scene;
+	class Entity;
+}
+
 namespace GalactoseEditor {
 	class EditorContext {
 	public:
-		EditorContext() :
-			m_scene(std::make_shared<Galactose::Scene>("Untitled"))
-		{}
+		EditorContext(const std::filesystem::path& filePath);
+
+		Project& project() { return m_project; }
+		const Project& project() const { return m_project; }
 
 		std::shared_ptr<Galactose::Scene> scene() const { return m_scene; }
 
 		std::string sceneFilePath() const { return m_sceneFilePath; }
 		void newScene();
 		void openScene();
-		void save();
-		void saveAs();
+		void saveScene();
+		void saveSceneAs();
+		void saveProject();
 
 		Galactose::Entity* selectedEntity() const { return m_selectedEntity; }
 		void setSelectedEntity(Galactose::Entity* a_entity) { m_selectedEntity = a_entity; }
@@ -30,10 +36,13 @@ namespace GalactoseEditor {
 		ImGuizmo::OPERATION manipulatorOperation() const { return m_manipulatorOperation; }
 		void setManipulatorOperation(const ImGuizmo::OPERATION a_operation) { m_manipulatorOperation = a_operation; }
 
+		void addScript();
+
 	private:
 		void saveAndPrint();
 
 		bool m_running = false;
+		Project m_project;
 		std::shared_ptr<Galactose::Scene> m_scene;
 		std::string m_sceneFilePath;
 		Galactose::Entity* m_selectedEntity = nullptr;

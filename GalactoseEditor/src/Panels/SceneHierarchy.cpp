@@ -3,6 +3,7 @@
 #include "Widgets/TrailingCollapsingHeader.h"
 
 #include <Galactose/Core/Events/KeyEvent.h>
+#include <Galactose/Scene/Entity.h>
 
 #include <imgui.h>
 

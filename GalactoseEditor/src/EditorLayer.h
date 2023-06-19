@@ -18,7 +18,7 @@ namespace GalactoseEditor {
 
 	class EditorLayer : public Galactose::Layer {
 	public:
-		EditorLayer(Galactose::Window* window);
+		EditorLayer(Galactose::Window* window, const std::string& projectFilePath);
 		~EditorLayer() override;
 
 		void onUpdate() override;
