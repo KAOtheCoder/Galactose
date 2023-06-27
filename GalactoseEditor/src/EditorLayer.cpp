@@ -82,7 +82,7 @@ namespace GalactoseEditor {
 		} });
 
 		m_menuBar.menus.push_back({ "Script", {
-			{ "Add Script", { }, [&]() { m_editorContext->addScript(); }}
+			{ "Add Script(s)", { }, [&]() { m_editorContext->addScripts(); }}
 		} });
 	}
 

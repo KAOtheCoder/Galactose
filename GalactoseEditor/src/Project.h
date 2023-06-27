@@ -8,6 +8,7 @@ namespace GalactoseEditor {
 	public:
 		Project(const std::filesystem::path& filePath);
 
+		std::string name() const { return m_filePath.stem().generic_string(); }
 		std::filesystem::path filePath() const { return m_filePath; }
 		std::filesystem::path directory() const { return m_filePath.parent_path(); }
 
@@ -19,7 +20,7 @@ namespace GalactoseEditor {
 
 		void save();
 
-		void addScript(const std::filesystem::path& path);
+		void addScripts(const std::vector<std::filesystem::path>& paths);
 		void addScene(const std::filesystem::path& a_path) { m_scenes.insert(a_path); }
 		void make();
 

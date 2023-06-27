@@ -14,7 +14,7 @@ namespace GalactoseEditor {
 	{
 		const auto& scene_path = m_project.editorScene(true);
 		if (!scene_path.empty())
-			m_scene->load(scene_path.string());
+			m_scene->load(scene_path.generic_string());
 	}
 
 	void EditorContext::saveAndPrint() {
@@ -32,19 +32,25 @@ namespace GalactoseEditor {
 		nfdchar_t* path;
 		nfdfilteritem_t filter = { "Scene", "yaml" };
 		const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
-		GT_ASSERT(result != NFD_ERROR, NFD_GetError());
 
 		auto scene = std::make_shared<Scene>();
-		if (result == NFD_OKAY && scene->load(path)) {
-			m_scene = scene;
-			m_sceneFilePath = path;
-			m_selectedEntity = nullptr;
+		if (result == NFD_OKAY) {
+			if (scene->load(path)) {
+				m_scene = scene;
+				m_sceneFilePath = path;
+				m_selectedEntity = nullptr;
 
-			const auto& relative_path = std::filesystem::relative(path, m_project.directory());
-			if (m_project.scenes().contains(relative_path))
-				m_project.setEditorScene(relative_path);
+				const auto& relative_path = std::filesystem::relative(path, m_project.directory());
+				if (m_project.scenes().contains(relative_path))
+					m_project.setEditorScene(relative_path);
 
-			std::cout << "Scene '" << m_sceneFilePath << "' loaded." << std::endl;
+				std::cout << "Scene '" << m_sceneFilePath << "' loaded." << std::endl;
+			}
+
+			NFD_FreePath(path);
+		}
+		else if (result == NFD_ERROR) {
+			std::cerr << NFD_GetError() << std::endl;
 		}
 	}
 
@@ -52,7 +58,6 @@ namespace GalactoseEditor {
 		nfdchar_t* path;
 		nfdfilteritem_t filter = { "Scene", "yaml" };
 		const auto result = NFD_SaveDialog(&path, &filter, 1, nullptr, m_scene->name().c_str());
-		GT_ASSERT(result != NFD_ERROR, NFD_GetError());
 
 		if (result == NFD_OKAY) {
 			// TODO: When Project Explorer added remove following if statement.
@@ -64,6 +69,11 @@ namespace GalactoseEditor {
 
 			m_sceneFilePath = path;
 			saveAndPrint();
+
+			NFD_FreePath(path);
+		}
+		else if (result == NFD_ERROR) {
+			std::cerr << NFD_GetError() << std::endl;
 		}
 	}
 
@@ -90,16 +100,29 @@ namespace GalactoseEditor {
 		m_running = a_running;
 	}
 
-	void EditorContext::addScript() {
-		nfdchar_t* path;
+	void EditorContext::addScripts() {
+		const nfdpathset_t* paths;
 		nfdfilteritem_t filter = { "Script", "h,cpp,hpp" };
-		const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
-		GT_ASSERT(result != NFD_ERROR, NFD_GetError());
+		const auto result = NFD_OpenDialogMultiple(&paths, &filter, 1, nullptr);
 
-		auto scene = std::make_shared<Scene>();
 		if (result == NFD_OKAY) {
-			const auto& relativePath = std::filesystem::relative(path, m_project.directory());
-			m_project.addScript(relativePath);
+			nfdpathsetsize_t pathCount;
+			NFD_PathSet_GetCount(paths, &pathCount);
+			std::vector<std::filesystem::path> relativePaths;
+			relativePaths.reserve(pathCount);
+
+			for (nfdpathsetsize_t i = 0; i < pathCount; ++i) {
+				nfdchar_t* path;
+				NFD_PathSet_GetPath(paths, i, &path);
+				relativePaths.push_back(std::filesystem::relative(path, m_project.directory()));
+				NFD_PathSet_FreePath(path);
+			}
+
+			NFD_PathSet_Free(paths);
+			m_project.addScripts(relativePaths);
+		}
+		else if (result == NFD_ERROR) {
+			std::cerr << NFD_GetError() << std::endl;
 		}
 	}
 }
