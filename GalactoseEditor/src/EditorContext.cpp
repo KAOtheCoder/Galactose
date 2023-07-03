@@ -125,4 +125,9 @@ namespace GalactoseEditor {
 			std::cerr << NFD_GetError() << std::endl;
 		}
 	}
+
+	void EditorContext::loadScripts() {
+		if (!m_project.loadScripts())
+			std::cerr << "Failed to load scripts." << std::endl;
+	}
 }

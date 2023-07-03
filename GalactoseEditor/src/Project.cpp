@@ -6,6 +6,8 @@
 #include <fstream>
 #include <filesystem>
 
+#include <windows.h>
+
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -25,6 +27,10 @@ namespace GalactoseEditor {
 			for (const auto& scriptNode : node["scripts"])
 				m_scripts.insert(scriptNode.as<std::filesystem::path>());
 		}
+	}
+
+	Project::~Project() {
+		unloadScripts();
 	}
 
 	std::filesystem::path Project::editorScene(const bool absolute) const {
@@ -121,6 +127,10 @@ project ")" + projectName + R"("
 	filter "system:windows"
 		defines "GT_WINDOWS"
 		systemversion "latest"
+		postbuildcommands {
+			("{echo} postbuild"),
+			("{copy} %{cfg.targetdir}/%{prj.name}.dll " ..editordir.. "/bin/" .. outputdir .. "/GalactoseEditor"),
+		}
 
 	filter "system:linux"
 		defines "GT_LINUX"
@@ -165,5 +175,20 @@ project ")" + projectName + R"("
 
 		if (result != 0)
 			std::cerr << "Premake5 exited with code " << result << std::endl;
+	}
+
+	bool Project::loadScripts() {
+		unloadScripts();
+
+		m_scriptLib = LoadLibraryA((name() + ".dll").c_str());
+		return m_scriptLib;
+	}
+
+	void Project::unloadScripts() {
+		if (!m_scriptLib)
+			return;
+
+		if (!FreeLibrary(static_cast<HMODULE>(m_scriptLib)))
+			std::cerr << "Failed to free library: " << name() << std::endl;
 	}
 }

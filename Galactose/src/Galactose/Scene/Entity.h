@@ -97,10 +97,11 @@ namespace Galactose {
 		void save(OutSerializer& out) const;
 		bool load(const NodeSerializer& node);
 
+		GT_API Component* addComponent(const std::string& name);
+
 	private:
 		static Entity* createOrphan(Scene* scene, const Uuid& id = Uuid::create());
 
-		Component* addComponent(const std::string& name);
 		Component* getComponent(const uint32_t id) const;
 		GT_API int findComponent(const uint32_t id, const bool script) const;
 		void removeFromSiblings() const;

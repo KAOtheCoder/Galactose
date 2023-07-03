@@ -7,6 +7,7 @@ namespace GalactoseEditor {
 	class Project {
 	public:
 		Project(const std::filesystem::path& filePath);
+		~Project();
 
 		std::string name() const { return m_filePath.stem().generic_string(); }
 		std::filesystem::path filePath() const { return m_filePath; }
@@ -21,14 +22,19 @@ namespace GalactoseEditor {
 		void save();
 
 		void addScripts(const std::vector<std::filesystem::path>& paths);
+		bool loadScripts();
+
 		void addScene(const std::filesystem::path& a_path) { m_scenes.insert(a_path); }
 		void make();
 
 	private:
+		void unloadScripts();
+
 		std::filesystem::path m_filePath;
 		std::filesystem::path m_startScene; // scene to load when project builded
 		std::filesystem::path m_editorScene; // scene to load when project opened in editor
 		std::set<std::filesystem::path> m_scenes;
 		std::set<std::filesystem::path> m_scripts;
+		void* m_scriptLib = nullptr;
 	};
 }

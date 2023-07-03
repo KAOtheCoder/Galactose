@@ -17,6 +17,20 @@ namespace Galactose {
 		s_metasByType.emplace(typeValue, this);
 	}
 
+	void Component::MetaBase::insertScript() {
+		s_scripts.insert(name());
+	}
+
+	const std::set<std::string>& Component::MetaBase::scripts() { return s_scripts; }
+
+	void Component::MetaBase::remove() {
+		const auto& nameValue = name();
+
+		s_metasByType.erase(type());
+		s_metasByName.erase(nameValue);
+		s_scripts.erase(nameValue);
+	}
+
 	Component::MetaBase* Component::MetaBase::meta(const std::string& a_name) {
 		const auto& iter = s_metasByName.find(a_name);
 		GT_ASSERT(iter != s_metasByName.end(), "No such component '" + a_name + "' exist.");

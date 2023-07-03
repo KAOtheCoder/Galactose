@@ -21,7 +21,7 @@ namespace Galactose {
 		virtual bool hasLimits() const { return false; }
 
 	protected:
-		void registerProperty(Script* a_script);
+		GT_API void registerProperty(Script* a_script);
 	};
 
 	template <typename T>
