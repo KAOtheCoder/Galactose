@@ -10,7 +10,7 @@ namespace Galactose {
 			if (adjustedScale[i] == 0)
 				adjustedScale[i] = glm::epsilon<float>();
 
-		return Matrix4x4::translate(m_localPosition) * m_localRotation.toMatrix() * Matrix4x4::scale(adjustedScale);
+		return Matrix4x4::transform(m_localPosition, m_localRotation, adjustedScale);
 	}
 
 	void Transform::updateLocalToWorldMatrix() const {
@@ -46,10 +46,15 @@ namespace Galactose {
 	void Transform::setPosition(const Vector3& a_position) {
 		const auto parentEntity = entity()->parent();
 
-		setLocalPosition(parentEntity 
-			? parentEntity->getTransform()->localToWorldMatrix().affineInverse() * Vector4(a_position, 1)
-			: a_position
-		);
+		if (!parentEntity) {
+			setLocalPosition(a_position);
+			return;
+		}
+
+		auto worldMatrix = localToWorldMatrix();
+		worldMatrix.setColumn(3, Vector4(a_position, 1));
+		const Matrix4x4 localMatrix = parentEntity->getTransform()->worldToLocalMatrix() * worldMatrix;
+		setLocalPosition(localMatrix.column(3));
 	}
 
 	Quaternion Transform::rotation() const {
@@ -60,10 +65,19 @@ namespace Galactose {
 	void Transform::setRotation(const Quaternion& a_rotation) {
 		const auto parentEntity = entity()->parent();
 
-		setLocalRotation(parentEntity
-			? parentEntity->getTransform()->localToWorldMatrix().affineInverse() * a_rotation.toMatrix()
-			: a_rotation
-		);
+		if (!parentEntity) {
+			setLocalRotation(a_rotation);
+			return;
+		}
+
+		auto worldMatrix = localToWorldMatrix();
+		Vector3 position, scale;
+		worldMatrix.decomposeAffine(&position, nullptr, &scale);
+		worldMatrix = Matrix4x4::transform(position, a_rotation, scale);
+		const Matrix4x4 localMatrix = parentEntity->getTransform()->worldToLocalMatrix() * worldMatrix;
+		Quaternion localRotation;
+		localMatrix.decomposeAffine(nullptr, &localRotation, nullptr);
+		setLocalRotation(localRotation);
 	}
 
 	Vector3 Transform::lossyScale() const {

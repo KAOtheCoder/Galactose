@@ -33,4 +33,12 @@ namespace Galactose {
 		if (a_scale)
 			*a_scale = scale;
 	}
+
+	Matrix4x4 Matrix4x4::rotate(const Quaternion& a_rotation) {
+		return a_rotation.toMatrix();
+	}
+
+	Matrix4x4 Matrix4x4::transform(const Vector3& a_translation, const Quaternion& a_rotation, const Vector3& a_scale) {
+		return translate(a_translation) * rotate(a_rotation) * scale(a_scale);
+	}
 }

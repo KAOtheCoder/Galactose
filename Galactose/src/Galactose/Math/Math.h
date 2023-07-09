@@ -5,7 +5,7 @@
 #include "Galactose/Core/Global.h"
 
 #include <glm/glm.hpp>
-#include "glm/gtx/string_cast.hpp"
+#include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
@@ -56,10 +56,13 @@ namespace Galactose {
 	public:
 		using GlmExtend<glm::mat4>::GlmExtend;
 
+		static Matrix4x4 transform(const Vector3& a_translation, const Quaternion& a_rotation, const Vector3& a_scale);
 		static Matrix4x4 translate(const Vector3& a_translation) { return glm::translate(a_translation); }
+		static Matrix4x4 rotate(const Quaternion& a_rotation);
 		static Matrix4x4 scale(const Vector3& a_scale) { return glm::scale(a_scale); }
 
 		Vector4 column(const int index) const { return operator[](index); }
+		void setColumn(const int index, const Vector4& column) { operator[](index) = column; }
 		Matrix4x4 affineInverse() const { return glm::affineInverse(base()); }
 		GT_API void decomposeAffine(Vector3* position = nullptr, Quaternion* rotation = nullptr, Vector3* scale = nullptr) const;
 	};
