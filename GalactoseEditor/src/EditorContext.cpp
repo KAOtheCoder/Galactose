@@ -1,15 +1,14 @@
 #include "EditorContext.h"
+#include "FileDialog.h"
 
 #include <Galactose/Core/Global.h>
 #include <Galactose/Scene/Scene.h>
 
-#include <nfd.hpp>
-
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	EditorContext::EditorContext(const std::filesystem::path& a_filePath) :
-		m_project(a_filePath),
+	EditorContext::EditorContext(const std::filesystem::path& a_projectFilePath) :
+		m_project(a_projectFilePath),
 		m_scene(std::make_shared<Galactose::Scene>("Untitled"))
 	{
 		const auto& scene_path = m_project.editorScene(true);
@@ -29,37 +28,25 @@ namespace GalactoseEditor {
 	}
 
 	void EditorContext::openScene() {
-		nfdchar_t* path;
-		nfdfilteritem_t filter = { "Scene", "yaml" };
-		const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
+		const auto& path = FileDialog::open({ {"Scene", "yaml"} });
 
 		auto scene = std::make_shared<Scene>();
-		if (result == NFD_OKAY) {
-			if (scene->load(path)) {
-				m_scene = scene;
-				m_sceneFilePath = path;
-				m_selectedEntity = nullptr;
+		if (!path.empty() && scene->load(path)) {
+			m_scene = scene;
+			m_sceneFilePath = path;
+			m_selectedEntity = nullptr;
 
-				const auto& relative_path = std::filesystem::relative(path, m_project.directory());
-				if (m_project.scenes().contains(relative_path))
-					m_project.setEditorScene(relative_path);
+			const auto& relative_path = std::filesystem::relative(path, m_project.directory());
+			if (m_project.scenes().contains(relative_path))
+				m_project.setEditorScene(relative_path);
 
-				std::cout << "Scene '" << m_sceneFilePath << "' loaded." << std::endl;
-			}
-
-			NFD_FreePath(path);
-		}
-		else if (result == NFD_ERROR) {
-			std::cerr << NFD_GetError() << std::endl;
+			std::cout << "Scene '" << m_sceneFilePath << "' loaded." << std::endl;
 		}
 	}
 
 	void EditorContext::saveSceneAs() {
-		nfdchar_t* path;
-		nfdfilteritem_t filter = { "Scene", "yaml" };
-		const auto result = NFD_SaveDialog(&path, &filter, 1, nullptr, m_scene->name().c_str());
-
-		if (result == NFD_OKAY) {
+		const auto& path = FileDialog::save({ {"Scene", "yaml"} }, "", m_scene->name().c_str());
+		if (!path.empty()) {
 			// TODO: When Project Explorer added remove following if statement.
 			if (m_sceneFilePath.empty()) {
 				const auto& relative_path = std::filesystem::relative(path, m_project.directory());
@@ -69,11 +56,6 @@ namespace GalactoseEditor {
 
 			m_sceneFilePath = path;
 			saveAndPrint();
-
-			NFD_FreePath(path);
-		}
-		else if (result == NFD_ERROR) {
-			std::cerr << NFD_GetError() << std::endl;
 		}
 	}
 
@@ -101,28 +83,16 @@ namespace GalactoseEditor {
 	}
 
 	void EditorContext::addScripts() {
-		const nfdpathset_t* paths;
-		nfdfilteritem_t filter = { "Script", "h,cpp,hpp" };
-		const auto result = NFD_OpenDialogMultiple(&paths, &filter, 1, nullptr);
+		const auto& paths = FileDialog::openMultiple({ { "Script", "h,cpp,hpp" } });
 
-		if (result == NFD_OKAY) {
-			nfdpathsetsize_t pathCount;
-			NFD_PathSet_GetCount(paths, &pathCount);
+		if (!paths.empty()) {
 			std::vector<std::filesystem::path> relativePaths;
-			relativePaths.reserve(pathCount);
+			relativePaths.reserve(paths.size());
 
-			for (nfdpathsetsize_t i = 0; i < pathCount; ++i) {
-				nfdchar_t* path;
-				NFD_PathSet_GetPath(paths, i, &path);
+			for (const auto& path : paths)
 				relativePaths.push_back(std::filesystem::relative(path, m_project.directory()));
-				NFD_PathSet_FreePath(path);
-			}
 
-			NFD_PathSet_Free(paths);
 			m_project.addScripts(relativePaths);
-		}
-		else if (result == NFD_ERROR) {
-			std::cerr << NFD_GetError() << std::endl;
 		}
 	}
 

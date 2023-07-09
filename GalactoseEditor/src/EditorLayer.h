@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ImGuiLayer.h"
 #include "Panels/SceneViewport.h"
 #include "Panels/GameViewport.h"
 #include "Panels/SceneHierarchy.h"
@@ -7,21 +8,14 @@
 #include "Widgets/MenuBar.h"
 #include "Widgets/ToolBar.h"
 
-#include <Galactose/Core/Layer.h>
-
-namespace Galactose {
-	class Window;
-}
-
 namespace GalactoseEditor {
 	class EditorContext;
 
-	class EditorLayer : public Galactose::Layer {
+	class EditorLayer : public ImGuiLayer {
 	public:
 		EditorLayer(Galactose::Window* window, const std::string& projectFilePath);
-		~EditorLayer() override;
 
-		void onUpdate() override;
+		void updateContent() override;
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
 
 	private:

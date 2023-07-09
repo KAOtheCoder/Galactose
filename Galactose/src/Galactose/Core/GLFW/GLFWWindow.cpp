@@ -52,7 +52,7 @@ namespace Galactose {
 			glfwMakeContextCurrent(m_glfwWindow);
 
 			for (const auto& layer : layers)
-				layer->onUpdate();
+				layer->update();
 
 			glfwSwapBuffers(m_glfwWindow);
 			glfwPollEvents();

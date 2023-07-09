@@ -5,7 +5,7 @@
 namespace Galactose {
 	class OpenGLRenderer : public Renderer {
 	public:
-		OpenGLRenderer(const std::shared_ptr<Window>& a_window);
+		OpenGLRenderer(const Window* a_window);
 
 		void setClearColor(const Vector4& color) override;
 		void clear() override;

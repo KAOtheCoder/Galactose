@@ -3,15 +3,9 @@
 
 #include <Galactose/Core/Events/KeyEvent.h>
 #include <Galactose/Core/Events/MouseEvent.h>
-#include <Galactose/Scene/Entity.h>
-#include <Galactose/Scene/Components/SpriteRenderer.h>
 #include <Galactose/Core/Application.h>
-#include <Galactose/Core/Window.h>
 
-#include <imgui.h>
 #include <imgui_internal.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
 
 #include <nfd.hpp>
 
@@ -21,43 +15,13 @@ using namespace Galactose;
 
 namespace GalactoseEditor {
 	EditorLayer::EditorLayer(Window* a_window, const std::string& a_projectFilePath) :
+		ImGuiLayer(a_window, true, true, "Editor.ini"),
 		m_editorContext(std::make_shared<EditorContext>(a_projectFilePath)),
 		m_sceneViewport(m_editorContext),
 		m_gameViewport(m_editorContext),
 		m_sceneHierarchy(m_editorContext),
 		m_inspector(m_editorContext)
 	{
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		auto& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-		io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
-		//io.ConfigViewportsNoAutoMerge = true;
-		//io.ConfigViewportsNoTaskBarIcon = true;
-
-		ImGui::StyleColorsDark();
-
-		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-		ImGuiStyle& style = ImGui::GetStyle();
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			style.WindowRounding = 0.0f;
-			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-		}
-
-		// Setup Platform/Renderer backends
-		ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(a_window->nativeWindow()), true);
-		ImGui_ImplOpenGL3_Init("#version 410");
-
-		if (!std::filesystem::exists(io.IniFilename))
-			m_layout = Layout::Default;
-
-		const auto nfdResult = NFD_Init();
-		GT_ASSERT(nfdResult == NFD_OKAY, "Failed to initialze NFD");
-
 		m_menuBar.menus.push_back({ "File", {  
 			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_editorContext->newScene(); } },
 			{ "Open Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyO }, [&]() { m_editorContext->openScene(); } },
@@ -87,21 +51,8 @@ namespace GalactoseEditor {
 		} });
 	}
 
-	EditorLayer::~EditorLayer() {
-		NFD_Quit();
-
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();
-	}
-
-	void EditorLayer::onUpdate() {
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
+	void EditorLayer::updateContent() {
 		updateLayout();
-
 		updateUpBar();
 		
 		if (m_editorContext->isRunning()) {
@@ -117,19 +68,6 @@ namespace GalactoseEditor {
 		m_gameViewport.update();
 
 		//ImGui::ShowDemoWindow();
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		// Update and Render additional Platform Windows
-		// (Platform functions may change the current OpenGL context
-		GT_ASSERT(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable, "ImGui viewports not enabled.");
-		{
-			auto context = Window::getCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			Window::setCurrentContext(context);
-		}
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {

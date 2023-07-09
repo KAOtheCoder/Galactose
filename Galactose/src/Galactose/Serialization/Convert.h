@@ -44,7 +44,7 @@ namespace YAML {
 
 	template<>
 	struct convert<std::filesystem::path> {
-		static Node encode(const std::filesystem::path& a_path) { return Node(a_path); }
+		static Node encode(const std::filesystem::path& a_path) { return Node(a_path.string()); }
 
 		static bool decode(const Node& a_node, std::filesystem::path& a_path) {
 			a_path = a_node.Scalar();

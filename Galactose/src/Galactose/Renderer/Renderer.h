@@ -2,16 +2,16 @@
 
 #include "VertexArray.h"
 #include "Sprite.h"
-#include "Galactose/Core/Window.h"
 
 namespace Galactose {
+	class Window;
 	class Texture;
 	class Shader;
 	class Camera;
-
+	
 	class Renderer {
 	public:
-		GT_API static std::shared_ptr<Renderer> create(const std::shared_ptr<Window>& a_window);
+		GT_API static std::shared_ptr<Renderer> create(const Window* a_window);
 		static std::shared_ptr<Renderer> renderer(const int32_t id = 0);
 
 		int32_t id() const { return m_id; }
@@ -27,14 +27,13 @@ namespace Galactose {
 		void setViewProjection(const Matrix4x4& viewProjection);
 
 	protected:
-		Renderer(const std::shared_ptr<Window>& a_window);
+		Renderer() = default;
 
-		std::shared_ptr<Window> m_window;
 		std::shared_ptr<Texture> m_defaultTexture;
 		std::shared_ptr<Shader> m_textureShader;
 
 	private:
-		inline static std::vector<std::shared_ptr<Renderer>> s_renderers;
+		inline static std::vector<std::weak_ptr<Renderer>> s_renderers;
 		
 		int32_t m_id = -1;
 	};

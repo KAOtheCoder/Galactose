@@ -12,7 +12,7 @@ namespace Galactose {
 		Layer() = default;
 		virtual ~Layer() = default;
 
-		virtual void onUpdate() {}
+		virtual void update() {}
 		virtual void onEvent(const std::shared_ptr<Event>& a_event) {}
 	};
 }

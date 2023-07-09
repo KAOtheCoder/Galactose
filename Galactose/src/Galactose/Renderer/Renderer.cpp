@@ -5,7 +5,7 @@
 #include <array>
 
 namespace Galactose {
-	std::shared_ptr<Renderer> Renderer::create(const std::shared_ptr<Window>& a_window) {
+	std::shared_ptr<Renderer> Renderer::create(const Window* a_window) {
 		const auto& renderer = std::make_shared<OpenGLRenderer>(a_window);
 		
 		renderer->m_id = int32_t(s_renderers.size());
@@ -18,11 +18,7 @@ namespace Galactose {
 		return renderer;
 	}
 
-	std::shared_ptr<Renderer> Renderer::renderer(const int32_t a_id) { return s_renderers[a_id]; }
-
-	Renderer::Renderer(const std::shared_ptr<Window>& a_window) :
-		m_window(a_window)
-	{}
+	std::shared_ptr<Renderer> Renderer::renderer(const int32_t a_id) { return s_renderers[a_id].lock(); }
 
 	void Renderer::setViewProjection(const Matrix4x4& viewProjection) {
 		m_textureShader->bind();

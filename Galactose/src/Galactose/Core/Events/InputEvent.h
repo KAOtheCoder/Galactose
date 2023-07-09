@@ -9,7 +9,7 @@ namespace Galactose {
 	public:
 		GT_EVENT_TYPE_IMP(Input)
 
-		std::shared_ptr<Window> window() const { return m_window; }
+		std::shared_ptr<Window> window() const { return m_window.lock(); }
 
 		void process() override;
 
@@ -17,6 +17,6 @@ namespace Galactose {
 		InputEvent(const std::shared_ptr<Window>& a_window) : m_window(a_window) {}
 
 	private:
-		const std::shared_ptr<Window> m_window;
+		const std::weak_ptr<Window> m_window;
 	};
 }

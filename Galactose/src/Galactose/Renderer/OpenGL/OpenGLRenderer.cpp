@@ -3,6 +3,7 @@
 #include "Galactose/Core/DataType.h"
 #include "Galactose/Renderer/Texture.h"
 #include "Galactose/Core/Global.h"
+#include "Galactose/Core/Window.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -32,10 +33,9 @@ namespace Galactose {
 		std::cout << "OpenGL " << severity << ": " << a_message << std::endl;
 	}
 
-	OpenGLRenderer::OpenGLRenderer(const std::shared_ptr<Window>& a_window) :
-		Renderer(a_window)
+	OpenGLRenderer::OpenGLRenderer(const Window* a_window)
 	{
-		auto window = static_cast<GLFWwindow*>(m_window->nativeWindow());
+		auto window = static_cast<GLFWwindow*>(a_window->nativeWindow());
 		GT_ASSERT(window, "Renderer needs a valid window.");
 
 		glfwMakeContextCurrent(window);

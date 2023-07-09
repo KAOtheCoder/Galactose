@@ -12,7 +12,7 @@ namespace Galactose {
 	class Application
 	{
 	public:
-		static Application* instance() { return s_instance; }
+		GT_API static Application* instance();
 
 		GT_API Application(const std::string& a_name, int a_argc, char** a_argv);
 		Application(const std::string& a_name, const std::vector<std::string>& a_args);

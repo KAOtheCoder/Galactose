@@ -13,7 +13,7 @@ namespace Galactose {
 namespace GalactoseEditor {
 	class EditorContext {
 	public:
-		EditorContext(const std::filesystem::path& filePath);
+		EditorContext(const std::filesystem::path& projectFilePath);
 
 		Project& project() { return m_project; }
 		const Project& project() const { return m_project; }

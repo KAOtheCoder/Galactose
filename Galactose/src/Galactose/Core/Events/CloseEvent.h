@@ -10,11 +10,15 @@ namespace Galactose {
 
 		CloseEvent(const std::shared_ptr<Window>& a_window) : m_window(a_window) {}
 
-		std::shared_ptr<Window> window() const { return m_window; }
+		std::shared_ptr<Window> window() const { return m_window.lock(); }
 
-		void process() override { m_window->close(); }
+		void process() override { 
+			const auto& sharedWindow = window();
+			if (sharedWindow)
+				sharedWindow->close();
+		}
 
 	private:
-		const std::shared_ptr<Window> m_window;
+		const std::weak_ptr<Window> m_window;
 	};
 }

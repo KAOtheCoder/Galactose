@@ -19,8 +19,12 @@ namespace Galactose {
 		init();
 	}
 
+	Application* Application::instance() { return s_instance; }
+
 	int Application::exec() {
-		while (m_run) {
+		m_run = true;
+
+		do {
 			for (const auto& event : m_eventQueue)
 				event->process();
 
@@ -31,7 +35,9 @@ namespace Galactose {
 
 			if (m_run && m_quitOnLastWindowClosed)
 				m_run = !Window::areAllWindowsClosed();
-		}
+		} while (m_run);
+
+		m_eventQueue.clear();
 
 		return m_exitCode;
 	}
