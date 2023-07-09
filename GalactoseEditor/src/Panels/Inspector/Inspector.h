@@ -68,6 +68,7 @@ namespace GalactoseEditor {
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		std::unordered_map<uint32_t, ComponentInfo> m_componentInfos;
 		Galactose::Component* m_removeComponent = nullptr;
+		Galactose::Vector3 m_eulerAngles;
 	};
 
 	extern template void Inspector::drawComponentContent<Galactose::Transform>(Galactose::Transform*);

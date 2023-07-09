@@ -21,6 +21,14 @@ namespace Galactose {
 			std::string toString() const { return glm::to_string(base()); }
 			const float* data() const { return glm::value_ptr(base()); }
 			float* data() { return const_cast<float*>(glm::value_ptr(base())); }
+			bool fuzzyCompare(const GlmExtend& a_other) const { 
+				const auto& result = glm::epsilonEqual(base(), a_other.base(), glm::epsilon<float>());
+				for (int i = 0; i < T::length(); ++i)
+					if (!result[i])
+						return false;
+
+				return true;
+			}
 
 		protected:
 			const T& base() const { return *static_cast<const T*>(this); }
