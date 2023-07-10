@@ -14,7 +14,7 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	EditorLayer::EditorLayer(Window* a_window, const std::string& a_projectFilePath) :
+	EditorLayer::EditorLayer(Window* a_window, const std::filesystem::path& a_projectFilePath) :
 		ImGuiLayer(a_window, true, true, "Editor.ini"),
 		m_editorContext(std::make_shared<EditorContext>(a_projectFilePath)),
 		m_sceneViewport(m_editorContext),

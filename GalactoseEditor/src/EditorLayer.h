@@ -13,7 +13,7 @@ namespace GalactoseEditor {
 
 	class EditorLayer : public ImGuiLayer {
 	public:
-		EditorLayer(Galactose::Window* window, const std::string& projectFilePath);
+		EditorLayer(Galactose::Window* window, const std::filesystem::path& projectFilePath);
 
 		void updateContent() override;
 		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
