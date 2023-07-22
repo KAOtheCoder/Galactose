@@ -7,6 +7,8 @@
 #include <imgui.h>
 
 #include <fstream>
+#include <array>
+#include <ctime>
 
 using namespace Galactose;
 
@@ -56,8 +58,8 @@ namespace GalactoseEditor {
 	}
 
 	std::string HubLayer::timeToString(const int64_t a_ms) {
-		std::time_t seconds = a_ms / 1000;
-		// TODO: use ctime_s
+		const std::time_t seconds = a_ms / 1000;
+		// TODO: consider using localtime_s
 		return std::ctime(&seconds);
 	}
 
@@ -107,7 +109,7 @@ namespace GalactoseEditor {
 
 		ImGui::Separator();
 
-		for (const auto [time, project] : m_projects) {
+		for (const auto& [time, project] : m_projects) {
 			const auto& text = project.path.string() + "\n" + project.time;
 			const bool selected = ImGui::Selectable(("##" + project.path.string()).c_str(), false, 0, { 0, 2.25f * ImGui::GetTextLineHeightWithSpacing() });
 			ImGui::SameLine();

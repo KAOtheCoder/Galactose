@@ -43,6 +43,7 @@ project "GalactoseEditor"
 	}
 	
 	defines {
+		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_DLL"
 	}
 	
