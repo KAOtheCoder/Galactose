@@ -20,3 +20,6 @@
 [submodule "GalactoseEditor/vendor/ImGuizmo/ImGuizmo"]
 	path = GalactoseEditor/vendor/ImGuizmo/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
+[submodule "GalactoseEditor/vendor/Premake5/Premake5"]
+	path = GalactoseEditor/vendor/Premake5/Premake5
+	url = https://github.com/premake/premake-core.git

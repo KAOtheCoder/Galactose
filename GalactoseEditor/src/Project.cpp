@@ -5,8 +5,14 @@
 
 #include <fstream>
 #include <filesystem>
+#include <array>
 
 #include <windows.h>
+
+extern "C"
+{
+#include <host/premake.h>
+}
 
 using namespace Galactose;
 
@@ -62,24 +68,22 @@ namespace GalactoseEditor {
 		make();
 	}
 
-	void Project::make() {
-		std::string files;
+	void Project::replaceAll(std::string& str, const std::string& from, const std::string& to) {
+		size_t pos = str.find(from);
 
-		if (!m_scripts.empty()) {
-			for (const auto& script : m_scripts)
-				files += "\t\t\"" + script.generic_string() + "\",\n";
-
-			files.resize(files.size() - 2); // remove last ",\n"
+		while (pos != std::string::npos) {
+			str.replace(pos, from.size(), to);
+			pos = str.find(from, pos + to.size());
 		}
+	}
 
-		const auto& projectName = name();
-		const auto& editordir = std::filesystem::current_path().generic_string();
-		auto enginedir = std::filesystem::canonical(std::filesystem::path(editordir) / "../Galactose").generic_string();
-		auto premake = R"(outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-editordir = ")" + editordir + R"("
-enginedir = ")" + enginedir + R"("
+	void Project::make() {
+		std::string premakeScript = R"(
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+editordir = "<EDITOR_DIR>"
+enginedir = "<ENGINE_DIR>"
 
-workspace ")" + projectName + R"("
+workspace "<PROJECT>"
 	architecture "x86_64"
 
 	configurations
@@ -93,7 +97,7 @@ workspace ")" + projectName + R"("
 		"MultiProcessorCompile"
 	}
 
-project ")" + projectName + R"("
+project "<PROJECT>"
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++20"
@@ -109,7 +113,7 @@ project ")" + projectName + R"("
 
 	files
 	{
-)" + files + R"(
+		<FILES>
 	}
 
 	links
@@ -147,34 +151,54 @@ project ")" + projectName + R"("
 		optimize "On"
 )";
 
-		const auto& projectDirectory = directory();
-		const auto& premakeFilePath = (projectDirectory / "premake5.lua").generic_string();
-		std::ofstream premakeFile(premakeFilePath);
-		if (!premakeFile) {
-			std::cerr << "Failed to open file '" << premakeFilePath << "'." << std::endl;
-			return;
+		const auto& editordir = std::filesystem::current_path().generic_string();
+		const auto& enginedir = std::filesystem::canonical(std::filesystem::path(editordir) / "../Galactose").generic_string();
+
+		std::string files;
+
+		if (!m_scripts.empty()) {
+			const std::string POSTFIX(",\n\t\t");
+			for (const auto& script : m_scripts)
+				files += "\"" + script.generic_string() + "\"" + POSTFIX;
+
+			files.resize(files.size() - POSTFIX.size()); // remove last postfix
 		}
 
-		premakeFile << premake;
+		replaceAll(premakeScript, "<EDITOR_DIR>", editordir);
+		replaceAll(premakeScript, "<ENGINE_DIR>", enginedir);
+		replaceAll(premakeScript, "<PROJECT>", name());
+		replaceAll(premakeScript, "<FILES>", files);
 
-		const auto outputFileName = (projectDirectory / "PremakeOut.txt").generic_string();
+		// inspired from premake_main.c
+		auto luaState = luaL_newstate();
+		luaL_openlibs(luaState);
+		int result = premake_init(luaState);
 
-		// TODO: Use Premake Api instead. std::system doesn't create solution files.
-		const auto& command = "premake5.exe --file=" + premakeFilePath + " vs2022 > " + outputFileName;
-		std::cout << command << std::endl;
-		const int result = std::system(command.c_str());
-		
-		std::ifstream outputFile(outputFileName);
+		if (result == OKAY) {
+			const auto& projectDirectory = directory();
+			const auto& premakeFilePath = (projectDirectory / "premake5.lua").generic_string();
+			std::ofstream premakeFile(premakeFilePath);
+			
+			if (!premakeFile) {
+				std::cerr << "Failed to open file '" << premakeFilePath << "'." << std::endl;
+				return;
+			}
 
-		if (outputFile)
-			std::cout << outputFile.rdbuf() << std::endl;
-		else
-			std::cerr << "Failed to open file '" << outputFileName << "'." << std::endl;
+			premakeFile << premakeScript;
+			// ensure file is closed, otherwise premake might fail to generate files.
+			premakeFile.close();
 
-		outputFile.close();
+			const int argc = 3;
+			const std::array<std::string, argc> args = { "premake5", "vs2022", "--file=" + premakeFilePath };
+			std::array<const char*, argc> argv = { args[0].data(), args[1].data(), args[2].data() };
 
-		if (result != 0)
-			std::cerr << "Premake5 exited with code " << result << std::endl;
+			result = premake_execute(luaState, argc, argv.data(), "vendor/Premake5/Premake5/src/_premake_main.lua");
+
+			if (result != OKAY)
+				std::cerr << "Premake5 exited with code " << result << std::endl;
+		}
+
+		lua_close(luaState);
 	}
 
 	bool Project::loadScripts() {

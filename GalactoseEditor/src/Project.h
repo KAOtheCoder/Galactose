@@ -29,6 +29,7 @@ namespace GalactoseEditor {
 
 	private:
 		void unloadScripts();
+		void replaceAll(std::string& str, const std::string& from, const std::string& to);
 
 		std::filesystem::path m_filePath;
 		std::filesystem::path m_startScene; // scene to load when project builded

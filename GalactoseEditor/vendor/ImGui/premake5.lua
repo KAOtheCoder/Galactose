@@ -9,17 +9,18 @@ project "ImGui"
 
 	files
 	{
-		"ImGui/imconfig.h",
-		"ImGui/imgui.h",
-		"ImGui/imgui.cpp",
-		"ImGui/imgui_draw.cpp",
-		"ImGui/imgui_internal.h",
-		"ImGui/imgui_tables.cpp",
-		"ImGui/imgui_widgets.cpp",
-		"ImGui/imstb_rectpack.h",
-		"ImGui/imstb_textedit.h",
-		"ImGui/imstb_truetype.h",
-		"ImGui/imgui_demo.cpp"
+		"ImGui/**.h",		
+		"ImGui/**.cpp"
+	}
+	
+	excludes
+	{
+		"ImGui/backends/**.h",
+		"ImGui/backends/**.cpp",
+		"ImGui/examples/**.h",
+		"ImGui/examples/**.cpp",
+		"ImGui/misc/**.h",
+		"ImGui/misc/**.cpp"
 	}
 	
 	filter "system:windows"

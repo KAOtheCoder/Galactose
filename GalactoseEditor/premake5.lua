@@ -3,7 +3,8 @@ project "GalactoseEditor"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "Off"
-
+	ignoredefaultlibraries { "MSVCRT" }
+	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -26,7 +27,9 @@ project "GalactoseEditor"
 		"src",
 		"vendor/ImGui/ImGui",
 		"vendor/ImGuizmo/ImGuizmo",
-		"vendor/NativeFileDialogExtended/NativeFileDialogExtended/src/include"
+		"vendor/NativeFileDialogExtended/NativeFileDialogExtended/src/include",
+		"vendor/Premake5/Premake5/src",
+		"vendor/Premake5/Premake5/contrib/lua/src"
 	}
 
 	links
@@ -35,7 +38,8 @@ project "GalactoseEditor"
 		"GLFW",
 		"ImGui",
 		"ImGuizmo",
-		"NativeFileDialogExtended"
+		"NativeFileDialogExtended",
+		"Premake5"
 	}
 	
 	defines {
@@ -74,5 +78,6 @@ project "GalactoseEditor"
 		include "GalactoseEditor/vendor/ImGui"
 		include "GalactoseEditor/vendor/ImGuizmo"
 		include "GalactoseEditor/vendor/NativeFileDialogExtended"
+		include "GalactoseEditor/vendor/Premake5"
 	group ""
 	
