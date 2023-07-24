@@ -5,10 +5,10 @@
 
 #include <type_traits>
 
-#define GT_PROPERTY(a_type, a_name, a_get, a_set) Galactose::Property<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set> a_name;
-#define GT_READONLY_PROPERTY(a_type, a_name, a_get) Galactose::ReadOnlyProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get> a_name;
-#define GT_PROPERTY_SPEED(a_type, a_name, a_get, a_set, a_speed) Galactose::BoundedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed> a_name;
-#define GT_LIMITED_PROPERTY(a_type, a_name, a_get, a_set, a_speed, a_min, a_max) Galactose::BoundedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed, a_min, a_max> a_name;
+#define GT_PROPERTY(a_type, a_name, a_get, a_set) Galactose::Property<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set> a_name = this;
+#define GT_READONLY_PROPERTY(a_type, a_name, a_get) Galactose::ReadOnlyProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get> a_name = this;
+#define GT_PROPERTY_SPEED(a_type, a_name, a_get, a_set, a_speed) Galactose::BoundedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed> a_name = this;
+#define GT_BOUNDED_PROPERTY(a_type, a_name, a_get, a_set, a_speed, a_min, a_max) Galactose::BoundedProperty<_ScriptType, a_type, [](){ return GT_STRINGIFY(a_name); }, &_ScriptType::a_get, &_ScriptType::a_set, a_speed, a_min, a_max> a_name = this;
 
 namespace Galactose {
 	class Script;
