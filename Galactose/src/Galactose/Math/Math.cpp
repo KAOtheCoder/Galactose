@@ -41,4 +41,8 @@ namespace Galactose {
 	Matrix4x4 Matrix4x4::transform(const Vector3& a_translation, const Quaternion& a_rotation, const Vector3& a_scale) {
 		return translate(a_translation) * rotate(a_rotation) * scale(a_scale);
 	}
+
+	Quaternion Quaternion::angleAxisDegrees(const float a_angles, const Vector3& a_axis) {
+		return glm::angleAxis(Math::degreesToRadians(a_angles), a_axis);
+	}
 }

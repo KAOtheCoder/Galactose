@@ -136,8 +136,8 @@ namespace GalactoseEditor {
 			//ImGui::Selectable((project.path.string() + "\n" + project.time).c_str())
 			if (selected) {
 				// update time
-				m_projects.erase(time);
 				m_projectPath = project.path;
+				m_projects.erase(time);
 				insertProject();
 
 				break;

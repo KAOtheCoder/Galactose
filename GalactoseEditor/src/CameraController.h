@@ -15,5 +15,6 @@ namespace GalactoseEditor {
 	private:
 		bool m_rotate = false;
 		Galactose::Vector2 m_cursorPos;
+		Galactose::Quaternion m_rotation;
 	};
 }

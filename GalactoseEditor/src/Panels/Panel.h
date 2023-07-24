@@ -13,6 +13,7 @@ namespace GalactoseEditor {
 	class Panel {
 	public:
 		static Panel* focusedPanel() { return s_focusedPanel; }
+		static Panel* hoveredPanel() { return s_hoveredPanel; }
 
 		Panel(const std::string& a_name);
 		virtual ~Panel();
@@ -29,7 +30,8 @@ namespace GalactoseEditor {
 		virtual void onEvent(const std::shared_ptr<Galactose::Event>& a_event) {}
 
 	private:
-		static Panel* s_focusedPanel;
+		inline static Panel* s_focusedPanel = nullptr;
+		inline static Panel* s_hoveredPanel = nullptr;
 
 		bool m_visible = true;
 		std::string m_name;

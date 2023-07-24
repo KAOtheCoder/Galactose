@@ -7,8 +7,6 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	Panel* Panel::s_focusedPanel = nullptr;
-
 	Panel::Panel(const std::string& a_name) : 
 		m_name(a_name),
 		m_padding(-1, -1)
@@ -17,6 +15,9 @@ namespace GalactoseEditor {
 	Panel::~Panel() {
 		if (s_focusedPanel == this)
 			s_focusedPanel = nullptr;
+
+		if (s_hoveredPanel == this)
+			s_hoveredPanel = nullptr;
 	}
 
 	Vector2 Panel::padding() const {
@@ -47,6 +48,11 @@ namespace GalactoseEditor {
 				s_focusedPanel->onFocusOut();
 				s_focusedPanel = nullptr;
 			}
+			
+			if (ImGui::IsWindowHovered())
+				s_hoveredPanel = this;
+			else if (s_hoveredPanel == this)
+				s_hoveredPanel = nullptr;
 
 			onUpdate();
 		}

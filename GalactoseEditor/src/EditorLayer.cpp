@@ -74,8 +74,14 @@ namespace GalactoseEditor {
 		m_menuBar.onEvent(a_event);
 
 		auto panel = Panel::focusedPanel();
-		if (panel)
+		if (panel) {
+			if (a_event->type() == Event::MousePress && panel != Panel::hoveredPanel()) {
+				a_event->setHandled();
+				return;
+			}
+
 			panel->onEvent(a_event);
+		}
 	}
 
 	void EditorLayer::updateLayout() {

@@ -42,23 +42,31 @@ namespace GalactoseEditor {
 			const auto mouseEvent = static_cast<MouseEvent*>(a_event.get());
 
 			if (m_rotate && mouseEvent->window()->isMouseButtonPressed(MouseEvent::Left)) {
-				const auto& cursorPos = mouseEvent->cursorPosition();
-				const auto& move = cursorPos - m_cursorPos;
-				const float speed = 2 * time().deltaTime();
-				transform->setRotation(Quaternion::fromEulerDegrees(transform->rotation().eulerDegrees() + (Vector3(move.y, move.x, 0) * speed)));
+				const Vector2& move = mouseEvent->cursorPosition() - m_cursorPos;
+
+				if (!move.fuzzyCompare({ 0, 0 })) {
+					const float speed = 0.033f;
+
+					//transform->setRotation(Quaternion::fromEulerDegrees(transform->rotation().eulerDegrees() + (Vector3(move.y, move.x, 0) * speed)));
+
+					const auto& xRotation = Quaternion::angleAxisDegrees(move.x * speed, transform->up());
+					const auto& yRotation = Quaternion::angleAxisDegrees(move.y * speed, transform->right());
+					const auto& rotation = (xRotation * yRotation) * m_rotation;
+					transform->setRotation(rotation);
+				}
 			}
 
-			m_cursorPos = mouseEvent->cursorPosition();
+			break;
 		}
 
 		case Event::MousePress:
 			m_rotate = true;
 			m_cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
+			m_rotation = transform->rotation();
 			break;
 
 		case Event::MouseRelease:
 			m_rotate = false;
-			m_cursorPos = static_cast<MouseEvent*>(a_event.get())->cursorPosition();
 			break;
 
 		default:

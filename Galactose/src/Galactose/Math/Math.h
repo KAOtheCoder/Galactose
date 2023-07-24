@@ -80,6 +80,7 @@ namespace Galactose {
 		using GlmExtend<glm::quat>::GlmExtend;
 
 		static Quaternion fromEulerDegrees(const Vector3& a_angles) { return Quaternion(glm::radians(a_angles.base())); }
+		GT_API static Quaternion angleAxisDegrees(const float angles, const Vector3& axis);
 
 		Quaternion(const Matrix4x4& a_matrix) : GlmExtend<glm::quat>(glm::quat_cast(a_matrix)) {}
 
