@@ -23,8 +23,8 @@ namespace GalactoseEditor {
 		Panel("Inspector"),
 		m_sceneContext(a_sceneContext)
 	{
-		m_icons.emplace("Clear", Galactose::Texture::create("assets/textures/Clear.png"));
-		m_icons.emplace("Folder", Galactose::Texture::create("assets/textures/Folder.png"));
+		m_icons.emplace("Clear", Texture::create("assets/textures/Clear.png"));
+		m_icons.emplace("Folder", Texture::create("assets/textures/Folder.png"));
 
 		bindComponent<Transform>();
 		bindComponent<Camera>();

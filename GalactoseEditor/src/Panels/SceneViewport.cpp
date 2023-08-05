@@ -38,7 +38,7 @@ namespace GalactoseEditor {
 
 		m_usingManipulator = false;
 
-		const auto selectedEntity = m_sceneContext->selectedEntity();
+		const auto selectedEntity = m_editorContext->selectedEntity();
 		if (selectedEntity) {
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -53,7 +53,7 @@ namespace GalactoseEditor {
 				const auto& projection = editorCamera->projectionMatrix();
 				auto transform = selectedEntity->getTransform();
 				auto matrix = transform->localMatrix();
-				const auto operation = m_sceneContext->manipulatorOperation();
+				const auto operation = m_editorContext->manipulatorOperation();
 
 				if (ImGuizmo::Manipulate(view.data(), projection.data(), operation, ImGuizmo::LOCAL, matrix.data())) {
 					switch (operation) {

@@ -7,8 +7,6 @@
 
 #include <imgui_internal.h>
 
-#include <nfd.hpp>
-
 #include <filesystem>
 
 using namespace Galactose;
@@ -20,7 +18,9 @@ namespace GalactoseEditor {
 		m_sceneViewport(m_editorContext),
 		m_gameViewport(m_editorContext),
 		m_sceneHierarchy(m_editorContext),
-		m_inspector(m_editorContext)
+		m_inspector(m_editorContext),
+		m_assetExplorer(m_editorContext),
+		m_layout(std::filesystem::exists(ImGui::GetIO().IniFilename) ? Layout::None : Layout::Default)
 	{
 		m_menuBar.menus.push_back({ "File", {  
 			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_editorContext->newScene(); } },
@@ -38,7 +38,8 @@ namespace GalactoseEditor {
 			{ "Scene", { }, [&]() { m_sceneViewport.setVisible(true); } },
 			{ "Game", { }, [&]() { m_gameViewport.setVisible(true); } },
 			{ "Scene Hierarchy", { }, [&]() { m_sceneHierarchy.setVisible(true); } },
-			{ "Inspector", { }, [&]() { m_inspector.setVisible(true); } }
+			{ "Inspector", { }, [&]() { m_inspector.setVisible(true); } },
+			{ "Asset Explorer", { }, [&]() { m_assetExplorer.setVisible(true); } }
 		} });
 
 		m_menuBar.menus.push_back({ "Layouts", {
@@ -66,6 +67,7 @@ namespace GalactoseEditor {
 		m_inspector.update();
 		m_sceneViewport.update();
 		m_gameViewport.update();
+		m_assetExplorer.update();
 
 		//ImGui::ShowDemoWindow();
 	}
@@ -94,14 +96,16 @@ namespace GalactoseEditor {
 			const auto& workSize = ImGui::GetMainViewport()->WorkSize;
 			ImGui::DockBuilderSetNodeSize(dockSpaceId, workSize);
 
-			const float LEFT_RIGHT_SIZE_RATIO = 0.2f;
-			const auto leftId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, LEFT_RIGHT_SIZE_RATIO, nullptr, &dockSpaceId);
-			const auto rightId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, LEFT_RIGHT_SIZE_RATIO * (1 / (1 - LEFT_RIGHT_SIZE_RATIO)), nullptr, &dockSpaceId);
-			
+			const float DOCK_SIZE_RATIO = 0.2f;
+			const auto rightId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, DOCK_SIZE_RATIO, nullptr, &dockSpaceId);
+			const auto bottomId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Down, DOCK_SIZE_RATIO, nullptr, &dockSpaceId);
+			const auto leftId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Left, DOCK_SIZE_RATIO, nullptr, &dockSpaceId);
+
 			ImGui::DockBuilderDockWindow(m_sceneHierarchy.name().c_str(), leftId);
 			ImGui::DockBuilderDockWindow(m_inspector.name().c_str(), rightId);
 			ImGui::DockBuilderDockWindow(m_sceneViewport.name().c_str(), dockSpaceId);
 			ImGui::DockBuilderDockWindow(m_gameViewport.name().c_str(), dockSpaceId);
+			ImGui::DockBuilderDockWindow(m_assetExplorer.name().c_str(), bottomId);
 			ImGui::DockBuilderFinish(dockSpaceId);
 		}
 

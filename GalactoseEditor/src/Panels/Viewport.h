@@ -20,7 +20,7 @@ namespace GalactoseEditor {
 		void onUpdate() override;
 
 	protected:
-		std::shared_ptr<EditorContext> m_sceneContext;
+		std::shared_ptr<EditorContext> m_editorContext;
 		std::shared_ptr<Galactose::Framebuffer> m_framebuffer;
 	};
 }

@@ -30,9 +30,9 @@ namespace GalactoseEditor {
 	private:
 		struct ComponentInfo {
 			std::string name;
-			void(Inspector::*draw)(Galactose::Component*);
-			bool(Galactose::Entity::*has)() const;
-			Galactose::Component*(*create)(Galactose::Entity*);
+			void(Inspector::*draw)(Galactose::Component*) = nullptr;
+			bool(Galactose::Entity::*has)() const = nullptr;
+			Galactose::Component*(*create)(Galactose::Entity*) = nullptr;
 		};
 
 		static std::string toReadableName(const std::string& name);

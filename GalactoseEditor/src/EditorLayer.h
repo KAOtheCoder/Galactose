@@ -5,6 +5,7 @@
 #include "Panels/GameViewport.h"
 #include "Panels/SceneHierarchy.h"
 #include "Panels/Inspector/Inspector.h"
+#include "Panels/AssetExplorer.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/ToolBar.h"
 
@@ -32,8 +33,9 @@ namespace GalactoseEditor {
 		GameViewport m_gameViewport;
 		SceneHierarchy m_sceneHierarchy;
 		Inspector m_inspector;
+		AssetExplorer m_assetExplorer;
 		MenuBar m_menuBar;
 		ToolBar m_toolBar;
-		Layout m_layout = Layout::None;
+		Layout m_layout;
 	};
 }
