@@ -27,9 +27,13 @@ namespace GalactoseEditor {
 		void addScene(const std::filesystem::path& a_path) { m_scenes.insert(a_path); }
 		void make();
 
+		bool isFileIncluded(const std::filesystem::path& a_relativePath) const;
+
 	private:
+		std::filesystem::path premakePath() const { return "premake5.lua"; }
+
 		void unloadScripts();
-		void replaceAll(std::string& str, const std::string& from, const std::string& to);
+		static void replaceAll(std::string& str, const std::string& from, const std::string& to);
 
 		std::filesystem::path m_filePath;
 		std::filesystem::path m_startScene; // scene to load when project builded

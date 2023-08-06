@@ -175,8 +175,7 @@ project "<PROJECT>"
 		int result = premake_init(luaState);
 
 		if (result == OKAY) {
-			const auto& projectDirectory = directory();
-			const auto& premakeFilePath = (projectDirectory / "premake5.lua").generic_string();
+			const auto& premakeFilePath = (directory() / premakePath()).generic_string();
 			std::ofstream premakeFile(premakeFilePath);
 			
 			if (!premakeFile) {
@@ -214,5 +213,14 @@ project "<PROJECT>"
 
 		if (!FreeLibrary(static_cast<HMODULE>(m_scriptLib)))
 			std::cerr << "Failed to free library: " << name() << std::endl;
+	}
+
+	bool Project::isFileIncluded(const std::filesystem::path& a_path) const {
+		const auto& projectName = name();
+
+		if (a_path == premakePath() || a_path == projectName + ".pro" || a_path == projectName + ".sln" || a_path == projectName + ".vcxproj")
+			return true;
+
+		return m_scenes.contains(a_path) || m_scripts.contains(a_path) || a_path == m_filePath;
 	}
 }

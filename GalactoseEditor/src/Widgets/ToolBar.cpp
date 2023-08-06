@@ -49,7 +49,7 @@ namespace GalactoseEditor {
 			if (button(operation.first, x))
 				a_editorContext->setManipulatorOperation(operation.second);
 
-			x += buttonSize;// + style.WindowPadding.x;
+			x += buttonSize;
 		}
 
 		const bool running = a_editorContext->isRunning();
