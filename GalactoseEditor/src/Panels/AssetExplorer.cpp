@@ -37,12 +37,12 @@ namespace GalactoseEditor {
 
 				if (ImGui::ImageButton("Up", (void*)(intptr_t)m_icons["Up"]->rendererId(), { font_size, font_size }, { 0, 1 }, { 1, 0 }))
 					m_path = m_path.parent_path();
-			}
 
-			ImGui::TableSetColumnIndex(1);
-			const auto& currentPath = m_path.generic_string();
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text(currentPath.c_str());
+				ImGui::TableSetColumnIndex(1);
+				const auto& relativePath = std::filesystem::relative(m_path, m_editorContext->project().directory()).generic_string();
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text(relativePath.c_str());
+			}
 
 			ImGui::TableSetColumnIndex(2);
 
