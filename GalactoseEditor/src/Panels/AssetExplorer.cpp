@@ -13,26 +13,39 @@ namespace GalactoseEditor {
 		m_editorContext(a_editorContext),
 		m_path(a_editorContext->project().directory())
 	{
+		m_icons.emplace("Up", Texture::create("assets/textures/Up.png"));
 		m_icons.emplace("Folder", Texture::create("assets/textures/Folder.png"));
 	}
 
 	void AssetExplorer::onUpdate() {
-		if (ImGui::BeginTable("##Controls", 3)) {
+		const auto& style = ImGui::GetStyle();
+		// always ignore vertical scrollbar area to avoid flickering 
+		const auto available_width = ImGui::GetContentRegionAvail().x - (ImGui::GetScrollMaxY() > 0 ? 0 : style.ScrollbarSize);
+		const ImVec2 table_size(available_width, 0);
+
+		if (ImGui::BeginTable("##Controls", 3, ImGuiTableFlags_NoPadOuterX, table_size)) {
+			const float font_size = ImGui::GetFontSize();
+			const float button_size = font_size + 2 * style.FramePadding.x;
+
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, button_size);
 			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch, 1);
-			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch, 2); //empty stretch
-			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch, 1);
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, 6 * button_size);
 
 			ImGui::TableNextRow();
 
 			if (m_path != m_editorContext->project().directory()) {
 				ImGui::TableSetColumnIndex(0);
 
-				if (ImGui::Button("Back"))
+				if (ImGui::ImageButton("Up", (void*)(intptr_t)m_icons["Up"]->rendererId(), { font_size, font_size }, { 0, 1 }, { 1, 0 }))
 					m_path = m_path.parent_path();
 			}
 
+			ImGui::TableSetColumnIndex(1);
+			const auto& currentPath = m_path.generic_string();
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text(currentPath.c_str());
+
 			ImGui::TableSetColumnIndex(2);
-			const float font_size = ImGui::GetFontSize();
 
 			if (m_thumbnailSize <= 0)
 				m_thumbnailSize = 6 * font_size;
@@ -43,15 +56,12 @@ namespace GalactoseEditor {
 
 			ImGui::EndTable();
 		}
-		
-		const auto& style = ImGui::GetStyle();
-		// always ignore vertical scrollbar area to avoid flickering 
-		const auto available_width = ImGui::GetContentRegionAvail().x - (ImGui::GetScrollMaxY() > 0 ? 0 : style.ScrollbarSize);
+
 		const int columns = std::clamp(int(available_width / m_thumbnailSize), 1, IMGUI_TABLE_MAX_COLUMNS);
 
 		ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
 		
-		if (ImGui::BeginTable("##Files", columns, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+		if (ImGui::BeginTable("##Files", columns, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX, table_size)) {
 			for (int i = 0; i < columns; ++i)
 				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, m_thumbnailSize);
 
