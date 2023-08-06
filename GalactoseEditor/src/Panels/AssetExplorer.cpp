@@ -3,8 +3,6 @@
 
 #include <Galactose/Renderer/Texture.h>
 
-#include <imgui_internal.h>
-
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -14,7 +12,8 @@ namespace GalactoseEditor {
 		m_path(a_editorContext->project().directory())
 	{
 		m_icons.emplace("Up", Texture::create("assets/textures/Up.png"));
-		m_icons.emplace("Folder", Texture::create("assets/textures/Folder.png"));
+		m_icons.emplace("Folder", Texture::create("assets/textures/FolderL.png"));
+		m_icons.emplace("File", Texture::create("assets/textures/FileL.png"));
 	}
 
 	void AssetExplorer::onUpdate() {
@@ -57,6 +56,7 @@ namespace GalactoseEditor {
 			ImGui::EndTable();
 		}
 
+		const int IMGUI_TABLE_MAX_COLUMNS = 64; // it is defined in imgui_internal.h
 		const int columns = std::clamp(int(available_width / m_thumbnailSize), 1, IMGUI_TABLE_MAX_COLUMNS);
 
 		ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
@@ -77,12 +77,13 @@ namespace GalactoseEditor {
 
 				ImGui::TableSetColumnIndex(column);
 
+				const bool isDirectory = directory_entry.is_directory();
 				const auto& file_path = directory_entry.path();
 				const auto& filename = file_path.filename().string();
 
-				ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["Folder"]->rendererId(), button_size, { 0, 1 }, { 1, 0 });
+				ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons[isDirectory ? "Folder" : "File"]->rendererId(), button_size, {0, 1}, {1, 0});
 				
-				if (directory_entry.is_directory() && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				if (isDirectory && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 					m_path = file_path;
 
 				ImGui::TextWrapped(filename.c_str());
