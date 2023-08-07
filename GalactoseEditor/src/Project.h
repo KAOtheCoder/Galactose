@@ -27,10 +27,11 @@ namespace GalactoseEditor {
 		void addScene(const std::filesystem::path& a_path) { m_scenes.insert(a_path); }
 		void make();
 
-		bool isFileIncluded(const std::filesystem::path& a_relativePath) const;
+		bool contains(const std::filesystem::path& relativePath) const;
+		bool isPathReserved(const std::filesystem::path& relativePath) const;
 
 	private:
-		std::filesystem::path premakePath() const { return "premake5.lua"; }
+		static std::filesystem::path premakePath() { return "premake5.lua"; }
 
 		void unloadScripts();
 		static void replaceAll(std::string& str, const std::string& from, const std::string& to);

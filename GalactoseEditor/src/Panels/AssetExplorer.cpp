@@ -24,6 +24,9 @@ namespace GalactoseEditor {
 		const ImVec2 tableSize(availableWidth, 0);
 		const float fontSize = ImGui::GetFontSize();
 		const float minThumnailSize = 2 * fontSize;
+		const auto& project = m_editorContext->project();
+		const auto& projectDirectory = project.directory();
+		const bool inTopPath = m_path == projectDirectory;
 
 		if (ImGui::BeginTable("##Controls", 3, ImGuiTableFlags_NoPadOuterX, tableSize)) {
 			const float buttonSize = fontSize + 2 * style.FramePadding.x;
@@ -34,14 +37,14 @@ namespace GalactoseEditor {
 
 			ImGui::TableNextRow();
 
-			if (m_path != m_editorContext->project().directory()) {
+			if (!inTopPath) {
 				ImGui::TableSetColumnIndex(0);
 
 				if (ImGui::ImageButton("Up", (void*)(intptr_t)m_icons["Up"]->rendererId(), { fontSize, fontSize }, { 0, 1 }, { 1, 0 }))
 					m_path = m_path.parent_path();
 
 				ImGui::TableSetColumnIndex(1);
-				const auto& relativePath = std::filesystem::relative(m_path, m_editorContext->project().directory()).generic_string();
+				const auto& relativePath = std::filesystem::relative(m_path, projectDirectory).generic_string();
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text(relativePath.c_str());
 			}
@@ -72,15 +75,20 @@ namespace GalactoseEditor {
 			int i = 0;
 
 			for (const auto& directory_entry : std::filesystem::directory_iterator(m_path)) {
+				const auto& filePath = directory_entry.path();
+				const auto& filename = filePath.filename().string();
+				const auto& relativePath = std::filesystem::relative(filePath, projectDirectory);
+
+				// ignore hidden and reserved files
+				if (filename.front() == '.' || project.isPathReserved(relativePath))
+					continue;
+				
 				const int column = i % columns;
 				
 				if (column == 0)
 					ImGui::TableNextRow();
 
 				ImGui::TableSetColumnIndex(column);
-
-				const auto& filePath = directory_entry.path();
-				const auto& filename = filePath.filename().string();
 
 				if (directory_entry.is_directory()) {
 					ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["Folder"]->rendererId(), button_size, { 0, 1 }, { 1, 0 });
@@ -90,9 +98,10 @@ namespace GalactoseEditor {
 				}
 				else {
 					ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["File"]->rendererId(), button_size, { 0, 1 }, { 1, 0 });
-					const ImVec2 bottomRight(ImGui::GetItemRectMax().x - style.FramePadding.x, ImGui::GetItemRectMax().y - style.FramePadding.y);
+					const auto& buttonRectMax = ImGui::GetItemRectMax();
+					const ImVec2 bottomRight(buttonRectMax.x - style.FramePadding.x, buttonRectMax.y - style.FramePadding.y);
 					
-					if (!m_editorContext->project().isFileIncluded(std::filesystem::relative(filePath, m_editorContext->project().directory()))) {
+					if (!project.contains(relativePath)) {
 						const float notIncludedIconSize = minThumnailSize / 2;
 						const ImVec2 topLeft(bottomRight.x - notIncludedIconSize, bottomRight.y - notIncludedIconSize);
 						ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)m_icons["NotIncluded"]->rendererId(), topLeft, bottomRight, { 0, 1 }, { 1, 0 });

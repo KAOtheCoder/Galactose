@@ -69,7 +69,7 @@ namespace GalactoseEditor {
 		m_gameViewport.update();
 		m_assetExplorer.update();
 
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {

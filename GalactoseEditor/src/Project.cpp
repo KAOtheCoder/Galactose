@@ -58,7 +58,8 @@ namespace GalactoseEditor {
 		for (const auto& script : m_scripts)
 			out << script;
 
-		out << OutSerializer::EndSeq << OutSerializer::EndMap;
+		out << OutSerializer::EndSeq 
+			<< OutSerializer::EndMap;
 
 		out.save(m_filePath.generic_string());
 	}
@@ -215,12 +216,14 @@ project "<PROJECT>"
 			std::cerr << "Failed to free library: " << name() << std::endl;
 	}
 
-	bool Project::isFileIncluded(const std::filesystem::path& a_path) const {
+	bool Project::contains(const std::filesystem::path& a_relativePath) const {
+		return m_scenes.contains(a_relativePath) || m_scripts.contains(a_relativePath) || a_relativePath == m_filePath;
+	}
+
+	bool Project::isPathReserved(const std::filesystem::path& a_relativePath) const {
 		const auto& projectName = name();
 
-		if (a_path == premakePath() || a_path == projectName + ".pro" || a_path == projectName + ".sln" || a_path == projectName + ".vcxproj")
-			return true;
-
-		return m_scenes.contains(a_path) || m_scripts.contains(a_path) || a_path == m_filePath;
+		return a_relativePath == premakePath() || a_relativePath == projectName + ".pro" || a_relativePath == "bin" 
+			|| a_relativePath == "bin-int" || a_relativePath == projectName + ".sln" || a_relativePath == projectName + ".vcxproj";
 	}
 }
