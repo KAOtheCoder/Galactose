@@ -64,9 +64,36 @@ namespace GalactoseEditor {
 		out.save(m_filePath.generic_string());
 	}
 
-	void Project::addScripts(const std::vector<std::filesystem::path>& a_path) {
-		m_scripts.insert(a_path.begin(), a_path.end());
-		make();
+	void Project::addScripts(const std::vector<std::filesystem::path>& a_paths) {
+		const auto prevScriptsSize = m_scripts.size();
+		m_scripts.insert(a_paths.begin(), a_paths.end());
+
+		if (m_scripts.size() > prevScriptsSize)
+			make();
+	}
+
+	void Project::removeScripts(const std::vector<std::filesystem::path>& a_paths) {
+		size_t deletedScriptsSize = 0;
+
+		for (const auto& path : a_paths)
+			deletedScriptsSize += m_scripts.erase(path);
+
+		if (deletedScriptsSize > 0)
+			make();
+	}
+
+	void Project::addScene(const std::filesystem::path& a_path) {
+		if (m_scenes.insert(a_path).second && m_startScene.empty())
+			m_startScene = a_path;
+	}
+
+	void Project::removeScene(const std::filesystem::path& a_path) {
+		if (m_scenes.erase(a_path) > 0 && m_startScene == a_path) {
+			if (m_scenes.empty())
+				m_startScene.clear();
+			else
+				m_startScene = *m_scenes.begin();
+		}
 	}
 
 	void Project::replaceAll(std::string& str, const std::string& from, const std::string& to) {

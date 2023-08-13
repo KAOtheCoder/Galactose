@@ -28,7 +28,7 @@ namespace GalactoseEditor {
 	}
 
 	void EditorContext::openScene() {
-		const auto& path = FileDialog::open({ {"Scene", "yaml"} });
+		const auto& path = FileDialog::open({ {"Scene", "scene"} });
 
 		auto scene = std::make_shared<Scene>();
 		if (!path.empty() && scene->load(path)) {
@@ -45,15 +45,8 @@ namespace GalactoseEditor {
 	}
 
 	void EditorContext::saveSceneAs() {
-		const auto& path = FileDialog::save({ {"Scene", "yaml"} }, "", m_scene->name().c_str());
+		const auto& path = FileDialog::save({ {"Scene", "scene"} }, "", m_scene->name().c_str());
 		if (!path.empty()) {
-			// TODO: When Project Explorer added remove following if statement.
-			if (m_sceneFilePath.empty()) {
-				const auto& relative_path = std::filesystem::relative(path, m_project.directory());
-				m_project.addScene(relative_path);
-				m_project.setEditorScene(relative_path);
-			}
-
 			m_sceneFilePath = path;
 			saveAndPrint();
 		}
@@ -80,20 +73,6 @@ namespace GalactoseEditor {
 			m_scene->time().suspend();
 
 		m_running = a_running;
-	}
-
-	void EditorContext::addScripts() {
-		const auto& paths = FileDialog::openMultiple({ { "Script", "h,cpp,hpp" } });
-
-		if (!paths.empty()) {
-			std::vector<std::filesystem::path> relativePaths;
-			relativePaths.reserve(paths.size());
-
-			for (const auto& path : paths)
-				relativePaths.push_back(std::filesystem::relative(path, m_project.directory()));
-
-			m_project.addScripts(relativePaths);
-		}
 	}
 
 	void EditorContext::loadScripts() {

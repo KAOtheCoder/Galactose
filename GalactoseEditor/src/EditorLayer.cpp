@@ -46,9 +46,8 @@ namespace GalactoseEditor {
 			{ "Default", { }, [&]() { m_layout = Layout::Default; }}
 		} });
 
-		m_menuBar.menus.push_back({ "Script", {
-			{ "Add Script(s)", { }, [&]() { m_editorContext->addScripts(); }},
-			{ "Load Script(s)", { }, [&]() { m_editorContext->loadScripts(); }},
+		m_menuBar.menus.push_back({ "Build", {
+			{ "Load Script(s)", { }, [&]() { m_editorContext->loadScripts(); }}
 		} });
 	}
 
@@ -69,7 +68,7 @@ namespace GalactoseEditor {
 		m_gameViewport.update();
 		m_assetExplorer.update();
 
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {

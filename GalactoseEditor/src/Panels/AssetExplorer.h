@@ -21,8 +21,9 @@ namespace GalactoseEditor {
 
 	private:
 		std::shared_ptr<EditorContext> m_editorContext;
-		std::filesystem::path m_path;
+		std::filesystem::path m_directoryPath;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		float m_thumbnailSize = 0;
+		std::filesystem::path m_contextFile;
 	};
 }

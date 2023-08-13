@@ -36,7 +36,6 @@ namespace GalactoseEditor {
 		ImGuizmo::OPERATION manipulatorOperation() const { return m_manipulatorOperation; }
 		void setManipulatorOperation(const ImGuizmo::OPERATION a_operation) { m_manipulatorOperation = a_operation; }
 
-		void addScripts();
 		void loadScripts();
 
 	private:

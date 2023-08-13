@@ -9,7 +9,7 @@ namespace GalactoseEditor {
 	AssetExplorer::AssetExplorer(const std::shared_ptr<EditorContext>& a_editorContext) : 
 		Panel("Asset Explorer"),
 		m_editorContext(a_editorContext),
-		m_path(a_editorContext->project().directory())
+		m_directoryPath(a_editorContext->project().directory())
 	{
 		m_icons.emplace("Up", Texture::create("assets/textures/Up.png"));
 		m_icons.emplace("Folder", Texture::create("assets/textures/Folder256.png"));
@@ -24,9 +24,9 @@ namespace GalactoseEditor {
 		const ImVec2 tableSize(availableWidth, 0);
 		const float fontSize = ImGui::GetFontSize();
 		const float minThumnailSize = 2 * fontSize;
-		const auto& project = m_editorContext->project();
+		auto& project = m_editorContext->project();
 		const auto& projectDirectory = project.directory();
-		const bool inTopPath = m_path == projectDirectory;
+		const bool inTopPath = m_directoryPath == projectDirectory;
 
 		if (ImGui::BeginTable("##Controls", 3, ImGuiTableFlags_NoPadOuterX, tableSize)) {
 			const float buttonSize = fontSize + 2 * style.FramePadding.x;
@@ -41,10 +41,10 @@ namespace GalactoseEditor {
 				ImGui::TableSetColumnIndex(0);
 
 				if (ImGui::ImageButton("Up", (void*)(intptr_t)m_icons["Up"]->rendererId(), { fontSize, fontSize }, { 0, 1 }, { 1, 0 }))
-					m_path = m_path.parent_path();
+					m_directoryPath = m_directoryPath.parent_path();
 
 				ImGui::TableSetColumnIndex(1);
-				const auto& relativePath = std::filesystem::relative(m_path, projectDirectory).generic_string();
+				const auto& relativePath = std::filesystem::relative(m_directoryPath, projectDirectory).generic_string();
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text(relativePath.c_str());
 			}
@@ -74,7 +74,7 @@ namespace GalactoseEditor {
 
 			int i = 0;
 
-			for (const auto& directory_entry : std::filesystem::directory_iterator(m_path)) {
+			for (const auto& directory_entry : std::filesystem::directory_iterator(m_directoryPath)) {
 				const auto& filePath = directory_entry.path();
 				const auto& filename = filePath.filename().string();
 				const auto& relativePath = std::filesystem::relative(filePath, projectDirectory);
@@ -94,7 +94,7 @@ namespace GalactoseEditor {
 					ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["Folder"]->rendererId(), button_size, { 0, 1 }, { 1, 0 });
 
 					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-						m_path = filePath;
+						m_directoryPath = filePath;
 				}
 				else {
 					ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["File"]->rendererId(), button_size, { 0, 1 }, { 1, 0 });
@@ -106,11 +106,53 @@ namespace GalactoseEditor {
 						const ImVec2 topLeft(bottomRight.x - notIncludedIconSize, bottomRight.y - notIncludedIconSize);
 						ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)m_icons["NotIncluded"]->rendererId(), topLeft, bottomRight, { 0, 1 }, { 1, 0 });
 					}
+
+					if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonRight)) {
+						m_contextFile = relativePath;
+						ImGui::OpenPopup("Context Menu");
+					}
 				}
 
 				ImGui::TextWrapped(filename.c_str());
 
 				++i;
+			}
+
+			if (ImGui::BeginPopup("Context Menu")) {
+				const bool isScript = project.scripts().contains(m_contextFile);
+				const bool isScene = project.scenes().contains(m_contextFile);
+
+				if (isScript) {
+					if (ImGui::Selectable("Exclude From Project"))
+						project.removeScripts({ m_contextFile });
+				}
+				else if (isScene) {
+					if (ImGui::Selectable("Exclude From Project"))
+						project.removeScene(m_contextFile);
+				}
+				else {
+					const auto& extension = m_contextFile.extension().string();
+					if ((extension == ".h" || extension == ".hpp" || extension == ".cpp") && ImGui::Selectable("Include In Project"))
+						project.addScripts({ m_contextFile });
+					else if (extension == ".scene" && ImGui::Selectable("Include In Project"))
+						project.addScene(m_contextFile);
+				}
+
+				if (ImGui::Selectable("Delete")) {
+					if (isScript)
+						project.removeScripts({ m_contextFile });
+					else if (isScene)
+						project.removeScene(m_contextFile);
+
+					try {
+						std::filesystem::remove(projectDirectory / m_contextFile);
+					}
+					catch (const std::exception& ex) {
+						std::cerr << ex.what() << std::endl;
+					}
+				}
+
+				ImGui::EndPopup();
 			}
 
 			ImGui::EndTable();
