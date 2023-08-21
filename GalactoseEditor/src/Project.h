@@ -23,12 +23,14 @@ namespace GalactoseEditor {
 
 		void addScripts(const std::vector<std::filesystem::path>& paths);
 		void removeScripts(const std::vector<std::filesystem::path>& paths);
+		void renameScript(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
 		bool loadScripts();
 		void make();
 
 		void addScene(const std::filesystem::path& path);
 		void removeScene(const std::filesystem::path& path);
-		
+		void renameScene(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
+
 		bool contains(const std::filesystem::path& relativePath) const;
 		bool isPathReserved(const std::filesystem::path& relativePath) const;
 

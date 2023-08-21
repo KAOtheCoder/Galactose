@@ -82,6 +82,16 @@ namespace GalactoseEditor {
 			make();
 	}
 
+	void Project::renameScript(const std::filesystem::path& oldPath, const std::filesystem::path& newPath) {
+		if (oldPath == newPath)
+			return;
+
+		if (m_scripts.erase(oldPath) > 0) {
+			m_scripts.insert(newPath);
+			make();
+		}
+	}
+
 	void Project::addScene(const std::filesystem::path& a_path) {
 		if (m_scenes.insert(a_path).second && m_startScene.empty())
 			m_startScene = a_path;
@@ -93,6 +103,18 @@ namespace GalactoseEditor {
 				m_startScene.clear();
 			else
 				m_startScene = *m_scenes.begin();
+		}
+	}
+
+	void Project::renameScene(const std::filesystem::path& oldPath, const std::filesystem::path& newPath) {
+		if (oldPath == newPath)
+			return;
+
+		if (m_scenes.erase(oldPath) > 0) {
+			m_scenes.insert(newPath);
+
+			if (m_startScene == oldPath)
+				m_startScene = newPath;
 		}
 	}
 
