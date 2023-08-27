@@ -20,8 +20,9 @@ namespace GalactoseEditor {
 
 	void AssetExplorer::rename() {
 		if (!m_renameString.empty()) {
-			const std::filesystem::path oldPath = m_directoryPath / m_selectedFile;
-			const std::filesystem::path newPath = m_directoryPath / (m_renameString + m_selectedFile.extension().string());
+			const auto& file = *m_selectedFiles.begin();
+			const std::filesystem::path oldPath = m_directoryPath / file;
+			const std::filesystem::path newPath = m_directoryPath / (m_renameString + file.extension().string());
 
 			try {
 				if (oldPath != newPath && !std::filesystem::exists(newPath)) {				
@@ -30,10 +31,10 @@ namespace GalactoseEditor {
 					auto& project = m_editorContext->project();
 					const auto& relativePath = std::filesystem::relative(newPath, project.directory());
 
-					project.renameScript(m_selectedFile, relativePath);
-					project.renameScene(m_selectedFile, relativePath);
+					project.renameScript(file, relativePath);
+					project.renameScene(file, relativePath);
 				
-					if (project.editorScene() == m_selectedFile)
+					if (project.editorScene() == file)
 						project.setEditorScene(relativePath);
 				}
 			}
@@ -46,11 +47,11 @@ namespace GalactoseEditor {
 	}
 
 	void AssetExplorer::clearSelection() {
-		if (!m_selectedFile.empty()) {
+		if (!m_selectedFiles.empty()) {
 			if (m_renaming)
 				rename();
 
-			m_selectedFile.clear();
+			m_selectedFiles.clear();
 		}
 	}
 
@@ -63,7 +64,6 @@ namespace GalactoseEditor {
 		const float minThumnailSize = 2 * fontSize;
 		auto& project = m_editorContext->project();
 		const auto& projectDirectory = project.directory();
-		const bool inTopPath = m_directoryPath == projectDirectory;
 
 		if (ImGui::BeginTable("##Controls", 3, ImGuiTableFlags_NoPadOuterX, tableSize)) {
 			const float buttonSize = fontSize + 2 * style.FramePadding.x;
@@ -74,7 +74,7 @@ namespace GalactoseEditor {
 
 			ImGui::TableNextRow();
 
-			if (!inTopPath) {
+			if (m_directoryPath != projectDirectory) {
 				ImGui::TableSetColumnIndex(0);
 
 				if (ImGui::ImageButton("Up", (void*)(intptr_t)m_icons["Up"]->rendererId(), { fontSize, fontSize }, { 0, 1 }, { 1, 0 })) {
@@ -106,13 +106,6 @@ namespace GalactoseEditor {
 		ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
 		
 		if (ImGui::BeginTable("##Files", columns, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX, tableSize)) {
-
-			if (ImGui::IsWindowHovered()
-				&& (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right)))
-			{
-				clearSelection();
-			}
-
 			for (int i = 0; i < columns; ++i)
 				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, m_thumbnailSize);
 
@@ -136,7 +129,7 @@ namespace GalactoseEditor {
 
 				ImGui::TableSetColumnIndex(column);
 
-				const bool selected = relativePath == m_selectedFile;
+				const bool selected = m_selectedFiles.contains(relativePath);
 
 				if (selected)
 					ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_ButtonActive]);
@@ -149,7 +142,15 @@ namespace GalactoseEditor {
 				}
 				else {
 					if (ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["File"]->rendererId(), button_size, { 0, 1 }, { 1, 0 })) {
-						m_selectedFile = relativePath;
+						if (ImGui::GetIO().KeyCtrl) {
+							if (m_selectedFiles.contains(relativePath))
+								m_selectedFiles.erase(relativePath);
+							else
+								m_selectedFiles.insert(relativePath);
+						}
+						else {
+							m_selectedFiles = { relativePath };
+						}
 					}
 
 					const auto& buttonRectMax = ImGui::GetItemRectMax();
@@ -162,7 +163,9 @@ namespace GalactoseEditor {
 					}
 
 					if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonRight)) {
-						m_selectedFile = relativePath;
+						if (!m_selectedFiles.contains(relativePath))
+							m_selectedFiles = { relativePath };
+
 						ImGui::OpenPopup("Context Menu");
 					}
 				}
@@ -172,7 +175,7 @@ namespace GalactoseEditor {
 
 				if (m_renaming && selected) {
 					if (m_renameString.empty()) {
-						m_renameString = m_selectedFile.stem().string();
+						m_renameString = relativePath.stem().string();
 						ImGui::SetKeyboardFocusHere();
 					}
 
@@ -190,40 +193,64 @@ namespace GalactoseEditor {
 			}
 
 			if (ImGui::BeginPopup("Context Menu")) {
-				const bool isScript = project.scripts().contains(m_selectedFile);
-				const bool isScene = project.scenes().contains(m_selectedFile);
+				std::vector<std::filesystem::path> scripts;
+				std::vector<std::filesystem::path> scenes;
+				std::vector<std::filesystem::path> others;
 
-				if (isScript) {
-					if (ImGui::Selectable("Exclude From Project"))
-						project.removeScripts({ m_selectedFile });
+				for (const auto& file : m_selectedFiles) {
+					if (project.scripts().contains(file))
+						scripts.push_back(file);
+					else if (project.scenes().contains(file))
+						scenes.push_back(file);
+					else
+						others.push_back(file);
 				}
-				else if (isScene) {
-					if (ImGui::Selectable("Exclude From Project"))
-						project.removeScene(m_selectedFile);
+
+				if (others.empty()) {
+					if (ImGui::Selectable("Exclude From Project")) {
+						project.removeScripts(scripts);
+
+						for (const auto& file : scenes)
+							project.removeScene(file);
+					}
 				}
-				else {
-					const auto& extension = m_selectedFile.extension().string();
-					if ((extension == ".h" || extension == ".hpp" || extension == ".cpp") && ImGui::Selectable("Include In Project"))
-						project.addScripts({ m_selectedFile });
-					else if (extension == ".scene" && ImGui::Selectable("Include In Project"))
-						project.addScene(m_selectedFile);
+				else if (scripts.empty() && scenes.empty()) {
+					for (const auto& file : others) {
+						const auto& extension = file.extension().string();
+
+						if ((extension == ".h" || extension == ".hpp" || extension == ".cpp"))
+							scripts.push_back(file);
+						else if (extension == ".scene")
+							scenes.push_back(file);
+					}
+
+					if (scripts.size() + scenes.size() == others.size() && ImGui::Selectable("Include In Project")) {
+						project.addScripts(scripts);
+
+						for (const auto& file : scenes)
+							project.addScene(file);
+					}
+
+					scripts.clear();
+					scenes.clear();
 				}
 
 				if (ImGui::Selectable("Delete")) {
-					if (isScript)
-						project.removeScripts({ m_selectedFile });
-					else if (isScene)
-						project.removeScene(m_selectedFile);
+					project.removeScripts(scripts);
+					
+					for (const auto& file : scenes)
+						project.removeScene(file);
 
 					try {
-						std::filesystem::remove(projectDirectory / m_selectedFile);
+						for (const auto& file : m_selectedFiles)
+							std::filesystem::remove(projectDirectory / file);
 					}
 					catch (const std::exception& ex) {
 						std::cerr << ex.what() << std::endl;
 					}
 				}
 
-				if (ImGui::Selectable("Rename")) {
+				if (m_selectedFiles.size() == 1 && ImGui::Selectable("Rename")) {
 					m_renameString.clear(); // means renaming just started, it will be used to focus on input text
 					m_renaming = true;
 				}
@@ -235,5 +262,11 @@ namespace GalactoseEditor {
 		}
 
 		ImGui::PopStyleColor();
+
+		if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemHovered()
+			&& (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right)))
+		{
+			clearSelection();
+		}
 	}
 }

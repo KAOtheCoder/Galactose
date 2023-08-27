@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <unordered_map>
+#include <set>
 
 namespace Galactose {
 	class Texture;
@@ -27,7 +28,7 @@ namespace GalactoseEditor {
 		std::filesystem::path m_directoryPath;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		float m_thumbnailSize = 0;
-		std::filesystem::path m_selectedFile;
+		std::set<std::filesystem::path> m_selectedFiles;
 		bool m_renaming = false;
 		std::string m_renameString;
 	};
