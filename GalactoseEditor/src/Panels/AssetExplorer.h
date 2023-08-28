@@ -29,7 +29,7 @@ namespace GalactoseEditor {
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		float m_thumbnailSize = 0;
 		std::set<std::filesystem::path> m_selectedFiles;
-		bool m_renaming = false;
+		std::filesystem::path m_renamingPath;
 		std::string m_renameString;
 	};
 }

@@ -20,9 +20,8 @@ namespace GalactoseEditor {
 
 	void AssetExplorer::rename() {
 		if (!m_renameString.empty()) {
-			const auto& file = *m_selectedFiles.begin();
-			const std::filesystem::path oldPath = m_directoryPath / file;
-			const std::filesystem::path newPath = m_directoryPath / (m_renameString + file.extension().string());
+			const std::filesystem::path oldPath = m_directoryPath / m_renamingPath;
+			const std::filesystem::path newPath = m_directoryPath / (m_renameString + m_renamingPath.extension().string());
 
 			try {
 				if (oldPath != newPath && !std::filesystem::exists(newPath)) {				
@@ -31,28 +30,26 @@ namespace GalactoseEditor {
 					auto& project = m_editorContext->project();
 					const auto& relativePath = std::filesystem::relative(newPath, project.directory());
 
-					project.renameScript(file, relativePath);
-					project.renameScene(file, relativePath);
+					project.renameScript(m_renamingPath, relativePath);
+					project.renameScene(m_renamingPath, relativePath);
 				
-					if (project.editorScene() == file)
+					if (project.editorScene() == m_renamingPath)
 						project.setEditorScene(relativePath);
 				}
 			}
 			catch (const std::exception& ex) {
 				std::cerr << ex.what() << std::endl;
 			}
-		}
 
-		m_renaming = false;
+			m_renamingPath.clear();
+		}
 	}
 
 	void AssetExplorer::clearSelection() {
-		if (!m_selectedFiles.empty()) {
-			if (m_renaming)
-				rename();
+		m_selectedFiles.clear();
 
-			m_selectedFiles.clear();
-		}
+		if (!m_renamingPath.empty())
+			rename();
 	}
 
 	void AssetExplorer::onUpdate() {
@@ -64,6 +61,9 @@ namespace GalactoseEditor {
 		const float minThumnailSize = 2 * fontSize;
 		auto& project = m_editorContext->project();
 		const auto& projectDirectory = project.directory();
+		const bool leftClicked = ImGui::IsMouseClicked(ImGuiMouseButton_Left);
+		const bool rightClicked = ImGui::IsMouseClicked(ImGuiMouseButton_Right);
+
 
 		if (ImGui::BeginTable("##Controls", 3, ImGuiTableFlags_NoPadOuterX, tableSize)) {
 			const float buttonSize = fontSize + 2 * style.FramePadding.x;
@@ -102,97 +102,11 @@ namespace GalactoseEditor {
 
 		const int IMGUI_TABLE_MAX_COLUMNS = 64; // it is defined in imgui_internal.h
 		const int columns = std::clamp(int(availableWidth / m_thumbnailSize), 1, IMGUI_TABLE_MAX_COLUMNS);
-
-		ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
+		bool anyHovered = false;
 		
 		if (ImGui::BeginTable("##Files", columns, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX, tableSize)) {
-			for (int i = 0; i < columns; ++i)
-				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, m_thumbnailSize);
-
-			const ImVec2 button_size(m_thumbnailSize - 2 * style.FramePadding.x, m_thumbnailSize - 2 * style.FramePadding.y);
-
-			int i = 0;
-
-			for (const auto& directory_entry : std::filesystem::directory_iterator(m_directoryPath)) {
-				const auto& filePath = directory_entry.path();
-				const auto& filename = filePath.filename().string();
-				const auto& relativePath = std::filesystem::relative(filePath, projectDirectory);
-
-				// ignore hidden and reserved files
-				if (filename.front() == '.' || project.isPathReserved(relativePath))
-					continue;
-				
-				const int column = i % columns;
-				
-				if (column == 0)
-					ImGui::TableNextRow();
-
-				ImGui::TableSetColumnIndex(column);
-
-				const bool selected = m_selectedFiles.contains(relativePath);
-
-				if (selected)
-					ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_ButtonActive]);
-
-				if (directory_entry.is_directory()) {
-					ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["Folder"]->rendererId(), button_size, { 0, 1 }, { 1, 0 });
-
-					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-						m_directoryPath = filePath;
-				}
-				else {
-					if (ImGui::ImageButton(filename.c_str(), (void*)(intptr_t)m_icons["File"]->rendererId(), button_size, { 0, 1 }, { 1, 0 })) {
-						if (ImGui::GetIO().KeyCtrl) {
-							if (m_selectedFiles.contains(relativePath))
-								m_selectedFiles.erase(relativePath);
-							else
-								m_selectedFiles.insert(relativePath);
-						}
-						else {
-							m_selectedFiles = { relativePath };
-						}
-					}
-
-					const auto& buttonRectMax = ImGui::GetItemRectMax();
-					const ImVec2 bottomRight(buttonRectMax.x - style.FramePadding.x, buttonRectMax.y - style.FramePadding.y);
-					
-					if (!project.contains(relativePath)) {
-						const float notIncludedIconSize = minThumnailSize / 2;
-						const ImVec2 topLeft(bottomRight.x - notIncludedIconSize, bottomRight.y - notIncludedIconSize);
-						ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)m_icons["NotIncluded"]->rendererId(), topLeft, bottomRight, { 0, 1 }, { 1, 0 });
-					}
-
-					if (ImGui::IsItemHovered() && ImGui::IsItemClicked(ImGuiPopupFlags_MouseButtonRight)) {
-						if (!m_selectedFiles.contains(relativePath))
-							m_selectedFiles = { relativePath };
-
-						ImGui::OpenPopup("Context Menu");
-					}
-				}
-
-				if (selected)
-					ImGui::PopStyleColor();
-
-				if (m_renaming && selected) {
-					if (m_renameString.empty()) {
-						m_renameString = relativePath.stem().string();
-						ImGui::SetKeyboardFocusHere();
-					}
-
-					if (InputString::inputText("##" + filename, m_renameString))
-						m_renameString = InputString::text();
-
-					if (ImGui::IsItemDeactivated()) // focus out or press "Enter"
-						rename();
-				}
-				else {
-					ImGui::TextWrapped(filename.c_str());
-				}
-
-				++i;
-			}
-
-			if (ImGui::BeginPopup("Context Menu")) {
+			const bool contextMenuOpen = ImGui::BeginPopup("Context Menu");
+			if (contextMenuOpen) {
 				std::vector<std::filesystem::path> scripts;
 				std::vector<std::filesystem::path> scenes;
 				std::vector<std::filesystem::path> others;
@@ -237,7 +151,7 @@ namespace GalactoseEditor {
 
 				if (ImGui::Selectable("Delete")) {
 					project.removeScripts(scripts);
-					
+
 					for (const auto& file : scenes)
 						project.removeScene(file);
 
@@ -248,25 +162,133 @@ namespace GalactoseEditor {
 					catch (const std::exception& ex) {
 						std::cerr << ex.what() << std::endl;
 					}
+
+					clearSelection();
 				}
 
 				if (m_selectedFiles.size() == 1 && ImGui::Selectable("Rename")) {
 					m_renameString.clear(); // means renaming just started, it will be used to focus on input text
-					m_renaming = true;
+					m_renamingPath = *m_selectedFiles.begin();
 				}
 
 				ImGui::EndPopup();
 			}
 
+			for (int i = 0; i < columns; ++i)
+				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, m_thumbnailSize);
+
+			const ImVec2 imageSize(m_thumbnailSize - 2 * style.FramePadding.x, m_thumbnailSize - 2 * style.FramePadding.y);
+			auto drawList = ImGui::GetWindowDrawList();
+
+			int i = 0;
+
+			try {
+				for (const auto& directory_entry : std::filesystem::directory_iterator(m_directoryPath)) {
+					const auto& filePath = directory_entry.path();
+					const auto& filename = filePath.filename().string();
+					const auto& relativePath = std::filesystem::relative(filePath, projectDirectory);
+
+					// ignore hidden and reserved files
+					if (filename.front() == '.' || project.isPathReserved(relativePath))
+						continue;
+
+					const int column = i % columns;
+
+					if (column == 0)
+						ImGui::TableNextRow();
+
+					ImGui::TableSetColumnIndex(column);
+
+					const bool renaming = relativePath == m_renamingPath;
+					const bool selected = m_selectedFiles.contains(relativePath);
+					const bool isDirectory = directory_entry.is_directory();
+
+					const auto& cursorScreenPos = ImGui::GetCursorScreenPos();
+					ImVec2 backgroundMax(cursorScreenPos.x + m_thumbnailSize, cursorScreenPos.y + m_thumbnailSize);
+					const auto textHeight = ImGui::CalcTextSize(filename.c_str(), nullptr, true, imageSize.x).y + 2 * style.FramePadding.y;
+
+					if (!renaming)
+						backgroundMax.y += style.ItemSpacing.y + textHeight;
+
+					const bool hovered = !contextMenuOpen && ImGui::IsMouseHoveringRect(cursorScreenPos, backgroundMax);
+
+					if (selected || hovered) {
+						const ImColor backgroundColor(style.Colors[selected ? ImGuiCol_FrameBgActive : ImGuiCol_FrameBgHovered]);
+						drawList->AddRectFilled(cursorScreenPos, backgroundMax, backgroundColor);
+					}
+
+					auto cursorPos = ImGui::GetCursorPos();
+					ImGui::SetCursorPos({ cursorPos.x + style.FramePadding.x, cursorPos.y + style.FramePadding.y });
+
+					ImGui::Image((void*)(intptr_t)m_icons[isDirectory ? "Folder" : "File"]->rendererId(), imageSize, { 0, 1 }, { 1, 0 });
+
+					if (!isDirectory && !project.contains(relativePath)) {
+						const float notIncludedIconSize = minThumnailSize / 2;
+						const auto& buttonRectMax = ImGui::GetItemRectMax();
+						const ImVec2 bottomRight(buttonRectMax.x - style.FramePadding.x, buttonRectMax.y - style.FramePadding.y);
+						const ImVec2 topLeft(bottomRight.x - notIncludedIconSize, bottomRight.y - notIncludedIconSize);
+						drawList->AddImage((void*)(intptr_t)m_icons["NotIncluded"]->rendererId(), topLeft, bottomRight, { 0, 1 }, { 1, 0 });
+					}
+
+					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + style.FramePadding.y);
+
+					if (renaming) {
+						if (m_renameString.empty()) {
+							m_renameString = relativePath.stem().string();
+							ImGui::SetKeyboardFocusHere();
+						}
+
+						if (InputString::inputText("##" + filename, m_renameString))
+							m_renameString = InputString::text();
+
+						if (ImGui::IsItemDeactivated()) // focus out or press "Enter"
+							rename();
+					}
+					else {
+						cursorPos = ImGui::GetCursorPos();
+						ImGui::SetCursorPos({ cursorPos.x + style.FramePadding.x, cursorPos.y + style.FramePadding.y });
+						ImGui::PushTextWrapPos(cursorPos.x + m_thumbnailSize - style.FramePadding.x);
+						ImGui::TextWrapped(filename.c_str());
+						ImGui::PopTextWrapPos();
+					}
+
+					if (hovered) {
+						anyHovered = true;
+
+						if (isDirectory && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+							clearSelection();
+							m_directoryPath = filePath;
+						}
+						else if (leftClicked) {
+							if (ImGui::GetIO().KeyCtrl) {
+								if (selected)
+									m_selectedFiles.erase(relativePath);
+								else
+									m_selectedFiles.insert(relativePath);
+							}
+							else {
+								m_selectedFiles = { relativePath };
+							}
+						}
+						else if (rightClicked) {
+							if (!selected)
+								m_selectedFiles = { relativePath };
+
+							ImGui::OpenPopup("Context Menu");
+						}
+					}
+
+					++i;
+				}
+			}
+			catch (const std::exception& ex) {
+				std::cerr << ex.what() << std::endl;
+			}
+
 			ImGui::EndTable();
 		}
 
-		ImGui::PopStyleColor();
-
-		if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemHovered()
-			&& (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseClicked(ImGuiMouseButton_Right)))
-		{
+		if (!anyHovered && ImGui::IsWindowHovered() && (leftClicked || rightClicked))
 			clearSelection();
-		}
 	}
 }
