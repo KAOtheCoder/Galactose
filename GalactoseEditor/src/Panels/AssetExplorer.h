@@ -18,6 +18,7 @@ namespace GalactoseEditor {
 		AssetExplorer(const std::shared_ptr<EditorContext>& editorContext);
 
 		void onUpdate() override;
+		// TODO: Select All (Ctrl + A)
 		//void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
 
 	private:

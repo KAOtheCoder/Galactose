@@ -150,14 +150,28 @@ namespace GalactoseEditor {
 				}
 
 				if (ImGui::Selectable("Delete")) {
-					project.removeScripts(scripts);
-
-					for (const auto& file : scenes)
-						project.removeScene(file);
-
 					try {
+						for (const auto& path : others) {
+							const auto& absolutePath = projectDirectory / path;
+
+							if (std::filesystem::is_directory(absolutePath))
+								for (const auto& directoryEntry : std::filesystem::recursive_directory_iterator(absolutePath)) {
+									const auto& relativePath = std::filesystem::relative(directoryEntry.path(), projectDirectory);
+
+									if (project.scripts().contains(relativePath))
+										scripts.push_back(relativePath);
+									else if (project.scenes().contains(relativePath))
+										scenes.push_back(relativePath);
+								}
+						}
+
+						project.removeScripts(scripts);
+
+						for (const auto& file : scenes)
+							project.removeScene(file);
+
 						for (const auto& file : m_selectedFiles)
-							std::filesystem::remove(projectDirectory / file);
+							std::filesystem::remove_all(projectDirectory / file);
 					}
 					catch (const std::exception& ex) {
 						std::cerr << ex.what() << std::endl;
@@ -183,8 +197,8 @@ namespace GalactoseEditor {
 			int i = 0;
 
 			try {
-				for (const auto& directory_entry : std::filesystem::directory_iterator(m_directoryPath)) {
-					const auto& filePath = directory_entry.path();
+				for (const auto& directoryEntry : std::filesystem::directory_iterator(m_directoryPath)) {
+					const auto& filePath = directoryEntry.path();
 					const auto& filename = filePath.filename().string();
 					const auto& relativePath = std::filesystem::relative(filePath, projectDirectory);
 
@@ -201,7 +215,7 @@ namespace GalactoseEditor {
 
 					const bool renaming = relativePath == m_renamingPath;
 					const bool selected = m_selectedFiles.contains(relativePath);
-					const bool isDirectory = directory_entry.is_directory();
+					const bool isDirectory = directoryEntry.is_directory();
 
 					const auto& cursorScreenPos = ImGui::GetCursorScreenPos();
 					ImVec2 backgroundMax(cursorScreenPos.x + m_thumbnailSize, cursorScreenPos.y + m_thumbnailSize);
