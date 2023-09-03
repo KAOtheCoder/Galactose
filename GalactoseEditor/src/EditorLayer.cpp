@@ -23,15 +23,15 @@ namespace GalactoseEditor {
 		m_layout(std::filesystem::exists(ImGui::GetIO().IniFilename) ? Layout::None : Layout::Default)
 	{
 		m_menuBar.menus.push_back({ "File", {  
-			{ "New Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyN }, [&]() { m_editorContext->newScene(); } },
-			{ "Open Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyO }, [&]() { m_editorContext->openScene(); } },
+			{ "New Scene", KeyEvent::Control, KeyEvent::KeyN, [&]() { m_editorContext->newScene(); } },
+			{ "Open Scene", KeyEvent::Control, KeyEvent::KeyO, [&]() { m_editorContext->openScene(); } },
 			{ }, // Separator
-			{ "Save Scene", { KeyEvent::KeyLeftControl, KeyEvent::KeyS }, [&]() { m_editorContext->saveScene(); } },
-			{ "Save Scene As", { KeyEvent::KeyLeftControl, KeyEvent::KeyLeftShift, KeyEvent::KeyS }, [&]() { m_editorContext->saveSceneAs(); } },
+			{ "Save Scene", KeyEvent::Control, KeyEvent::KeyS, [&]() { m_editorContext->saveScene(); } },
+			{ "Save Scene As", KeyEvent::Control | KeyEvent::Shift, KeyEvent::KeyS, [&]() { m_editorContext->saveSceneAs(); } },
 			{ },
-			{ "Save Project", {}, [&]() { m_editorContext->saveProject(); } },
+			{ "Save Project", {}, [&]() { m_editorContext->saveProject(); }},
 			{ },
-			{ "Exit", { KeyEvent::KeyLeftAlt, KeyEvent::KeyF4 }, [&]() { Application::instance()->exit(); } }
+			{ "Exit", KeyEvent::Alt, KeyEvent::KeyF4, [&]() { Application::instance()->exit(); } }
 		} });
 
 		m_menuBar.menus.push_back({ "Panels", {

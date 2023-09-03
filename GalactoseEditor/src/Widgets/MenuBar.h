@@ -8,11 +8,16 @@
 namespace GalactoseEditor {
 	class MenuBar {
 	public:
-		struct MenuItem {
-			std::string shortcutAsString() const;
+		struct Shortcut {
+			std::string toString() const;
 
+			int modifiers = Galactose::KeyEvent::None;
+			Galactose::KeyEvent::Key key = Galactose::KeyEvent::KeyUnknown;
+		};
+
+		struct MenuItem {
 			std::string label;
-			std::vector<Galactose::KeyEvent::Key> shortcut;
+			Shortcut shortcut;
 			std::function<void()> action;
 		};
 

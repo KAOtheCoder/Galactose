@@ -1,20 +1,31 @@
 #include "MenuBar.h"
 
+#include <Galactose/Core/Window.h>
+
 #include <imgui.h>
 
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	std::string MenuBar::MenuItem::shortcutAsString() const {
+	std::string MenuBar::Shortcut::toString() const {
 		std::string str;
-		const auto shortcutSize = shortcut.size();
 
-		for (int i = 0; i < shortcutSize; ++i) {
-			if (i > 0)
-				str += "+";
+		if (modifiers != KeyEvent::None) {
+			if (modifiers & KeyEvent::Control)
+				str += "Ctrl+";
 
-			str += KeyEvent::toString(shortcut[i]);
+			if (modifiers & KeyEvent::Shift)
+				str += "Shift+";
+
+			if (modifiers & KeyEvent::Alt)
+				str += "Alt+";
+
+			if (modifiers & KeyEvent::Super)
+				str += "Super+";
 		}
+
+		if (key != KeyEvent::KeyUnknown)
+			str += KeyEvent::toString(key);
 
 		return str;
 	}
@@ -30,7 +41,7 @@ namespace GalactoseEditor {
 					for (const auto& menuItem : menu.menuItems) {
 						if (menuItem.label.empty())
 							ImGui::Separator();
-						else if (ImGui::MenuItem(menuItem.label.c_str(), menuItem.shortcutAsString().c_str()))
+						else if (ImGui::MenuItem(menuItem.label.c_str(), menuItem.shortcut.toString().c_str()))
 							menuItem.action();
 					}
 
@@ -49,32 +60,19 @@ namespace GalactoseEditor {
 			if (keyPressEvent->isRepeat())
 				return;
 
-			m_pressedKeys.insert(keyPressEvent->key());
+			const auto modifiers = keyPressEvent->window()->keyboardModifiers();
+			const auto key = keyPressEvent->key();
 
 			for (const auto& menu : menus) {
 				for (const auto& menuItem : menu.menuItems) {
-					if (!menuItem.shortcut.empty()) {
-						bool shortcutMatch = true;
-
-						for (const auto key : menuItem.shortcut) {
-							if (m_pressedKeys.find(key) == m_pressedKeys.end()) {
-								shortcutMatch = false;
-								break;
-							}
-						}
-
-						if (shortcutMatch) {
-							menuItem.action();
-							a_event->setHandled();
-							m_pressedKeys.clear();
-							return;
-						}
+					if (menuItem.shortcut.modifiers == modifiers && menuItem.shortcut.key == key) {
+						menuItem.action();
+						a_event->setHandled();
+						m_pressedKeys.clear();
+						return;
 					}
 				}
 			}
-		}
-		else if (a_event->type() == Event::KeyRelease) {
-			m_pressedKeys.erase(static_cast<KeyReleaseEvent*>(a_event.get())->key());
 		}
 	}
 }

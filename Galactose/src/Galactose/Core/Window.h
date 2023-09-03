@@ -32,6 +32,7 @@ namespace Galactose {
 		virtual void update() = 0;
 		virtual void close() = 0;
 
+		virtual int keyboardModifiers() const = 0;
 		virtual bool isKeyPressed(const KeyEvent::Key key) const = 0;
 		virtual bool isMouseButtonPressed(const MouseEvent::Button button) const = 0;
 

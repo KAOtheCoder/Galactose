@@ -100,14 +100,24 @@ namespace Galactose {
 	void GLFWWindow::keyCallback(GLFWwindow* a_window, const int a_key, const int a_scancode, const int a_action, const int a_modes) {
 		std::shared_ptr<Event> event;
 		const auto& window = toWindow(a_window);
+		const auto glfwWindow = static_cast<GLFWWindow*>(window.get());
 		const auto key = static_cast<KeyEvent::Key>(a_key);
+		KeyEvent::Key otherKey;
+		const auto modifier = KeyEvent::toModifier(key, &otherKey);
 
 		switch (a_action) {
-		case GLFW_PRESS: event = std::make_shared<KeyPressEvent>(window, key);
+		case GLFW_PRESS: 
+			glfwWindow->m_modifiers |= modifier;
+			event = std::make_shared<KeyPressEvent>(window, key);
 			break;
-		case GLFW_REPEAT: event = std::make_shared<KeyPressEvent>(window, key, true);
+		case GLFW_REPEAT: 
+			event = std::make_shared<KeyPressEvent>(window, key, true);
 			break;
-		case GLFW_RELEASE: event = std::make_shared<KeyReleaseEvent>(window, key);
+		case GLFW_RELEASE: 
+			if (modifier != KeyEvent::None && !glfwWindow->isKeyPressed(otherKey))
+				glfwWindow->m_modifiers &= (~modifier);
+
+			event = std::make_shared<KeyReleaseEvent>(window, key);
 			break;
 		default:
 			GT_ASSERT(false, "Unknown key event.");

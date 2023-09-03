@@ -312,7 +312,7 @@ namespace GalactoseEditor {
 		if (a_event->type() == Event::KeyPress) {
 			const auto keyEvent = static_cast<KeyPressEvent*>(a_event.get());
 
-			if (keyEvent->key() == KeyEvent::KeyA && !keyEvent->isRepeat() && keyEvent->window()->isKeyPressed(KeyEvent::KeyLeftControl)) {
+			if (keyEvent->key() == KeyEvent::KeyA && !keyEvent->isRepeat() && (keyEvent->window()->keyboardModifiers() & KeyEvent::Control)) {
 				const auto& projectDirectory = m_editorContext->project().directory();
 
 				for (const auto& directoryEntry : std::filesystem::directory_iterator(m_directoryPath)) 

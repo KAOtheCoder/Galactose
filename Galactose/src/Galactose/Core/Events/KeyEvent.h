@@ -2,6 +2,7 @@
 
 #include "InputEvent.h"
 
+#include <vector>
 #include <string>
 
 namespace Galactose {
@@ -9,6 +10,7 @@ namespace Galactose {
 	public:
 		enum Key {
 			// Printable keys
+			KeyUnknown = -1,
 			KeySpace = ' ',
 			KeyApostrophe = '\'',
 			KeyComma = ',',
@@ -133,29 +135,20 @@ namespace Galactose {
 			KeyMenu = 348 // GLFW_KEY_MENU
 		};
 
+		enum Modifier {
+			None = 0,
+			Shift = 1,
+			Control = 2,
+			Alt = 4,
+			Super = 8
+		};
+
 		GT_EVENT_TYPE_IMP(Key);
 
-		static std::string toString(const Key key) {
-			if (key >= Key::KeySpace && key <= Key::KeyGraveAccent)
-				return std::string(1, char(key));
+		GT_API static std::string toString(const Key key);
+		static Modifier toModifier(const Key key, Key* otherKey = nullptr);
 
-			if (key >= Key::KeyF1 && key <= Key::KeyF25)
-				return "F" + std::to_string(key - Key::KeyF1 + 1);
-
-			switch (key) {
-			case Key::KeyLeftShift: return "Shift";
-			case Key::KeyLeftControl: return "Ctrl";
-			case Key::KeyLeftAlt: return "Alt";
-			default:
-				GT_ASSERT(false, "Unknown keycode: " + std::to_string(key));
-			}
-			return "";
-		}
-
-		std::string toString() const override { 
-			std::string keyName = m_key >= ' ' && m_key <= '`' ? std::string(1, char(m_key)) : std::to_string(m_key);
-			return name() + ": " + keyName;
-		}
+		std::string toString() const override;
 
 		Key key() const { return m_key; }
 

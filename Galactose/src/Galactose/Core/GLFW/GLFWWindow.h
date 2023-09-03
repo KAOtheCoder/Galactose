@@ -21,6 +21,7 @@ namespace Galactose {
 		bool vsync() const override { return m_vsync; }
 		void setVSync(const bool a_vsync) override;
 
+		int keyboardModifiers() const override { return m_modifiers; }
 		bool isKeyPressed(const KeyEvent::Key key) const override;
 		bool isMouseButtonPressed(const MouseEvent::Button button) const override;
 
@@ -46,6 +47,7 @@ namespace Galactose {
 		GLFWwindow* m_glfwWindow = nullptr;
 		std::string m_title;
 		bool m_vsync;
+		int m_modifiers = KeyEvent::None;
 
 		friend class Window; // Window calls constructor in create
 	};
