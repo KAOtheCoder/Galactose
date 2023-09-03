@@ -3,6 +3,7 @@
 #include "Widgets/InputString.h"
 
 #include <Galactose/Renderer/Texture.h>
+#include <Galactose/Core/Window.h>
 
 using namespace Galactose;
 
@@ -304,5 +305,19 @@ namespace GalactoseEditor {
 
 		if (!anyHovered && ImGui::IsWindowHovered() && (leftClicked || rightClicked))
 			clearSelection();
+	}
+
+	void AssetExplorer::onEvent(const std::shared_ptr<Event>& a_event) {
+		// Select All (Ctrl + A)
+		if (a_event->type() == Event::KeyPress) {
+			const auto keyEvent = static_cast<KeyPressEvent*>(a_event.get());
+
+			if (keyEvent->key() == KeyEvent::KeyA && !keyEvent->isRepeat() && keyEvent->window()->isKeyPressed(KeyEvent::KeyLeftControl)) {
+				const auto& projectDirectory = m_editorContext->project().directory();
+
+				for (const auto& directoryEntry : std::filesystem::directory_iterator(m_directoryPath)) 
+					m_selectedFiles.insert(std::filesystem::relative(directoryEntry.path(), projectDirectory));
+			}
+		}
 	}
 }

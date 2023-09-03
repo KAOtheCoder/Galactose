@@ -77,6 +77,10 @@ namespace Galactose {
 		m_vsync = a_vsync;
 	}
 
+	bool GLFWWindow::isKeyPressed(const KeyEvent::Key key) const {
+		return glfwGetKey(m_glfwWindow, key) == GLFW_PRESS;
+	}
+
 	bool GLFWWindow::isMouseButtonPressed(const MouseEvent::Button button) const {
 		return glfwGetMouseButton(m_glfwWindow, button) == GLFW_PRESS;
 	}
