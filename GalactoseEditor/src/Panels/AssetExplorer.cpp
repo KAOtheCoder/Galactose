@@ -5,6 +5,8 @@
 #include <Galactose/Renderer/Texture.h>
 #include <Galactose/Core/Window.h>
 
+#include <fstream>
+
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -53,6 +55,27 @@ namespace GalactoseEditor {
 			rename();
 	}
 
+	bool AssetExplorer::createFile(const std::string& a_filename, const std::string& a_extension) {
+		std::filesystem::path headerPath = m_directoryPath / (a_filename + a_extension);
+
+		for (int i = 2; std::filesystem::exists(headerPath); ++i) {
+			const auto& filename = a_filename + "(" + std::to_string(i) + ")";
+			headerPath = m_directoryPath / (filename + a_extension);
+		}
+
+		std::ofstream headerStream(headerPath);
+
+		if (!headerStream.is_open()) {
+			std::cerr << "Failed to create file '" << headerPath.generic_string() << "'." << std::endl;
+			return false;
+		}
+
+		m_renameString.clear(); // means renaming just started, it will be used to focus on input text
+		m_renamingPath = std::filesystem::relative(headerPath, m_editorContext->project().directory());
+		m_selectedFiles = { m_renamingPath };
+		return true;
+	}
+
 	void AssetExplorer::onUpdate() {
 		const auto& style = ImGui::GetStyle();
 		// always ignore vertical scrollbar area to avoid flickering 
@@ -65,49 +88,19 @@ namespace GalactoseEditor {
 		const bool leftClicked = ImGui::IsMouseClicked(ImGuiMouseButton_Left);
 		const bool rightClicked = ImGui::IsMouseClicked(ImGuiMouseButton_Right);
 
-
-		if (ImGui::BeginTable("##Controls", 3, ImGuiTableFlags_NoPadOuterX, tableSize)) {
-			const float buttonSize = fontSize + 2 * style.FramePadding.x;
-
-			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, buttonSize);
-			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch, 1);
-			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, 6 * buttonSize);
-
-			ImGui::TableNextRow();
-
-			if (m_directoryPath != projectDirectory) {
-				ImGui::TableSetColumnIndex(0);
-
-				if (ImGui::ImageButton("Up", (void*)(intptr_t)m_icons["Up"]->rendererId(), { fontSize, fontSize }, { 0, 1 }, { 1, 0 })) {
-					clearSelection();
-					m_directoryPath = m_directoryPath.parent_path();
+		const bool contextMenuOpen = ImGui::BeginPopup("Context Menu");
+		if (contextMenuOpen) {
+			if (m_selectedFiles.empty()) {
+				if (ImGui::Selectable("Create Script Header")) {
+					if (createFile("NewScript", ".h"))
+						project.addScripts({ m_renamingPath });
 				}
-
-				ImGui::TableSetColumnIndex(1);
-				const auto& relativePath = std::filesystem::relative(m_directoryPath, projectDirectory).generic_string();
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text(relativePath.c_str());
+				else if (ImGui::Selectable("Create Script Source")) {
+					if (createFile("NewScript", ".cpp"))
+						project.addScripts({ m_renamingPath });
+				}
 			}
-
-			ImGui::TableSetColumnIndex(2);
-
-			if (m_thumbnailSize <= 0)
-				m_thumbnailSize = 6 * fontSize;
-
-			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
-			ImGui::SliderFloat("##ThumbnailSize", &m_thumbnailSize, minThumnailSize, 10 * fontSize, "", ImGuiSliderFlags_NoInput);
-			ImGui::PopItemWidth();
-
-			ImGui::EndTable();
-		}
-
-		const int IMGUI_TABLE_MAX_COLUMNS = 64; // it is defined in imgui_internal.h
-		const int columns = std::clamp(int(availableWidth / m_thumbnailSize), 1, IMGUI_TABLE_MAX_COLUMNS);
-		bool anyHovered = false;
-		
-		if (ImGui::BeginTable("##Files", columns, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX, tableSize)) {
-			const bool contextMenuOpen = ImGui::BeginPopup("Context Menu");
-			if (contextMenuOpen) {
+			else {
 				std::vector<std::filesystem::path> scripts;
 				std::vector<std::filesystem::path> scenes;
 				std::vector<std::filesystem::path> others;
@@ -185,10 +178,53 @@ namespace GalactoseEditor {
 					m_renameString.clear(); // means renaming just started, it will be used to focus on input text
 					m_renamingPath = *m_selectedFiles.begin();
 				}
-
-				ImGui::EndPopup();
 			}
 
+			ImGui::EndPopup();
+		}
+
+		if (ImGui::BeginTable("##Controls", 3, ImGuiTableFlags_NoPadOuterX, tableSize)) {
+			const float buttonSize = fontSize + 2 * style.FramePadding.x;
+
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, buttonSize);
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch, 1);
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, 6 * buttonSize);
+
+			ImGui::TableNextRow();
+
+			if (m_directoryPath != projectDirectory) {
+				ImGui::TableSetColumnIndex(0);
+
+				if (ImGui::ImageButton("Up", (void*)(intptr_t)m_icons["Up"]->rendererId(), { fontSize, fontSize }, { 0, 1 }, { 1, 0 })) {
+					clearSelection();
+					m_directoryPath = m_directoryPath.parent_path();
+				}
+
+				ImGui::TableSetColumnIndex(1);
+				const auto& relativePath = std::filesystem::relative(m_directoryPath, projectDirectory).generic_string();
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text(relativePath.c_str());
+			}
+
+			ImGui::TableSetColumnIndex(2);
+
+			if (m_thumbnailSize <= 0)
+				m_thumbnailSize = 6 * fontSize;
+
+			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
+			ImGui::SliderFloat("##ThumbnailSize", &m_thumbnailSize, minThumnailSize, 10 * fontSize, "", ImGuiSliderFlags_NoInput);
+			ImGui::PopItemWidth();
+
+			ImGui::EndTable();
+		}
+
+		const int IMGUI_TABLE_MAX_COLUMNS = 64; // it is defined in imgui_internal.h
+		const int columns = std::clamp(int(availableWidth / m_thumbnailSize), 1, IMGUI_TABLE_MAX_COLUMNS);
+		bool anyHovered = false;
+		bool openContextMenu = false;
+		const auto filesTableTop = ImGui::GetCursorScreenPos().y;
+
+		if (ImGui::BeginTable("##Files", columns, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX, tableSize)) {
 			for (int i = 0; i < columns; ++i)
 				ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, m_thumbnailSize);
 
@@ -289,7 +325,7 @@ namespace GalactoseEditor {
 							if (!selected)
 								m_selectedFiles = { relativePath };
 
-							ImGui::OpenPopup("Context Menu");
+							openContextMenu = true;
 						}
 					}
 
@@ -302,9 +338,17 @@ namespace GalactoseEditor {
 
 			ImGui::EndTable();
 		}
-
-		if (!anyHovered && ImGui::IsWindowHovered() && (leftClicked || rightClicked))
+		if (openContextMenu) {
+			ImGui::OpenPopup("Context Menu");
+		}
+		else if (!anyHovered && ImGui::IsWindowHovered() && (leftClicked || rightClicked)) {
 			clearSelection();
+
+			if (ImGui::GetMousePos().y > filesTableTop && rightClicked)
+				ImGui::OpenPopup("Context Menu");
+		}
+
+		//ImGui::IsMouse
 	}
 
 	void AssetExplorer::onEvent(const std::shared_ptr<Event>& a_event) {

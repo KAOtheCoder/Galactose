@@ -23,6 +23,7 @@ namespace GalactoseEditor {
 	private:
 		void clearSelection();
 		void rename();
+		bool createFile(const std::string& filename, const std::string& extension);
 
 		std::shared_ptr<EditorContext> m_editorContext;
 		std::filesystem::path m_directoryPath;
