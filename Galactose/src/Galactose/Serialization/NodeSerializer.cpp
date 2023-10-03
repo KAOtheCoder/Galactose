@@ -45,15 +45,15 @@ namespace Galactose {
 		return *this;
 	}
 
-	NodeSerializer NodeSerializer::loadFile(const std::string& a_filePath) {
+	NodeSerializer NodeSerializer::load(std::istream& a_stream) {
 		NodeSerializer node;
 		try
 		{
-			node.m_node = std::make_shared<YAML::Node>(YAML::LoadFile(a_filePath));
+			node.m_node = std::make_shared<YAML::Node>(YAML::Load(a_stream));
 		}
 		catch (const YAML::Exception& e)
 		{
-			std::cerr << "Failed to load file '" << a_filePath << "': " << e.what() << std::endl;
+			std::cerr << "Failed to load stream: " << e.what() << std::endl;
 		}
 
 		return node;

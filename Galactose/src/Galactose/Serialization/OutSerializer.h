@@ -85,7 +85,7 @@ namespace Galactose {
 		OutSerializer(const OutSerializer&) = delete;
 		OutSerializer& operator=(const OutSerializer&) = delete;
 
-		GT_API void save(const std::string& filePath);
+		GT_API void save(std::ostream& stream);
 
 		// don't mess with string literals. remove type checks when you overload for them.
 		template<typename T, typename = std::enable_if_t<std::is_pointer_v<T> 

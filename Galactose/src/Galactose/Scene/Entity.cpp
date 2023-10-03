@@ -43,16 +43,18 @@ namespace Galactose {
 	Entity::~Entity() {
 		removeFromSiblings();
 
+		m_scene->m_entityMap.erase(m_uuid);
+
 		for (const auto component : m_components)
 			m_scene->m_registry.storage(component->type())->erase(m_entityId);
 
 		while (!m_children.empty())
-			m_children.back()->destroy(); // Make sure all other components deleted first
+			m_children.back()->destroy(); // child will remove itself from m_children
 	}
 
 	void Entity::destroy() {
-		m_scene->m_registry.erase<Entity>(m_entityId);
-		m_scene->m_registry.destroy(m_entityId);
+		m_scene->m_registry.erase<Entity>(m_entityId); // call destructor
+		m_scene->m_registry.destroy(m_entityId); // remove id from registry
 	}
 
 	Transform* Entity::getTransform() const {

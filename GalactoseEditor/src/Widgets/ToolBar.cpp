@@ -1,20 +1,22 @@
 #include "ToolBar.h"
-#include "EditorContext.h"
 
 #include <Galactose/Renderer/Texture.h>
+#include <Galactose/Scene/Scene.h>
 
 #include <array>
 
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	ToolBar::ToolBar()
+	ToolBar::ToolBar(const std::shared_ptr<EditorContext>& a_editorContext) :
+		m_editorContext(a_editorContext)
 	{
 		insertIcon("Move");
 		insertIcon("Rotate");
 		insertIcon("Scale");
 		insertIcon("Play");
 		insertIcon("Pause");
+		insertIcon("Stop");
 	}
 
 	void ToolBar::insertIcon(const std::string& a_name) {
@@ -22,40 +24,52 @@ namespace GalactoseEditor {
 	}
 
 	float ToolBar::height() const {
-		return (2.f * ImGui::GetFontSize()) + (2 * (ImGui::GetStyle().FramePadding.y + ImGui::GetStyle().WindowPadding.y));
-	}
-
-	bool ToolBar::button(const std::string& a_icon, const float a_x) {
-		const float buttonSize = 2.f * ImGui::GetFontSize();
-		
-		if (a_x > ImGui::GetStyle().WindowPadding.x)
-			ImGui::SameLine(a_x);
-		return ImGui::ImageButton(("##" + a_icon).c_str(), (void*)(intptr_t)m_icons[a_icon]->rendererId(), { buttonSize, buttonSize }, { 0, 1 }, { 1, 0 });
-	}
-
-	void ToolBar::update(const std::shared_ptr<EditorContext>& a_editorContext) {
 		const auto& style = ImGui::GetStyle();
-		const float buttonSize = 2.f * (ImGui::GetFontSize() + style.FramePadding.x);
+		return (2.f * ImGui::GetFontSize()) + (2 * (style.FramePadding.y + style.WindowPadding.y));
+	}
 
+	float ToolBar::buttonWidth() const {
+		return  2.f * (ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.x);
+	}
+
+	bool ToolBar::button(const std::string& a_icon, const bool a_enabled) {
+		const float iconSize = 2.f * ImGui::GetFontSize();
+		
+		if (!a_enabled)
+			ImGui::BeginDisabled();
+
+		const auto cursorPos = ImGui::GetCursorPos();
+		const bool clicked = ImGui::ImageButton(("##" + a_icon).c_str(), (void*)(intptr_t)m_icons[a_icon]->rendererId(), { iconSize, iconSize }, { 0, 1 }, { 1, 0 });
+
+		if (!a_enabled)
+			ImGui::EndDisabled();
+
+		ImGui::SetCursorPos({ cursorPos.x + iconSize + 2.f * ImGui::GetStyle().FramePadding.x, cursorPos.y });
+
+		return clicked;
+	}
+
+	void ToolBar::update() {
 		std::array<std::pair<std::string, ImGuizmo::OPERATION>, 3> operations = { {
 			{ "Move", ImGuizmo::TRANSLATE },
 			{ "Rotate", ImGuizmo::ROTATE },
 			{ "Scale", ImGuizmo::SCALE }
 		} };
 
-		float x = style.WindowPadding.x;
+		for (const auto& operation : operations)
+			if (button(operation.first))
+				m_editorContext->setManipulatorOperation(operation.second);
 
-		for (const auto& operation : operations) {
-			if (button(operation.first, x))
-				a_editorContext->setManipulatorOperation(operation.second);
+		ImGui::SetCursorPosX(std::max(ImGui::GetCursorPosX(), (ImGui::GetWindowSize().x - 3 * buttonWidth()) / 2));
+		const auto state = m_editorContext->state();
 
-			x += buttonSize;
-		}
+		if (button("Play", state != EditorContext::Playing))
+			m_editorContext->setState(EditorContext::Playing);
 
-		const bool running = a_editorContext->isRunning();
-		x = std::max(x, (ImGui::GetWindowSize().x - buttonSize) / 2);
+		if (button("Pause", state == EditorContext::Playing))
+			m_editorContext->setState(EditorContext::Paused);
 
-		if (button(running ? "Pause" : "Play", x))
-			a_editorContext->setRunning(!running);
+		if (button("Stop", state != EditorContext::Stopped))
+			m_editorContext->setState(EditorContext::Stopped);
 	}
 }

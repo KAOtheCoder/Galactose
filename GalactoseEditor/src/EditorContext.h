@@ -13,6 +13,12 @@ namespace Galactose {
 namespace GalactoseEditor {
 	class EditorContext {
 	public:
+		enum State {
+			Stopped,
+			Playing,
+			Paused
+		};
+
 		EditorContext(const std::filesystem::path& projectFilePath);
 
 		Project& project() { return m_project; }
@@ -30,8 +36,8 @@ namespace GalactoseEditor {
 		Galactose::Entity* selectedEntity() const { return m_selectedEntity; }
 		void setSelectedEntity(Galactose::Entity* a_entity) { m_selectedEntity = a_entity; }
 
-		bool isRunning() const { return m_running; }
-		void setRunning(const bool a_running);
+		State state() const { return m_state; }
+		void setState(const State state);
 
 		ImGuizmo::OPERATION manipulatorOperation() const { return m_manipulatorOperation; }
 		void setManipulatorOperation(const ImGuizmo::OPERATION a_operation) { m_manipulatorOperation = a_operation; }
@@ -41,9 +47,10 @@ namespace GalactoseEditor {
 	private:
 		void saveAndPrint();
 
-		bool m_running = false;
+		State m_state = Stopped;
 		Project m_project;
 		std::shared_ptr<Galactose::Scene> m_scene;
+		std::string m_sceneSave;
 		std::string m_sceneFilePath;
 		Galactose::Entity* m_selectedEntity = nullptr;
 		ImGuizmo::OPERATION m_manipulatorOperation = ImGuizmo::TRANSLATE;

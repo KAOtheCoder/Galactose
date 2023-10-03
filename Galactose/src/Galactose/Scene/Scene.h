@@ -28,10 +28,11 @@ namespace Galactose {
 		GT_API void render(const Camera* camera);
 		void render() { render(m_mainCamera); }
 
-		GT_API void save(const std::string& filePath) const;
-		GT_API bool load(const std::string& filePath);
+		GT_API void clear();
+		GT_API void save(std::ostream& stream) const;
+		GT_API bool load(std::istream& stream);
 
-		Entity* getEntity(const Uuid& a_uuid) const;
+		GT_API Entity* getEntity(const Uuid& a_uuid) const;
 		Camera* mainCamera() const { return m_mainCamera; }
 		void setMainCamera(Camera* camera);
 

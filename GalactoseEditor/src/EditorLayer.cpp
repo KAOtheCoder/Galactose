@@ -20,6 +20,7 @@ namespace GalactoseEditor {
 		m_sceneHierarchy(m_editorContext),
 		m_inspector(m_editorContext),
 		m_assetExplorer(m_editorContext),
+		m_toolBar(m_editorContext),
 		m_layout(std::filesystem::exists(ImGui::GetIO().IniFilename) ? Layout::None : Layout::Default)
 	{
 		m_menuBar.menus.push_back({ "File", {  
@@ -55,7 +56,7 @@ namespace GalactoseEditor {
 		updateLayout();
 		updateUpBar();
 		
-		if (m_editorContext->isRunning()) {
+		if (m_editorContext->state() == EditorContext::Playing) {
 			auto scene = m_editorContext->scene();
 			GT_ASSERT(scene, "Scene is null");
 			scene->time().tick();
@@ -118,7 +119,7 @@ namespace GalactoseEditor {
 
 		if (ImGui::BeginViewportSideBar("##UpBar", ImGui::GetMainViewport(), ImGuiDir_Up, height, windowFlags)) {
 			m_menuBar.update();
-			m_toolBar.update(m_editorContext);
+			m_toolBar.update();
 		}
 
 		ImGui::End();

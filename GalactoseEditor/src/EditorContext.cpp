@@ -3,6 +3,9 @@
 
 #include <Galactose/Core/Global.h>
 #include <Galactose/Scene/Scene.h>
+#include <Galactose/Scene/Entity.h>
+
+#include <fstream>
 
 using namespace Galactose;
 
@@ -12,12 +15,15 @@ namespace GalactoseEditor {
 		m_scene(std::make_shared<Galactose::Scene>("Untitled"))
 	{
 		const auto& scene_path = m_project.editorScene(true);
-		if (!scene_path.empty())
-			m_scene->load(scene_path.generic_string());
+		if (!scene_path.empty()) {
+			std::ifstream stream(scene_path);
+			m_scene->load(stream);
+		}
 	}
 
 	void EditorContext::saveAndPrint() {
-		m_scene->save(m_sceneFilePath);
+		std::ofstream fileStream(m_sceneFilePath);
+		m_scene->save(fileStream);
 		std::cout << "Scene saved to '" << m_sceneFilePath << "'." << std::endl;
 	}
 
@@ -31,14 +37,21 @@ namespace GalactoseEditor {
 		const auto& path = FileDialog::open({ {"Scene", "scene"} });
 
 		auto scene = std::make_shared<Scene>();
-		if (!path.empty() && scene->load(path)) {
+		if (!path.empty()) {
+			std::ifstream stream(path);
+			
+			if (!scene->load(stream)) {
+				std::cerr << "Failed to load scene: " << path << std::endl;
+				return;
+			}
+
 			m_scene = scene;
 			m_sceneFilePath = path;
 			m_selectedEntity = nullptr;
 
-			const auto& relative_path = std::filesystem::relative(path, m_project.directory());
-			if (m_project.scenes().contains(relative_path))
-				m_project.setEditorScene(relative_path);
+			const auto& relativePath = std::filesystem::relative(path, m_project.directory());
+			if (m_project.scenes().contains(relativePath))
+				m_project.setEditorScene(relativePath);
 
 			std::cout << "Scene '" << m_sceneFilePath << "' loaded." << std::endl;
 		}
@@ -65,14 +78,45 @@ namespace GalactoseEditor {
 		std::cout << "Project '" << m_project.filePath() << "' saved." << std::endl;
 	}
 
-	void EditorContext::setRunning(const bool a_running) {
-		if (a_running == m_running)
+	void EditorContext::setState(const State a_state) {
+		if (a_state == m_state)
 			return;
 
-		if (!a_running)
-			m_scene->time().suspend();
+		switch (a_state) {
+		case State::Playing:
+			if (m_state == State::Stopped) {
+				std::ostringstream stream;
+				m_scene->save(stream);
+				m_sceneSave = stream.str();
+			}
+			break;
 
-		m_running = a_running;
+		case State::Paused:
+			if (m_state == State::Stopped)
+				return;
+
+			if (m_state == State::Playing)
+				m_scene->time().suspend();
+
+			break;
+
+		case State::Stopped:
+			const auto& uuid = m_selectedEntity ? m_selectedEntity->uuid() : Uuid();
+
+			m_scene->clear();
+			std::istringstream stream(m_sceneSave);
+
+			// TODO: restore entity order
+			if (!m_scene->load(stream))
+				std::cerr << "Failed to load scene: " << m_scene->name() << std::endl;
+
+			if (m_selectedEntity)
+				m_selectedEntity = m_scene->getEntity(uuid);
+
+			break;
+		}
+
+		m_state = a_state;
 	}
 
 	void EditorContext::loadScripts() {

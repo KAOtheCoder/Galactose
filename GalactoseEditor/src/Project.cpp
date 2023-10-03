@@ -21,9 +21,13 @@ namespace GalactoseEditor {
 		m_filePath(a_filePath.is_absolute() ? a_filePath : std::filesystem::canonical(a_filePath))
 	{
 		if (std::filesystem::exists(a_filePath)) {
-			const auto& node = NodeSerializer::loadFile(a_filePath.generic_string());
-			if (node.isNull())
+			std::ifstream stream(a_filePath);
+			const auto& node = NodeSerializer::load(stream);
+
+			if (node.isNull()) {
+				std::cerr << "Failed to load project: " << a_filePath.generic_string() << std::endl;
 				return;
+			}
 
 			m_startScene = node["startScene"].as<std::string>();
 
@@ -61,7 +65,8 @@ namespace GalactoseEditor {
 		out << OutSerializer::EndSeq 
 			<< OutSerializer::EndMap;
 
-		out.save(m_filePath.generic_string());
+		std::ofstream fileStream(m_filePath);
+		out.save(fileStream);
 	}
 
 	void Project::addScripts(const std::vector<std::filesystem::path>& a_paths) {

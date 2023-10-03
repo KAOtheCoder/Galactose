@@ -39,7 +39,7 @@ namespace Galactose {
 		};
 
 	public:
-		GT_API static NodeSerializer loadFile(const std::string& filePath);
+		GT_API static NodeSerializer load(std::istream& stream);
 
 		NodeSerializer(const NodeSerializer& other);
 		NodeSerializer& operator=(const NodeSerializer& other);

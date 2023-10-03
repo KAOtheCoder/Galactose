@@ -1,7 +1,7 @@
 #include "OutSerializer.h"
 #include "Convert.h"
 
-#include <fstream>
+#include <ostream>
 
 #define GT_STREAM_INSERTION_IMP(T)\
 	OutSerializer& OutSerializer::operator<<(const T& a_rhs) {\
@@ -14,9 +14,8 @@ namespace Galactose {
 		m_emitter(std::make_shared<YAML::Emitter>())
 	{}
 
-	void OutSerializer::save(const std::string& a_filePath) {
-		std::ofstream fileStream(a_filePath);
-		fileStream << m_emitter->c_str();
+	void OutSerializer::save(std::ostream& a_stream) {
+		a_stream.write(m_emitter->c_str(), m_emitter->size());
 	}
 
 	OutSerializer& OutSerializer::operator<<(const _Null a_rhs) {

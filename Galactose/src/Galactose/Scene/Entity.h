@@ -16,6 +16,7 @@ namespace Galactose {
 		GT_API static Entity* create(Scene* scene, const Uuid& id = Uuid::create());
 		static Entity* create(Entity* parent, const Uuid& id = Uuid::create());
 
+		GT_UNCOPYABLE(Entity);
 		GT_UNMOVABLE(Entity);
 
 		// TO DO: move to private and make entt friend

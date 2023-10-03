@@ -93,7 +93,20 @@ namespace Galactose {
 			script->update();
 	}
 
-	void Scene::save(const std::string& a_filePath) const {
+	void Scene::clear() {
+		while (!m_rootEntities.empty())
+			m_rootEntities.back()->destroy(); // entity will remove itself from m_rootEntities
+
+		m_registry.clear();
+		m_name.clear();
+		m_rootEntities.clear();
+		m_entityMap.clear();
+		m_mainCamera = nullptr;
+		m_scripts.clear();
+		m_time.reset();
+	}
+
+	void Scene::save(std::ostream& a_ostream) const {
 		OutSerializer out;
 		out << OutSerializer::BeginMap
 			<< OutSerializer::Key << "name" << OutSerializer::Value << m_name
@@ -103,11 +116,11 @@ namespace Galactose {
 		
 		out << OutSerializer::EndSeq << OutSerializer::EndMap;
 
-		out.save(a_filePath);
+		out.save(a_ostream);
 	}
 
-	bool Scene::load(const std::string& a_filePath) {
-		const auto& node = NodeSerializer::loadFile(a_filePath);
+	bool Scene::load(std::istream& a_stream) {
+		const auto& node = NodeSerializer::load(a_stream);
 		if (node.isNull())
 			return false;
 

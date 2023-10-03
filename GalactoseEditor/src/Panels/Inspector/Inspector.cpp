@@ -21,7 +21,7 @@ using namespace Galactose;
 namespace GalactoseEditor {
 	Inspector::Inspector(const std::shared_ptr<EditorContext>& a_sceneContext) :
 		Panel("Inspector"),
-		m_sceneContext(a_sceneContext)
+		m_editorContext(a_sceneContext)
 	{
 		m_icons.emplace("Clear", Texture::create("assets/textures/Clear.png"));
 		m_icons.emplace("Folder", Texture::create("assets/textures/Folder.png"));
@@ -47,7 +47,7 @@ namespace GalactoseEditor {
 	}
 
 	void Inspector::onUpdate() {
-		auto entity = m_sceneContext->selectedEntity();
+		auto entity = m_editorContext->selectedEntity();
 
 		if (!entity)
 			return;

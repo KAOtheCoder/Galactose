@@ -64,7 +64,7 @@ namespace GalactoseEditor {
 		template <class C>
 		void drawComponentContentHelper(Galactose::Component* a_component);
 
-		std::shared_ptr<EditorContext> m_sceneContext;
+		std::shared_ptr<EditorContext> m_editorContext;
 		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		std::unordered_map<uint32_t, ComponentInfo> m_componentInfos;
 		Galactose::Component* m_removeComponent = nullptr;

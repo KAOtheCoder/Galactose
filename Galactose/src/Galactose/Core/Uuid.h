@@ -11,7 +11,7 @@ namespace Galactose {
 		GT_API static Uuid create();
 		static Uuid fromHex(const std::string& hex);
 
-		Uuid(const uint64_t a_id = 0);
+		GT_API Uuid(const uint64_t a_id = 0);
 
 		bool isValid() const { return m_id != 0 && m_id != ULLONG_MAX; }
 		std::string toHex() const;

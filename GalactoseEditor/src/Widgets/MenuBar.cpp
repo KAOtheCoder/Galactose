@@ -63,6 +63,9 @@ namespace GalactoseEditor {
 			const auto modifiers = keyPressEvent->window()->keyboardModifiers();
 			const auto key = keyPressEvent->key();
 
+			if (key == KeyEvent::KeyUnknown)
+				return;
+
 			for (const auto& menu : menus) {
 				for (const auto& menuItem : menu.menuItems) {
 					if (menuItem.shortcut.modifiers == modifiers && menuItem.shortcut.key == key) {
