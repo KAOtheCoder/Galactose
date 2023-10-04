@@ -91,8 +91,14 @@ namespace Galactose {
 		a_out << OutSerializer::BeginMap
 			<< OutSerializer::Key << GT_STRINGIFY(Entity) << OutSerializer::Value << OutSerializer::BeginMap
 			<< OutSerializer::Key << "uuid" << OutSerializer::Value << m_uuid
-			<< OutSerializer::Key << "parent" << OutSerializer::Value << parentUuid
 			<< OutSerializer::Key << "name" << OutSerializer::Value << m_name
+			<< OutSerializer::Key << "parent" << OutSerializer::Value << parentUuid
+		//	<< OutSerializer::Key << "children" << OutSerializer::Value << OutSerializer::BeginSeq;
+
+		//for (const auto child : m_children)
+		//	a_out << child->m_uuid;
+
+		//a_out << OutSerializer::EndSeq
 			<< OutSerializer::Key << "components" << OutSerializer::Value << OutSerializer::BeginSeq;
 
 		for (const auto component : components())

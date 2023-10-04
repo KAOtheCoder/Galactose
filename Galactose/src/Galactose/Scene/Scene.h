@@ -13,6 +13,7 @@ namespace Galactose {
 	class Camera;
 	class Event;
 	class Script;
+	class OutSerializer;
 
 	class Scene {
 	public:

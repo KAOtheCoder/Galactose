@@ -106,14 +106,22 @@ namespace Galactose {
 		m_time.reset();
 	}
 
+	void saveEntityBranch(const Entity* entity, OutSerializer& out) {
+		entity->save(out);
+
+		for (const auto child : entity->children())
+			saveEntityBranch(child, out);
+	}
+
 	void Scene::save(std::ostream& a_ostream) const {
 		OutSerializer out;
 		out << OutSerializer::BeginMap
 			<< OutSerializer::Key << "name" << OutSerializer::Value << m_name
 			<< OutSerializer::Key << "entities" << OutSerializer::Value << OutSerializer::BeginSeq;
-		
-		m_registry.each([&](const auto a_id) { getEntity(a_id)->save(out); });
-		
+				
+		for (const auto entity : m_rootEntities)
+			saveEntityBranch(entity, out);
+
 		out << OutSerializer::EndSeq << OutSerializer::EndMap;
 
 		out.save(a_ostream);
