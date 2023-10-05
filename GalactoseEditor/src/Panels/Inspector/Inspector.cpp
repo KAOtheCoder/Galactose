@@ -329,19 +329,11 @@ namespace GalactoseEditor {
 
 	void Inspector::drawScript(Script* a_script) {
 		if (drawComponentHeader(a_script, a_script->name().c_str()) && ImGui::BeginTable(a_script->name().c_str(), 2, ImGuiTableFlags_SizingStretchProp)) {
-			bool disabled = false;
-
 			for (auto property : a_script->properties()) {	
 				const bool readOnly = property->isReadOnly();
 
-				if (readOnly != disabled) {
-					disabled = readOnly;
-
-					if (disabled)
-						ImGui::BeginDisabled();
-					else
-						ImGui::EndDisabled();
-				}
+				if (readOnly)
+					ImGui::BeginDisabled();
 
 				switch (property->type()) {
 				case DataType::Bool: {
@@ -377,10 +369,10 @@ namespace GalactoseEditor {
 					drawVectorProperty<Vector4>(property);
 					break;
 				}
-			}
 
-			if (disabled)
-				ImGui::EndDisabled();
+				if (readOnly)
+					ImGui::EndDisabled();
+			}
 
 			ImGui::EndTable();
 		}

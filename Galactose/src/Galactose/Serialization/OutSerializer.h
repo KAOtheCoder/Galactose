@@ -95,6 +95,7 @@ namespace Galactose {
 		>>
 		OutSerializer& operator<<(const T a_rhs) { return a_rhs ? *this << (*a_rhs) : *this << Null; }
 
+		// TODO: replace with nullptr_t
 		OutSerializer& operator<<(const _Null rhs);
 		GT_API OutSerializer& operator<<(const Manip rhs);
 		GT_API OutSerializer& operator<<(const float& rhs);

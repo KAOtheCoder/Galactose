@@ -31,8 +31,8 @@ namespace Galactose {
 			~MetaScript() { MetaBase::remove(); }
 		};
 
-		void saveContent(OutSerializer& emitter) const override {}
-		bool loadContent(const NodeSerializer& node) override { return true; }
+		GT_API void saveContent(OutSerializer& out) const override;
+		GT_API bool loadContent(const NodeSerializer& node) override;
 
 	private:
 		std::vector<PropertyBase*> m_properties;

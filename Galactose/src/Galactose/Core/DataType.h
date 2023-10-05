@@ -20,7 +20,7 @@ namespace Galactose {
         static const DataType& info(const Type a_type);
 
         template <typename T>
-        static Type toType() { return DataType::Unknown; }
+        static Type toType() { return DataType::Void; }
 
         template <> static Type toType<bool>() { return DataType::Bool; }
         template <> static Type toType<float>() { return DataType::Float; }
