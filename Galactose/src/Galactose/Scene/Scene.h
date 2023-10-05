@@ -53,7 +53,7 @@ namespace Galactose {
 		std::vector<Entity*> m_rootEntities;
 		std::unordered_map<Uuid, Entity*> m_entityMap;
 		Camera* m_mainCamera = nullptr;
-		// TO DO: sort scripts
+		// TODO: sort scripts
 		std::set<Script*> m_scripts;
 		Time m_time;
 
