@@ -18,7 +18,7 @@ namespace Galactose {
 		a_stream.write(m_emitter->c_str(), m_emitter->size());
 	}
 
-	OutSerializer& OutSerializer::operator<<(const _Null a_rhs) {
+	OutSerializer& OutSerializer::operator<<(const nullptr_t a_rhs) {
 		*m_emitter << YAML::Null;
 		return *this;
 	}

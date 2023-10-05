@@ -18,10 +18,6 @@ namespace Galactose {
 
 	class OutSerializer {
 	public:
-		enum _Null {
-			Null
-		};
-
 		enum Manip {
 			// general manipulators
 			Auto,
@@ -93,10 +89,10 @@ namespace Galactose {
 			&& !std::is_same_v<T, const char16_t*>
 			&& !std::is_same_v<T, const char32_t*>
 		>>
-		OutSerializer& operator<<(const T a_rhs) { return a_rhs ? *this << (*a_rhs) : *this << Null; }
+		OutSerializer& operator<<(const T a_rhs) { return a_rhs ? *this << (*a_rhs) : *this << nullptr; }
 
 		// TODO: replace with nullptr_t
-		OutSerializer& operator<<(const _Null rhs);
+		OutSerializer& operator<<(const nullptr_t rhs);
 		GT_API OutSerializer& operator<<(const Manip rhs);
 		GT_API OutSerializer& operator<<(const float& rhs);
 		OutSerializer& operator<<(const char* a_rhs) { return *this << std::string(a_rhs); }
