@@ -3,7 +3,6 @@ project "GalactoseEditor"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "Off"
-	ignoredefaultlibraries { "MSVCRT" }
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -47,6 +46,11 @@ project "GalactoseEditor"
 		"GLFW_DLL"
 	}
 	
+	debugenvs {
+		"PATH=../Galactose/bin/" .. outputdir .. "/Galactose;"
+		.. "../Galactose/vendor/GLFW/bin/" .. outputdir .. "/GLFW;%PATH%;"
+	}
+		
 	filter "system:windows"
 		defines "GT_WINDOWS"
 		systemversion "latest"
@@ -59,6 +63,7 @@ project "GalactoseEditor"
 		defines "GT_DEBUG"
 		runtime "Debug"
 		symbols "On"
+		ignoredefaultlibraries { "MSVCRT" }
 
 	filter "configurations:Release"
 		defines "GT_RELEASE"
