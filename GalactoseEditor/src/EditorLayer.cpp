@@ -1,5 +1,8 @@
 #include "EditorLayer.h"
 #include "EditorContext.h"
+#include "SideBars/MenuBar.h"
+#include "SideBars/ToolBar.h"
+#include "SideBars/StatusBar.h"
 
 #include <Galactose/Core/Events/KeyEvent.h>
 #include <Galactose/Core/Events/MouseEvent.h>
@@ -20,10 +23,13 @@ namespace GalactoseEditor {
 		m_sceneHierarchy(m_editorContext),
 		m_inspector(m_editorContext),
 		m_assetExplorer(m_editorContext),
-		m_toolBar(m_editorContext),
+		m_upBar("##UpBar", ImGui::GetMainViewport(), ImGuiDir_::ImGuiDir_Up),
+		m_downBar("##DownBar", ImGui::GetMainViewport(), ImGuiDir_::ImGuiDir_Down),
 		m_layout(std::filesystem::exists(ImGui::GetIO().IniFilename) ? Layout::None : Layout::Default)
 	{
-		m_menuBar.menus.push_back({ "File", {  
+		const auto& menuBar = std::make_shared<MenuBar>();
+
+		menuBar->menus.push_back({ "File", {  
 			{ "New Scene", KeyEvent::Control, KeyEvent::KeyN, [&]() { m_editorContext->newScene(); } },
 			{ "Open Scene", KeyEvent::Control, KeyEvent::KeyO, [&]() { m_editorContext->openScene(); } },
 			{ }, // Separator
@@ -35,7 +41,7 @@ namespace GalactoseEditor {
 			{ "Exit", KeyEvent::Alt, KeyEvent::KeyF4, [&]() { Application::instance()->exit(); } }
 		} });
 
-		m_menuBar.menus.push_back({ "Panels", {
+		menuBar->menus.push_back({ "Panels", {
 			{ "Scene", { }, [&]() { m_sceneViewport.setVisible(true); } },
 			{ "Game", { }, [&]() { m_gameViewport.setVisible(true); } },
 			{ "Scene Hierarchy", { }, [&]() { m_sceneHierarchy.setVisible(true); } },
@@ -43,18 +49,23 @@ namespace GalactoseEditor {
 			{ "Asset Explorer", { }, [&]() { m_assetExplorer.setVisible(true); } }
 		} });
 
-		m_menuBar.menus.push_back({ "Layouts", {
+		menuBar->menus.push_back({ "Layouts", {
 			{ "Default", { }, [&]() { m_layout = Layout::Default; }}
 		} });
 
-		m_menuBar.menus.push_back({ "Build", {
+		menuBar->menus.push_back({ "Build", {
 			{ "Load Script(s)", { }, [&]() { m_editorContext->loadScripts(); }}
 		} });
+
+		m_upBar.addSideBar(menuBar);
+		m_upBar.addSideBar(std::make_shared<ToolBar>(m_editorContext));
+		m_downBar.addSideBar(std::make_shared<StatusBar>(m_editorContext));
 	}
 
 	void EditorLayer::updateContent() {
 		updateLayout();
-		updateUpBar();
+		m_upBar.update();
+		m_downBar.update();
 		
 		if (m_editorContext->state() == EditorContext::Playing) {
 			auto scene = m_editorContext->scene();
@@ -73,7 +84,8 @@ namespace GalactoseEditor {
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {
-		m_menuBar.onEvent(a_event);
+		m_upBar.onEvent(a_event);
+		m_downBar.onEvent(a_event);
 
 		auto panel = Panel::focusedPanel();
 		if (panel) {
@@ -110,18 +122,5 @@ namespace GalactoseEditor {
 		}
 
 		m_layout = Layout::None;
-	}
-
-	void EditorLayer::updateUpBar() {
-		// Inspired from ImGui::BeginMainMenuBar()
-		const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
-		const float height = m_menuBar.height() + m_toolBar.height();
-
-		if (ImGui::BeginViewportSideBar("##UpBar", ImGui::GetMainViewport(), ImGuiDir_Up, height, windowFlags)) {
-			m_menuBar.update();
-			m_toolBar.update();
-		}
-
-		ImGui::End();
 	}
 }

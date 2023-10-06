@@ -1,8 +1,7 @@
 #pragma once
 
-#include "EditorContext.h"
+#include "SideBarItem.h"
 
-#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -11,16 +10,16 @@ namespace Galactose {
 }
 
 namespace GalactoseEditor {
-	class ToolBar {
-	public:
-		static const char* id() { return "##ToolBar"; }
+	class EditorContext;
 
+	class ToolBar : public SideBarItem {
+	public:
 		ToolBar(const std::shared_ptr<EditorContext>& editorContext);
 
-		void update();
-		
-		float height() const;
+		float size() const override;
 
+		void update() override;
+		
 	private:
 		void insertIcon(const std::string& name);
 		bool button(const std::string& icon, const bool enabled = true);

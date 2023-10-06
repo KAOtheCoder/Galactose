@@ -29,7 +29,8 @@ namespace GalactoseEditor {
 				return;
 			}
 
-			m_startScene = node["startScene"].as<std::string>();
+			m_startScene = node["startScene"].as<std::filesystem::path>();
+			m_editorScene = node["editorScene"].as<std::filesystem::path>();
 
 			for (const auto& sceneNode : node["scenes"])
 				m_scenes.insert(sceneNode.as<std::filesystem::path>());
@@ -43,8 +44,12 @@ namespace GalactoseEditor {
 		unloadScripts();
 	}
 
-	std::filesystem::path Project::editorScene(const bool absolute) const {
-		return absolute && !m_editorScene.empty() ? std::filesystem::canonical(directory() / m_editorScene) : m_editorScene;
+	std::filesystem::path Project::editorScene(const bool a_absolute) const {
+		return a_absolute && !m_editorScene.empty() ? std::filesystem::canonical(directory() / m_editorScene) : m_editorScene;
+	}
+
+	void Project::setEditorScene(const std::filesystem::path& a_path, const bool a_absolute) {
+		m_editorScene = a_absolute && !m_editorScene.empty() ? std::filesystem::relative(a_path, directory()) : a_path;
 	}
 
 	void Project::save() {
@@ -56,8 +61,12 @@ namespace GalactoseEditor {
 			out << scene;
 
 		out << OutSerializer::EndSeq
-			<< OutSerializer::Key << "startScene" << OutSerializer::Value << m_startScene
-			<< OutSerializer::Key << "scripts" << OutSerializer::Value << OutSerializer::BeginSeq;
+			<< OutSerializer::Key << "startScene" << OutSerializer::Value << m_startScene;
+
+		if (m_scenes.contains(m_editorScene))
+			out << OutSerializer::Key << "editorScene" << OutSerializer::Value << m_editorScene;
+
+		out << OutSerializer::Key << "scripts" << OutSerializer::Value << OutSerializer::BeginSeq;
 
 		for (const auto& script : m_scripts)
 			out << script;

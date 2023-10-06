@@ -1,4 +1,5 @@
 #include "ToolBar.h"
+#include "EditorContext.h"
 
 #include <Galactose/Renderer/Texture.h>
 #include <Galactose/Scene/Scene.h>
@@ -23,7 +24,7 @@ namespace GalactoseEditor {
 		m_icons.emplace(a_name, Texture::create("assets/textures/" + a_name + ".png"));
 	}
 
-	float ToolBar::height() const {
+	float ToolBar::size() const {
 		const auto& style = ImGui::GetStyle();
 		return (2.f * ImGui::GetFontSize()) + (2 * (style.FramePadding.y + style.WindowPadding.y));
 	}

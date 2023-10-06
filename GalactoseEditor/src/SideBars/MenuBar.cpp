@@ -30,9 +30,11 @@ namespace GalactoseEditor {
 		return str;
 	}
 
-	float MenuBar::height() const {
+	float MenuBar::size() const {
 		return ImGui::GetFrameHeight();
 	}
+
+	int MenuBar::additionalWindowFlags() const { return ImGuiWindowFlags_MenuBar; }
 
 	void MenuBar::update() {
 		if (ImGui::BeginMenuBar()) {

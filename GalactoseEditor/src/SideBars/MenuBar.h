@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Galactose/Core/Events/KeyEvent.h"
+#include "SideBarItem.h"
+
+#include <Galactose/Core/Events/KeyEvent.h>
 
 #include <functional>
 #include <set>
 
 namespace GalactoseEditor {
-	class MenuBar {
+	class MenuBar : public SideBarItem {
 	public:
 		struct Shortcut {
 			std::string toString() const;
@@ -26,10 +28,12 @@ namespace GalactoseEditor {
 			std::vector<MenuItem> menuItems;
 		};
 
-		void update();
-		void onEvent(const std::shared_ptr<Galactose::Event>& a_event);
+		float size() const override;
+		int additionalWindowFlags() const override;
 
-		float height() const;
+		void update() override;
+		void onEvent(const std::shared_ptr<Galactose::Event>& a_event) override;
+
 		std::vector<Menu> menus;
 
 	private:

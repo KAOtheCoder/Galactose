@@ -6,8 +6,7 @@
 #include "Panels/SceneHierarchy.h"
 #include "Panels/Inspector/Inspector.h"
 #include "Panels/AssetExplorer.h"
-#include "Widgets/MenuBar.h"
-#include "Widgets/ToolBar.h"
+#include "SideBars/SideBar.h"
 
 namespace GalactoseEditor {
 	class EditorContext;
@@ -26,7 +25,6 @@ namespace GalactoseEditor {
 		};
 
 		void updateLayout();
-		void updateUpBar();
 
 		std::shared_ptr<EditorContext> m_editorContext;
 		SceneViewport m_sceneViewport;
@@ -34,8 +32,8 @@ namespace GalactoseEditor {
 		SceneHierarchy m_sceneHierarchy;
 		Inspector m_inspector;
 		AssetExplorer m_assetExplorer;
-		MenuBar m_menuBar;
-		ToolBar m_toolBar;
+		SideBar m_upBar;
+		SideBar m_downBar;
 		Layout m_layout;
 	};
 }

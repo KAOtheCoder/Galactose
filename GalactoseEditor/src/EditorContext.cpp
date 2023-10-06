@@ -21,15 +21,9 @@ namespace GalactoseEditor {
 		}
 	}
 
-	void EditorContext::saveAndPrint() {
-		std::ofstream fileStream(m_sceneFilePath);
-		m_scene->save(fileStream);
-		std::cout << "Scene saved to '" << m_sceneFilePath << "'." << std::endl;
-	}
-
 	void EditorContext::newScene() {
 		m_scene = std::make_shared<Scene>("Untitled");
-		m_sceneFilePath.clear();
+		m_project.setEditorScene("");
 		m_selectedEntity = nullptr;
 	}
 
@@ -41,41 +35,37 @@ namespace GalactoseEditor {
 			std::ifstream stream(path);
 			
 			if (!scene->load(stream)) {
-				std::cerr << "Failed to load scene: " << path << std::endl;
+				setMessage("Failed to load scene: " + path, MessageType::Error);
 				return;
 			}
 
 			m_scene = scene;
-			m_sceneFilePath = path;
+			m_project.setEditorScene(path, true);
 			m_selectedEntity = nullptr;
 
-			const auto& relativePath = std::filesystem::relative(path, m_project.directory());
-			if (m_project.scenes().contains(relativePath))
-				m_project.setEditorScene(relativePath);
-
-			std::cout << "Scene '" << m_sceneFilePath << "' loaded." << std::endl;
+			setMessage("Scene '" + path + "' loaded.");
 		}
 	}
 
-	void EditorContext::saveSceneAs() {
-		const auto& path = FileDialog::save({ {"Scene", "scene"} }, "", m_scene->name().c_str());
+	void EditorContext::saveSceneAs(const std::filesystem::path& a_filePath) {
+		if (m_state != State::Stopped) {
+			setMessage("You must exit play mode to save the scene.");
+			return;
+		}
+
+		const auto& path = a_filePath.empty() ? FileDialog::save({ {"Scene", "scene"} }, "", m_scene->name().c_str()) : a_filePath;
 		if (!path.empty()) {
-			m_sceneFilePath = path;
-			saveAndPrint();
+			m_project.setEditorScene(path, true);
+			std::ofstream fileStream(path);
+			m_scene->save(fileStream);
+			setMessage("Scene saved to '" + path.generic_string() + "'.");
 		}
-	}
-
-	void EditorContext::saveScene() {
-		if (m_sceneFilePath.empty())
-			saveSceneAs();
-		else
-			saveAndPrint();
 	}
 
 	void EditorContext::saveProject() {
 		saveScene();
 		m_project.save();
-		std::cout << "Project '" << m_project.filePath() << "' saved." << std::endl;
+		setMessage("Project '" + m_project.filePath().generic_string() + "' saved.");
 	}
 
 	void EditorContext::setState(const State a_state) {
@@ -106,9 +96,8 @@ namespace GalactoseEditor {
 			m_scene->clear();
 			std::istringstream stream(m_sceneSave);
 
-			// TODO: restore entity order
 			if (!m_scene->load(stream))
-				std::cerr << "Failed to load scene: " << m_scene->name() << std::endl;
+				setMessage("Failed to load scene: " + m_scene->name(), MessageType::Error);
 
 			if (m_selectedEntity)
 				m_selectedEntity = m_scene->getEntity(uuid);
@@ -119,8 +108,19 @@ namespace GalactoseEditor {
 		m_state = a_state;
 	}
 
+	void EditorContext::setMessage(const std::string a_message, const MessageType a_type) {
+		if (a_message == m_message && a_type == m_messageType)
+			return;
+
+		m_message = a_message;
+		m_messageType = a_type;
+
+		auto& stream = a_type == MessageType::Info ? std::cout : std::cerr;
+		stream << a_message << std::endl;
+	}
+
 	void EditorContext::loadScripts() {
 		if (!m_project.loadScripts())
-			std::cerr << "Failed to load scripts." << std::endl;
+			setMessage("Failed to load scripts.", MessageType::Error);
 	}
 }

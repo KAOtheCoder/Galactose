@@ -14,7 +14,7 @@ namespace GalactoseEditor {
 		std::filesystem::path directory() const { return m_filePath.parent_path(); }
 
 		std::filesystem::path editorScene(const bool absolute = false) const;
-		void setEditorScene(const std::filesystem::path& a_path) { m_editorScene = a_path; }
+		void setEditorScene(const std::filesystem::path& a_path, const bool absolute = false);
 
 		const std::set<std::filesystem::path>& scripts() const { return m_scripts; }
 		const std::set<std::filesystem::path>& scenes() const { return m_scenes; }
