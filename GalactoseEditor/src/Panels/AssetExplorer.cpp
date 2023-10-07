@@ -41,7 +41,7 @@ namespace GalactoseEditor {
 				}
 			}
 			catch (const std::exception& ex) {
-				std::cerr << ex.what() << std::endl;
+				m_editorContext->setStatusMessage(ex.what(), EditorContext::Error);
 			}
 
 			m_renamingPath.clear();
@@ -66,7 +66,7 @@ namespace GalactoseEditor {
 		std::ofstream headerStream(headerPath);
 
 		if (!headerStream.is_open()) {
-			std::cerr << "Failed to create file '" << headerPath.generic_string() << "'." << std::endl;
+			m_editorContext->setStatusMessage("Failed to create file '" + headerPath.generic_string() + "'.", EditorContext::Error);
 			return false;
 		}
 
@@ -168,7 +168,7 @@ namespace GalactoseEditor {
 							std::filesystem::remove_all(projectDirectory / file);
 					}
 					catch (const std::exception& ex) {
-						std::cerr << ex.what() << std::endl;
+						m_editorContext->setStatusMessage(ex.what(), EditorContext::Error);
 					}
 
 					clearSelection();
@@ -333,7 +333,7 @@ namespace GalactoseEditor {
 				}
 			}
 			catch (const std::exception& ex) {
-				std::cerr << ex.what() << std::endl;
+				m_editorContext->setStatusMessage(ex.what(), EditorContext::Error);
 			}
 
 			ImGui::EndTable();

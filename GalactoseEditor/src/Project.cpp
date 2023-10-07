@@ -17,17 +17,16 @@ extern "C"
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	Project::Project(const std::filesystem::path& a_filePath) :
-		m_filePath(a_filePath.is_absolute() ? a_filePath : std::filesystem::canonical(a_filePath))
+	Project::Project(const std::filesystem::path& a_filePath)
 	{
 		if (std::filesystem::exists(a_filePath)) {
+			m_filePath = a_filePath.is_absolute() ? a_filePath : std::filesystem::canonical(a_filePath);
+			
 			std::ifstream stream(a_filePath);
 			const auto& node = NodeSerializer::load(stream);
 
-			if (node.isNull()) {
-				std::cerr << "Failed to load project: " << a_filePath.generic_string() << std::endl;
+			if (node.isNull())
 				return;
-			}
 
 			m_startScene = node["startScene"].as<std::filesystem::path>();
 			m_editorScene = node["editorScene"].as<std::filesystem::path>();
@@ -272,10 +271,7 @@ project "<PROJECT>"
 	}
 
 	void Project::unloadScripts() {
-		if (!m_scriptLib)
-			return;
-
-		if (!FreeLibrary(static_cast<HMODULE>(m_scriptLib)))
+		if (m_scriptLib && !FreeLibrary(static_cast<HMODULE>(m_scriptLib)))
 			std::cerr << "Failed to free library: " << name() << std::endl;
 	}
 

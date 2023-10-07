@@ -9,6 +9,8 @@ namespace GalactoseEditor {
 		Project(const std::filesystem::path& filePath);
 		~Project();
 
+		bool isValid() const { return !m_filePath.empty(); }
+
 		std::string name() const { return m_filePath.stem().generic_string(); }
 		std::filesystem::path filePath() const { return m_filePath; }
 		std::filesystem::path directory() const { return m_filePath.parent_path(); }

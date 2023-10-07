@@ -14,11 +14,11 @@ namespace GalactoseEditor {
 		ImVec4 color;
 
 		switch (m_editorContext->messageType()) {
-		case EditorContext::Info: color = { 1, 1, 1, 1 }; 
+		case EditorContext::Info: color = ImGui::GetStyle().Colors[ImGuiCol_Text];
 			break;
-		case EditorContext::Warning: color = { 0, 1, 1, 1 };
+		case EditorContext::Warning: color = { 1, 0.8f, 0.01f, 1 };
 			break;
-		case EditorContext::Error: color = { 1, 0, 0, 1 };
+		case EditorContext::Error: color = { 0.9f, 0.11f, 0.04f, 1 };
 			break;
 		}
 

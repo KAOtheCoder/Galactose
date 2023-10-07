@@ -30,6 +30,7 @@ namespace GalactoseEditor {
 		}
 
 		const nfdu8char_t* convertString(const std::string& a_string) { return a_string.empty() ? nullptr : a_string.c_str(); }
+
 		std::string convertPath(nfdchar_t* a_path, const nfdresult_t result) {
 			if (result == NFD_OKAY) {
 				const std::string stringPath(a_path);
@@ -55,8 +56,8 @@ namespace GalactoseEditor {
 			const nfdpathset_t* paths;
 			const auto& filterItems = convertFilters(a_filters);
 			const auto result = NFD_OpenDialogMultiple(&paths, filterItems.data(), (nfdfiltersize_t)(filterItems.size()), convertString(a_defaultPath));
-
 			std::vector<std::string> stringPaths;
+
 			if (result == NFD_OKAY) {
 				nfdpathsetsize_t pathCount;
 				NFD_PathSet_GetCount(paths, &pathCount);

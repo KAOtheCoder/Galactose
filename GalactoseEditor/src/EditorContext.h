@@ -49,7 +49,7 @@ namespace GalactoseEditor {
 
 		std::string message() const { return m_message; }
 		MessageType messageType() const { return m_messageType; }
-		void setMessage(const std::string a_message, const MessageType type = MessageType::Info);
+		void setStatusMessage(const std::string a_message, const MessageType type = MessageType::Info);
 
 		void loadScripts();
 

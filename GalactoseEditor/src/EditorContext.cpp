@@ -14,6 +14,11 @@ namespace GalactoseEditor {
 		m_project(a_projectFilePath),
 		m_scene(std::make_shared<Galactose::Scene>("Untitled"))
 	{
+		if (!m_project.isValid()) {
+			setStatusMessage("Failed to load project: " + a_projectFilePath.generic_string());
+			return;
+		}
+
 		const auto& scene_path = m_project.editorScene(true);
 		if (!scene_path.empty()) {
 			std::ifstream stream(scene_path);
@@ -35,7 +40,7 @@ namespace GalactoseEditor {
 			std::ifstream stream(path);
 			
 			if (!scene->load(stream)) {
-				setMessage("Failed to load scene: " + path, MessageType::Error);
+				setStatusMessage("Failed to load scene: " + path, MessageType::Error);
 				return;
 			}
 
@@ -43,13 +48,13 @@ namespace GalactoseEditor {
 			m_project.setEditorScene(path, true);
 			m_selectedEntity = nullptr;
 
-			setMessage("Scene '" + path + "' loaded.");
+			setStatusMessage("Scene '" + path + "' loaded.");
 		}
 	}
 
 	void EditorContext::saveSceneAs(const std::filesystem::path& a_filePath) {
 		if (m_state != State::Stopped) {
-			setMessage("You must exit play mode to save the scene.");
+			setStatusMessage("You must exit play mode to save the scene.");
 			return;
 		}
 
@@ -58,14 +63,14 @@ namespace GalactoseEditor {
 			m_project.setEditorScene(path, true);
 			std::ofstream fileStream(path);
 			m_scene->save(fileStream);
-			setMessage("Scene saved to '" + path.generic_string() + "'.");
+			setStatusMessage("Scene saved to '" + path.generic_string() + "'.");
 		}
 	}
 
 	void EditorContext::saveProject() {
 		saveScene();
 		m_project.save();
-		setMessage("Project '" + m_project.filePath().generic_string() + "' saved.");
+		setStatusMessage("Project '" + m_project.filePath().generic_string() + "' saved.");
 	}
 
 	void EditorContext::setState(const State a_state) {
@@ -97,7 +102,7 @@ namespace GalactoseEditor {
 			std::istringstream stream(m_sceneSave);
 
 			if (!m_scene->load(stream))
-				setMessage("Failed to load scene: " + m_scene->name(), MessageType::Error);
+				setStatusMessage("Failed to load scene: " + m_scene->name(), MessageType::Error);
 
 			if (m_selectedEntity)
 				m_selectedEntity = m_scene->getEntity(uuid);
@@ -108,7 +113,7 @@ namespace GalactoseEditor {
 		m_state = a_state;
 	}
 
-	void EditorContext::setMessage(const std::string a_message, const MessageType a_type) {
+	void EditorContext::setStatusMessage(const std::string a_message, const MessageType a_type) {
 		if (a_message == m_message && a_type == m_messageType)
 			return;
 
@@ -121,6 +126,6 @@ namespace GalactoseEditor {
 
 	void EditorContext::loadScripts() {
 		if (!m_project.loadScripts())
-			setMessage("Failed to load scripts.", MessageType::Error);
+			setStatusMessage("Failed to load scripts.", MessageType::Error);
 	}
 }
