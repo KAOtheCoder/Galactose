@@ -14,8 +14,12 @@ namespace Galactose {
 
 		void process() override { 
 			const auto& sharedWindow = window();
-			if (sharedWindow)
-				sharedWindow->close();
+			if (sharedWindow) {
+				sharedWindow->onEvent(shared_from_this());
+
+				if (!isHandled())
+					sharedWindow->close();
+			}
 		}
 
 	private:

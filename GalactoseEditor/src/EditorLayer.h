@@ -35,5 +35,6 @@ namespace GalactoseEditor {
 		SideBar m_upBar;
 		SideBar m_downBar;
 		Layout m_layout;
+		bool m_openExitDialog = false;
 	};
 }

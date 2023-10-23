@@ -38,7 +38,7 @@ namespace GalactoseEditor {
 			{ },
 			{ "Save Project", {}, [&]() { m_editorContext->saveProject(); }},
 			{ },
-			{ "Exit", KeyEvent::Alt, KeyEvent::KeyF4, [&]() { Application::instance()->exit(); } }
+			{ "Exit", KeyEvent::Control, KeyEvent::KeyE, [&]() { m_openExitDialog = true; }}
 		} });
 
 		menuBar->menus.push_back({ "Panels", {
@@ -80,10 +80,45 @@ namespace GalactoseEditor {
 		m_gameViewport.update();
 		m_assetExplorer.update();
 
+		if (m_openExitDialog) {
+			ImGui::OpenPopup("Exit Galactose");
+
+			if (ImGui::BeginPopupModal("Exit Galactose", &m_openExitDialog, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::Text("Do you really want to quit?");
+
+				if (ImGui::BeginTable("Buttons", 3)) {
+					ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthStretch);
+					ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
+					ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed);
+
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(1);
+					if (ImGui::Button("Yes"))
+						Application::instance()->exit();
+
+					ImGui::TableSetColumnIndex(2);
+					if (ImGui::Button("No")) {
+						ImGui::CloseCurrentPopup();
+						m_openExitDialog = false;
+					}
+
+					ImGui::EndTable();
+				}
+
+				ImGui::EndPopup();
+			}
+		}
+
 		//ImGui::ShowDemoWindow();
 	}
 
 	void EditorLayer::onEvent(const std::shared_ptr<Event>& a_event) {
+		if (a_event->type() == Event::Close) {
+			m_openExitDialog = true;
+			a_event->setHandled();
+			return;
+		}
+
 		m_upBar.onEvent(a_event);
 		m_downBar.onEvent(a_event);
 
