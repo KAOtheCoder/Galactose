@@ -6,7 +6,7 @@
 namespace GalactoseEditor {
 	namespace FileDialog {
 		bool init();
-		void quit();
+		void uninit();
 
 		struct Filter {
 			std::string name;

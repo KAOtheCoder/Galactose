@@ -5,7 +5,7 @@
 namespace GalactoseEditor {
 	std::string InputString::s_text = std::string();
 
-	int InputString::resizeCallback(ImGuiInputTextCallbackData* a_data) {
+	int resizeCallback(ImGuiInputTextCallbackData* a_data) {
 		if (a_data->EventFlag == ImGuiInputTextFlags_CallbackResize)
 		{
 			auto str = static_cast<std::string*>(a_data->UserData);
@@ -25,7 +25,7 @@ namespace GalactoseEditor {
 		if (empty_label)
 			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 
-		const bool changed = ImGui::InputText(a_label.c_str(), s_text.data(), a_size < 0 ? s_text.capacity() + 1 : a_size, ImGuiInputTextFlags_CallbackResize, &InputString::resizeCallback, &s_text);
+		const bool changed = ImGui::InputText(a_label.c_str(), s_text.data(), a_size < 0 ? s_text.capacity() + 1 : a_size, ImGuiInputTextFlags_CallbackResize, &resizeCallback, &s_text);
 
 		if (empty_label)
 			ImGui::PopItemWidth();

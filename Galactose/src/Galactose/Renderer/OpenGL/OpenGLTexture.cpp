@@ -37,12 +37,12 @@ namespace Galactose {
 		createTexture();
 	}
 
-	OpenGLTexture::OpenGLTexture(const std::string& a_filePath) : 
+	OpenGLTexture::OpenGLTexture(const std::filesystem::path& a_filePath) : 
 		Texture(a_filePath)
 	{
 		stbi_set_flip_vertically_on_load(1);
 		int channels;
-		const auto data = stbi_load(a_filePath.c_str(), &m_width, &m_height, &channels, 0);
+		const auto data = stbi_load(a_filePath.generic_string().c_str(), &m_width, &m_height, &channels, 0);
 
 		if (data) {
 			switch (channels) {

@@ -27,8 +27,7 @@ namespace GalactoseEditor {
 			const std::filesystem::path newPath = m_directoryPath / (m_renameString + m_renamingPath.extension().string());
 
 			try {
-				if (oldPath != newPath && !std::filesystem::exists(newPath)) {				
-				
+				if (oldPath != newPath && !std::filesystem::exists(newPath)) {
 					std::filesystem::rename(oldPath, newPath);
 					auto& project = m_editorContext->project();
 					const auto& relativePath = std::filesystem::relative(newPath, project.directory());

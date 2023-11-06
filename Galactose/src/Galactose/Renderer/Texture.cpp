@@ -2,7 +2,7 @@
 #include "Galactose/Core/Global.h"
 
 namespace Galactose {
-	std::shared_ptr<Texture> Texture::create(const std::string& a_filePath) {
+	std::shared_ptr<Texture> Texture::create(const std::filesystem::path& a_filePath) {
 		return std::make_shared<OpenGLTexture>(a_filePath);
 	}
 

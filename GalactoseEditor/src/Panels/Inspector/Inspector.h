@@ -36,7 +36,6 @@ namespace GalactoseEditor {
 		};
 
 		static std::string toReadableName(const std::string& name);
-		static void drawLabel(const char* label);
 		static bool dragVectorAxis(const int axis, float& value, const Galactose::Vector4& color = { 0.f, 0.f, 0.f, 0.f }, const Galactose::Vector4& hoverColor = { 1.f, 1.f, 1.f, 0.1f });
 		static bool dragVector(const char* label, const int axisCount, float* values, const bool colored = false);
 		static bool checkBox(const char* label, bool& value);
@@ -47,9 +46,6 @@ namespace GalactoseEditor {
 		
 		template <typename T>
 		static void drawVectorProperty(Galactose::PropertyBase* property);
-
-		bool drawFileInput(const char* label, std::string& path, const std::string& emptyText = "");
-		bool iconButton(const char* icon);
 
 		bool drawComponentHeader(Galactose::Component* component, const char* a_title);
 		void drawComponent(Galactose::Component* component);
@@ -65,7 +61,6 @@ namespace GalactoseEditor {
 		void drawComponentContentHelper(Galactose::Component* a_component);
 
 		std::shared_ptr<EditorContext> m_editorContext;
-		std::unordered_map<std::string, std::shared_ptr<Galactose::Texture>> m_icons;
 		std::unordered_map<uint32_t, ComponentInfo> m_componentInfos;
 		Galactose::Component* m_removeComponent = nullptr;
 		Galactose::Vector3 m_eulerAngles;

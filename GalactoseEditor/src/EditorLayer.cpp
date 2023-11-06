@@ -3,6 +3,7 @@
 #include "SideBars/MenuBar.h"
 #include "SideBars/ToolBar.h"
 #include "SideBars/StatusBar.h"
+#include "Widgets/PropertyTable.h"
 
 #include <Galactose/Core/Events/KeyEvent.h>
 #include <Galactose/Core/Events/MouseEvent.h>
@@ -42,6 +43,7 @@ namespace GalactoseEditor {
 		} });
 
 		menuBar->menus.push_back({ "Panels", {
+			{ "Preferences", { }, [&]() { m_preferences.setVisible(true); } },
 			{ "Scene", { }, [&]() { m_sceneViewport.setVisible(true); } },
 			{ "Game", { }, [&]() { m_gameViewport.setVisible(true); } },
 			{ "Scene Hierarchy", { }, [&]() { m_sceneHierarchy.setVisible(true); } },
@@ -60,6 +62,8 @@ namespace GalactoseEditor {
 		m_upBar.addSideBar(menuBar);
 		m_upBar.addSideBar(std::make_shared<ToolBar>(m_editorContext));
 		m_downBar.addSideBar(std::make_shared<StatusBar>(m_editorContext));
+
+		PropertyTable::init();
 	}
 
 	void EditorLayer::updateContent() {
@@ -74,6 +78,7 @@ namespace GalactoseEditor {
 			scene->updateScripts();
 		}
 
+		m_preferences.update();
 		m_sceneHierarchy.update();
 		m_inspector.update();
 		m_sceneViewport.update();

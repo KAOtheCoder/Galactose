@@ -3,7 +3,7 @@
 #include "Galactose/Core/Global.h"
 
 #include <memory>
-#include <string>
+#include <filesystem>
 
 namespace Galactose {
 	class Texture {
@@ -15,7 +15,7 @@ namespace Galactose {
 			Depth24Stencil8
 		};
 
-		GT_API static std::shared_ptr<Texture> create(const std::string& filePath);
+		GT_API static std::shared_ptr<Texture> create(const std::filesystem::path& filePath);
 		static std::shared_ptr<Texture> create(const int32_t width, const int32_t height, const Format format = RGBA8);
 
 		virtual ~Texture() = default;
@@ -28,14 +28,14 @@ namespace Galactose {
 		Format format() const { return m_format; }
 		bool isLoaded() const { return m_loaded; }
 
-		std::string filePath() const { return m_filePath; }
+		std::filesystem::path filePath() const { return m_filePath; }
 
 		virtual void setData(const void* data) = 0;
 
 		virtual void bind(const uint8_t slot) = 0;
 
 	protected:
-		Texture(const std::string& a_filePath) : m_filePath(a_filePath) {}
+		Texture(const std::filesystem::path& a_filePath) : m_filePath(a_filePath) {}
 		Texture(const int32_t width, const int32_t height, const Format format = RGBA8);
 
 		uint32_t m_rendererId = 0;
@@ -43,6 +43,6 @@ namespace Galactose {
 		int32_t m_height = 0;
 		Format m_format = RGBA8;
 		bool m_loaded = false;
-		std::string m_filePath;
+		std::filesystem::path m_filePath;
 	};
 }

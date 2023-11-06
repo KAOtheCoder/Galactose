@@ -1,4 +1,6 @@
 #include "Inspector.h"
+#include "Widgets/PropertyTable.h"
+#include "FileDialog.h"
 
 #include <Galactose/Scene/Components/SpriteRenderer.h>
 #include <Galactose/Renderer/Texture.h>
@@ -13,8 +15,8 @@ namespace GalactoseEditor {
 		auto& sprite = a_spriteRenderer->sprite;
 
 		const auto& texture = sprite.texture();
-		std::string textureFilePath = texture ? texture->filePath() : "";
-		if (drawFileInput("Texture", textureFilePath, "Default")) {
+		std::filesystem::path textureFilePath = texture ? texture->filePath() : "";
+		if (PropertyTable::fileInput("Texture", textureFilePath, { { "Texture", "png" } }, "Default")) {
 			if (textureFilePath.empty())
 				sprite.setTexture(nullptr);
 			else {

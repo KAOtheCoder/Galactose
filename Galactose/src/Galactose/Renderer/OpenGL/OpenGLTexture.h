@@ -5,7 +5,7 @@
 namespace Galactose {
 	class OpenGLTexture : public Texture {
 	public:
-		OpenGLTexture(const std::string& filePath);
+		OpenGLTexture(const std::filesystem::path& filePath);
 		OpenGLTexture(const int32_t width, const int32_t height, const Format a_format = Texture::RGBA8);
 
 		~OpenGLTexture() override;

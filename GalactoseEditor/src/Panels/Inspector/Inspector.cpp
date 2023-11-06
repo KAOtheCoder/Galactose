@@ -1,6 +1,7 @@
 #include "Inspector.h"
 #include "Widgets/InputString.h"
 #include "Widgets/TrailingCollapsingHeader.h"
+#include "Widgets/PropertyTable.h"
 
 #include <Galactose/Core/Global.h>
 #include <Galactose/Renderer/Texture.h>
@@ -19,13 +20,10 @@
 using namespace Galactose;
 
 namespace GalactoseEditor {
-	Inspector::Inspector(const std::shared_ptr<EditorContext>& a_sceneContext) :
+	Inspector::Inspector(const std::shared_ptr<EditorContext>& a_editorContext) :
 		Panel("Inspector"),
-		m_editorContext(a_sceneContext)
+		m_editorContext(a_editorContext)
 	{
-		m_icons.emplace("Clear", Texture::create("assets/textures/Clear.png"));
-		m_icons.emplace("Folder", Texture::create("assets/textures/Folder.png"));
-
 		bindComponent<Transform>();
 		bindComponent<Camera>();
 		bindComponent<SpriteRenderer>();
@@ -115,14 +113,6 @@ namespace GalactoseEditor {
 		ImGui::SetNextWindowPos({ bottomRight.x, bottomRight.y + ImGui::GetStyle().ItemSpacing.y }, 0, { 1, 0 });
 	}
 
-	void Inspector::drawLabel(const char* a_label) {
-		ImGui::TableNextRow();
-
-		ImGui::TableSetColumnIndex(0);
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text(a_label);
-	}
-
 	bool Inspector::dragVectorAxis(const int a_axis, float& a_value, const Galactose::Vector4& color, const Galactose::Vector4& hoverColor) {
 		const ImVec4 buttonColor(color.x, color.y, color.z, color.a);
 		ImGui::PushStyleColor(ImGuiCol_Button, buttonColor);
@@ -148,7 +138,7 @@ namespace GalactoseEditor {
 	}
 
 	bool Inspector::dragVector(const char* a_label, const int a_axisCount, float* a_value, const bool colored) {
-		drawLabel(a_label);
+		PropertyTable::label(a_label);
 
 		ImGui::TableSetColumnIndex(1);
 		if (ImGui::BeginTable(a_label, 2 * a_axisCount, ImGuiTableFlags_NoPadInnerX)) {
@@ -196,7 +186,7 @@ namespace GalactoseEditor {
 	}
 
 	bool Inspector::checkBox(const char* a_label, bool& a_value) {
-		drawLabel(a_label);
+		PropertyTable::label(a_label);
 
 		ImGui::TableSetColumnIndex(1);
 		const auto& label = std::string("##") + a_label;
@@ -204,14 +194,14 @@ namespace GalactoseEditor {
 	}
 
 	bool Inspector::dragFloat(const char* a_label, float& a_value, const float a_speed, const float a_min, const float a_max) {
-		drawLabel(a_label);
+		PropertyTable::label(a_label);
 
 		ImGui::TableSetColumnIndex(1);
 		return spanDragFloat(a_label, a_value, a_speed, a_min, a_max);
 	}
 
 	bool Inspector::colorButton(const char* a_label, Vector4& a_color) {
-		drawLabel(a_label);
+		PropertyTable::label(a_label);
 
 		ImGui::TableSetColumnIndex(1);
 
@@ -245,53 +235,6 @@ namespace GalactoseEditor {
 		return changed;
 	}
 
-	bool Inspector::iconButton(const char* a_icon) {
-		const float font_size = ImGui::GetFontSize();
-		return ImGui::ImageButton(a_icon, (void*)(intptr_t)m_icons[a_icon]->rendererId(), { font_size, font_size }, { 0, 1 }, { 1, 0 });
-	}
-
-	bool Inspector::drawFileInput(const char* a_label, std::string& a_path, const std::string& a_emptyText) {
-		drawLabel(a_label);
-
-		ImGui::TableSetColumnIndex(1);
-		bool changed = false;
-
-		if (ImGui::BeginTable(a_label, 3, ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_SizingStretchProp)) {
-			ImGui::TableNextRow();
-			ImGui::TableSetColumnIndex(0);
-
-			std::string input_text = a_path.empty() ? a_emptyText : std::filesystem::path(a_path).stem().generic_string();
-			const auto& input_label = std::string("##") + a_label;
-			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
-			ImGui::InputText(input_label.c_str(), input_text.data(), input_text.size(), ImGuiInputTextFlags_ReadOnly);
-			ImGui::PopItemWidth();
-
-			ImGui::TableSetColumnIndex(1);
-			
-			if (iconButton("Clear") && !a_path.empty()) {
-				a_path = "";
-				changed = true;
-			}
-
-			ImGui::TableSetColumnIndex(2);
-			if (iconButton("Folder")) {
-				nfdchar_t* path;
-				nfdfilteritem_t filter = { "Texture", "png" };
-				const auto result = NFD_OpenDialog(&path, &filter, 1, nullptr);
-				GT_ASSERT(result != NFD_ERROR, NFD_GetError());
-				
-				if (result == NFD_OKAY && a_path != path) {
-					a_path = path;
-					changed = true;
-				}
-			}
-
-			ImGui::EndTable();
-		}
-
-		return changed;
-	}
-
 	bool Inspector::drawComponentHeader(Component* a_component, const char* a_title) {
 		bool remove = false;
 		bool opened = TrailingCollapsingHeader::draw(a_title, "-", remove);
@@ -312,9 +255,9 @@ namespace GalactoseEditor {
 			? ImGui::CollapsingHeader(info.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth)
 			: drawComponentHeader(a_component, info.name.c_str());
 
-		if (opened && ImGui::BeginTable(info.name.c_str(), 2, ImGuiTableFlags_SizingStretchProp)) {
+		if (opened && PropertyTable::beginTable(info.name.c_str())) {
 			(this->*info.draw)(a_component);
-			ImGui::EndTable();
+			PropertyTable::endTable();
 		}
 	}
 

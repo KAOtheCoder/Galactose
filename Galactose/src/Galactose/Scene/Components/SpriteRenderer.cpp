@@ -5,8 +5,8 @@
 
 namespace Galactose {
 	void SpriteRenderer::saveContent(OutSerializer& a_out) const {
-		std::string texture_path;
-		std::string* texture = nullptr;
+		std::filesystem::path texture_path;
+		std::filesystem::path* texture = nullptr;
 
 		if (sprite.texture()) {
 			texture_path = sprite.texture()->filePath();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ImGuiLayer.h"
+#include "Panels/Preferences.h"
 #include "Panels/SceneViewport.h"
 #include "Panels/GameViewport.h"
 #include "Panels/SceneHierarchy.h"
@@ -27,6 +28,7 @@ namespace GalactoseEditor {
 		void updateLayout();
 
 		std::shared_ptr<EditorContext> m_editorContext;
+		Preferences m_preferences;
 		SceneViewport m_sceneViewport;
 		GameViewport m_gameViewport;
 		SceneHierarchy m_sceneHierarchy;

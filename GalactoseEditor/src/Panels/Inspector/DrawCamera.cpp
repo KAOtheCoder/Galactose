@@ -1,4 +1,5 @@
 #include "Inspector.h"
+#include "Widgets/PropertyTable.h"
 
 #include <Galactose/Scene/Components/Camera.h>
 
@@ -9,7 +10,8 @@ using namespace Galactose;
 namespace GalactoseEditor {
 	template <>
 	void Inspector::drawComponentContent<Camera>(Camera* a_camera) {
-		drawLabel("Field of View");
+		PropertyTable::label("Field of View");
+
 		ImGui::TableSetColumnIndex(1);
 		ImGui::PushItemWidth(-std::numeric_limits<float>().min());
 		auto fov = a_camera->fov();

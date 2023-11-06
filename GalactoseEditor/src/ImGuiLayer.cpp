@@ -50,7 +50,7 @@ namespace GalactoseEditor {
 	}
 
 	ImGuiLayer::~ImGuiLayer() {
-		FileDialog::quit();
+		FileDialog::uninit();
 
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();

@@ -16,7 +16,7 @@ namespace GalactoseEditor {
 			return result;
 		}
 
-		void quit() {
+		void uninit() {
 			NFD_Quit();
 		}
 
