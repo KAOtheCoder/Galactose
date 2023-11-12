@@ -5,8 +5,6 @@
 #include <Galactose/Scene/Components/SpriteRenderer.h>
 #include <Galactose/Renderer/Texture.h>
 
-#include <imgui.h>
-
 using namespace Galactose;
 
 namespace GalactoseEditor {
@@ -26,15 +24,15 @@ namespace GalactoseEditor {
 		}
 
 		auto color = sprite.color();
-		if (colorButton("Color", color))
+		if (PropertyTable::colorButton("Color", color))
 			sprite.setColor(color);
 
 		auto size = sprite.size();
-		if (dragVector("Size", 2, size.data()))
+		if (PropertyTable::dragVector("Size", 2, size.data()))
 			sprite.setSize(size);
 
 		auto pivot = sprite.pivot();
-		if (dragVector("Pivot", 2, pivot.data()))
+		if (PropertyTable::dragVector("Pivot", 2, pivot.data()))
 			sprite.setPivot(pivot);
 	}
 }
