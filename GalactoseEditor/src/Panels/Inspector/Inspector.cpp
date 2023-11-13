@@ -51,8 +51,10 @@ namespace GalactoseEditor {
 			ImGui::TableNextRow();
 
 			ImGui::TableSetColumnIndex(0);
-			if (InputString::inputText("##Name", entity->name()))
-				entity->setName(InputString::text());
+
+			auto name = entity->name();
+			if (InputString::inputText("Name", name))
+				entity->setName(name);
 
 			ImGui::TableSetColumnIndex(1);
 			const auto frameHeight = ImGui::GetFrameHeight();

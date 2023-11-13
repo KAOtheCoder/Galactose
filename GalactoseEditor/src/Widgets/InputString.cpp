@@ -3,8 +3,6 @@
 #include <imgui.h>
 
 namespace GalactoseEditor {
-	std::string InputString::s_text = std::string();
-
 	int resizeCallback(ImGuiInputTextCallbackData* a_data) {
 		if (a_data->EventFlag == ImGuiInputTextFlags_CallbackResize)
 		{
@@ -16,19 +14,11 @@ namespace GalactoseEditor {
 		return 0;
 	}
 
-	bool InputString::inputText(const std::string& a_label, const std::string& a_text, int a_size, ImGuiInputTextFlags a_flags) {
-		s_text = a_text;
-		a_flags |= ImGuiInputTextFlags_CallbackResize;
-
-		const bool empty_label = a_label.empty() || a_label.find_first_not_of("#") >= 2;
-
-		if (empty_label)
-			ImGui::PushItemWidth(-std::numeric_limits<float>().min());
-
-		const bool changed = ImGui::InputText(a_label.c_str(), s_text.data(), a_size < 0 ? s_text.capacity() + 1 : a_size, ImGuiInputTextFlags_CallbackResize, &resizeCallback, &s_text);
-
-		if (empty_label)
-			ImGui::PopItemWidth();
+	bool InputString::inputText(const char* a_id, std::string& a_text, size_t a_size) {
+		ImGui::PushItemWidth(-std::numeric_limits<float>().min());
+		const auto& id = std::string("##") + a_id;
+		const bool changed = ImGui::InputText(id.c_str(), a_text.data(), a_size == std::string::npos ? a_text.capacity() + 1 : a_size, ImGuiInputTextFlags_CallbackResize, &resizeCallback, &a_text);
+		ImGui::PopItemWidth();
 
 		return changed;
 	}

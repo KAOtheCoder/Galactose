@@ -36,11 +36,16 @@ namespace GalactoseEditor {
 		bool contains(const std::filesystem::path& relativePath) const;
 		bool isPathReserved(const std::filesystem::path& relativePath) const;
 
+		bool openSolution();
+
 	private:
 		static std::filesystem::path premakePath() { return "premake5.lua"; }
+		static void replaceAll(std::string& str, const std::string& from, const std::string& to);
 
 		void unloadScripts();
-		static void replaceAll(std::string& str, const std::string& from, const std::string& to);
+		std::filesystem::path reservedPath(const std::string& extension, const bool absolute = false) const;
+		std::filesystem::path workspacePath(const bool absolute = false) const { return reservedPath(".sln", absolute); }
+		std::filesystem::path scripProjectPath(const bool absolute = false) const { return reservedPath(".vcxproj", absolute); }
 
 		std::filesystem::path m_filePath;
 		std::filesystem::path m_startScene; // scene to load when project builded

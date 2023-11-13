@@ -1,4 +1,5 @@
 #include "Project.h"
+#include "Panels/Preferences.h"
 
 #include <Galactose/Serialization/OutSerializer.h>
 #include <Galactose/Serialization/NodeSerializer.h>
@@ -279,10 +280,37 @@ project "<PROJECT>"
 		return m_scenes.contains(a_relativePath) || m_scripts.contains(a_relativePath) || a_relativePath == m_filePath;
 	}
 
+	std::filesystem::path Project::reservedPath(const std::string& extension, const bool a_absolute) const {
+		const auto& solutionFilename = name() + extension;
+		return a_absolute ? std::filesystem::canonical(directory() / solutionFilename) : solutionFilename;
+	}
+
 	bool Project::isPathReserved(const std::filesystem::path& a_relativePath) const {
 		const auto& projectName = name();
 
-		return a_relativePath == premakePath() || a_relativePath == projectName + ".pro" || a_relativePath == "bin" 
-			|| a_relativePath == "bin-int" || a_relativePath == projectName + ".sln" || a_relativePath == projectName + ".vcxproj";
+		return a_relativePath == premakePath() || a_relativePath == reservedPath(".pro") || a_relativePath == "bin"
+			|| a_relativePath == "bin-int" || a_relativePath == workspacePath() || a_relativePath == scripProjectPath();
+	}
+
+	bool Project::openSolution() {
+		auto projectPath = workspacePath(true);
+
+		try {
+			if (std::filesystem::exists(projectPath)) {
+				projectPath = scripProjectPath(true);
+
+				if (!std::filesystem::exists(projectPath)) {
+					std::cerr << "Could not find workspace or project file: " << projectPath.generic_string() << std::endl;
+					return false;
+				}
+			}
+		}
+		catch (const std::exception& ex) {
+			std::cerr << ex.what() << std::endl;
+			return false;
+		}
+
+		const auto& command = "\"\"" + Preferences::instance()->visualStudioPath().string() + "\" \"" + projectPath.string() + "\"\"";
+		return std::system(command.c_str()) == 0;
 	}
 }

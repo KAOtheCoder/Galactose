@@ -114,6 +114,13 @@ namespace GalactoseEditor {
 				}
 
 				if (others.empty()) {
+					// TODO: Check if file is opened
+					// TODO: Open scene
+					if (!scripts.empty() && scenes.empty()) {
+						if (ImGui::Selectable("Open"))
+							project.openSolution();
+					}
+
 					if (ImGui::Selectable("Exclude From Project")) {
 						project.removeScripts(scripts);
 
@@ -288,8 +295,7 @@ namespace GalactoseEditor {
 							ImGui::SetKeyboardFocusHere();
 						}
 
-						if (InputString::inputText("##" + filename, m_renameString))
-							m_renameString = InputString::text();
+						InputString::inputText(filename.c_str(), m_renameString);
 
 						if (ImGui::IsItemDeactivated()) // focus out or press "Enter"
 							rename();

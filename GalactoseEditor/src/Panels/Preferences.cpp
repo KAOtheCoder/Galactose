@@ -13,6 +13,9 @@ namespace GalactoseEditor {
 	Preferences::Preferences() :
 		Panel("Preferences")
 	{
+		GT_ASSERT(!s_instance, "Only one 'Preferences' can be exist at a time.");
+		s_instance = this;
+
 		setVisible(false);
 
 		std::ifstream fileStream(PREFERENCES_FILENAME);
